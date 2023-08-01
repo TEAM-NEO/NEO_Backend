@@ -1,21 +1,34 @@
-# Welcome!
+---
+description: 'NEO : Connect fans with my star'
+---
 
-## Welcome to MyAPI
+# 💜 NEO(Need Each Other)
 
-Welcome to MyAPI! Here you'll find all the documentation you need to get up and running with the MyAPI API.
+<figure><img src="broken-reference" alt=""><figcaption><p>NEO : Need Each Other</p></figcaption></figure>
 
-## Want to jump right in?
 
-Feeling like an eager beaver? Jump in to the quick start docs and get making your first request:
 
-{% content-ref url="quick-start.md" %}
-[quick-start.md](quick-start.md)
+## 🏄🏻‍♂️ NEO FlowCharts
+
+전체적인 Application의 흐름을, UI와 간단한 비즈니스 로직으로 표현했습니다.
+
+{% embed url="https://www.figma.com/file/8nD72WCkq0AVGtV73dDB7V/NEO-FlowChart?t=Xy1Epu7xy56yMhHy-0&type=whiteboard" %}
+
+
+
+## 💾 NEO UML
+
+데이터베이스 UML
+
+{% embed url="https://www.figma.com/file/dTfjM9qGAnn17hNB4UCPDq/NEO-UML?mode=design&t=Xy1Epu7xy56yMhHy-0&type=design" %}
+
+
+
+## 🗂 NEO API Docs
+
+gitbook을 활용해 작성한 API Docs입니다. 추후에 Swagger를 사용해 Testable한 API Docs를 생성할 예정입니다.
+
+{% content-ref url="reference/neo-api-reference/" %}
+[neo-api-reference](reference/neo-api-reference/)
 {% endcontent-ref %}
 
-## Want to deep dive?
-
-Dive a little deeper and start exploring our API reference to get an idea of everything that's possible with the API:
-
-{% content-ref url="reference/api-reference/" %}
-[api-reference](reference/api-reference/)
-{% endcontent-ref %}
