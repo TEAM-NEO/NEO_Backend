@@ -4,7 +4,7 @@ description: 'NEO : Connect fans with my star'
 
 # 💜 NEO(Need Each Other)
 
-<figure><img src="broken-reference" alt=""><figcaption><p>NEO : Need Each Other</p></figcaption></figure>
+<figure><img src=".gitbook/assets/pinterest_profile_image.png" alt=""><figcaption><p>NEO : Need Each Other</p></figcaption></figure>
 
 
 
