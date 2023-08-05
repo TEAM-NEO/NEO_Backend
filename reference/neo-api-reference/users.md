@@ -6,31 +6,23 @@ description: >-
 
 # 🧑🤝🧑 Users
 
-dSS
+## 🔎 Search
 
-{% swagger baseUrl="https://api.myapi.com/v1" method="post" path="/pet" summary="Create pet." %}
+{% swagger baseUrl="http://localhost/api/v1" method="get" path="/users/stars" summary="Search Star API" %}
 {% swagger-description %}
-Creates a new pet.
+NEO에 등록된 스타를 검색하는 API입니다.
+
+만약 Query Parameter인 search\_key가 비어있다면, 모든 스타에 대해 사전 순으로 정렬된 데이터를 획득할 수 있습니다.
+
+모든 데이터는 페이지네이션되어, 한 오프셋에 대해 최대 10개의 데이터를 얻어올 수 있습니다.
 {% endswagger-description %}
 
-{% swagger-parameter in="body" name="name" required="true" type="string" %}
-The name of the pet
+{% swagger-parameter in="query" name="search_key" required="false" type="String" %}
+
 {% endswagger-parameter %}
 
-{% swagger-parameter in="body" name="owner_id" required="false" type="string" %}
-The 
+{% swagger-parameter in="query" name="offset" type="long" %}
 
-`id`
-
- of the user who owns the pet
-{% endswagger-parameter %}
-
-{% swagger-parameter in="body" name="species" required="false" type="string" %}
-The species of the pet
-{% endswagger-parameter %}
-
-{% swagger-parameter in="body" name="breed" required="false" type="string" %}
-The breed of the pet
 {% endswagger-parameter %}
 
 {% swagger-response status="200" description="Pet successfully created" %}
@@ -51,7 +43,7 @@ The breed of the pet
 {% endswagger-response %}
 {% endswagger %}
 
-## Updating a pet
+## Information
 
 {% swagger src="https://petstore.swagger.io/v2/swagger.json" path="/pet" method="put" %}
 [https://petstore.swagger.io/v2/swagger.json](https://petstore.swagger.io/v2/swagger.json)
