@@ -1,0 +1,38 @@
+version: '1'
+
+services:
+  # MySQL 컨테이너 설정
+  # TODO : 추후, 네트워킹을 통해 DB 레플리카 혹은 샤딩 진행해보기.
+  mysql:
+    image: mysql:latest
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: neo8569
+      MYSQL_DATABASE: neo
+    ports:
+      - "3306:3306"
+    # RDB 의 볼륨 마운트 설정
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # MongoDB 컨테이너 설정
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb-container
+    ports:
+      - "27017:27017"
+    # NoSQL 의 볼륨 마운트 설정
+    volumes:
+      - mongodb_data:/data/db
+
+  # Redis Cache 컨테이너 설정
+  redis:
+    image: redis:latest
+    container_name: redis-container
+    ports:
+      - "6379:6379"
+
+# 볼륨에 대한 실제 디렉토리 자동 생성
+volumes:
+  mysql_data:
+  mongodb_data:
