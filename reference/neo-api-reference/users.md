@@ -43,8 +43,122 @@ NEO에 등록된 스타를 검색하는 API입니다.
 {% endswagger-response %}
 {% endswagger %}
 
-## Information
+***
 
-{% swagger src="https://petstore.swagger.io/v2/swagger.json" path="/pet" method="put" %}
-[https://petstore.swagger.io/v2/swagger.json](https://petstore.swagger.io/v2/swagger.json)
+## 📄 Information
+
+
+
+{% swagger method="get" path="/users/{user_id}" baseUrl="https://localhost/api/v1" summary="Get User Info API" %}
+{% swagger-description %}
+Whether you are a star or a fan, you can get user information through this API with PathParameter "user\_id".
+
+
+{% endswagger-description %}
+
+{% swagger-parameter in="path" name="user_id" required="true" %}
+Neo User ID
+{% endswagger-parameter %}
+{% endswagger %}
+
+{% swagger method="patch" path="/users/{user_id}" baseUrl="https://localhost/api/v1" summary="Change Partial Information API" %}
+{% swagger-description %}
+You can change your partial information by body parameter. Only you can contact your data. Because of PATCH Http Method, only what is contained in the body parameter is modified and the rest of the data is preserved.
+{% endswagger-description %}
+
+{% swagger-parameter in="path" name="user_id" required="true" %}
+Neo User ID
+{% endswagger-parameter %}
+
+{% swagger-parameter in="body" %}
+
+{% endswagger-parameter %}
+{% endswagger %}
+
+
+
+{% swagger method="put" path="/users/{user_id}" baseUrl="https://localhost/api/v1" summary="Change Information API" %}
+{% swagger-description %}
+You can change your information by body parameter. Only you can contact your data. Because of PUT Http Method, note that data not included in the body will be null.
+{% endswagger-description %}
+
+{% swagger-parameter in="path" name="user_id" required="true" %}
+Neo User ID
+{% endswagger-parameter %}
+{% endswagger %}
+
+
+
+{% swagger method="post" path="/users" baseUrl="https://localhost/api/v1" summary="Create User Information API" %}
+{% swagger-description %}
+After register in Neo, make new information through this api.
+{% endswagger-description %}
+{% endswagger %}
+
+
+
+{% swagger method="delete" path="/users/{user_id}" baseUrl="https://localhost/api/v1" summary="Delete User Information API" %}
+{% swagger-description %}
+This API is only for star. You can delete all star's custom information through this API.
+{% endswagger-description %}
+{% endswagger %}
+
+***
+
+## 💜 Follower(My fans)
+
+{% swagger method="get" path="/users/{user_id}/followers" baseUrl="https://localhost/api/v1" summary="Get Followers(My fans) List API" %}
+{% swagger-description %}
+You can get followers list by this api. Only star can use this api, because fan can't have follower. You can get whole follower's count through query parameter 'count'. We give you list with pagination, so if you want next page, consider query parameter 'offset'.
+{% endswagger-description %}
+
+{% swagger-parameter in="query" name="count" type="boolean" %}
+contain count data
+{% endswagger-parameter %}
+
+{% swagger-parameter in="query" name="offset" type="long" %}
+followers page offset
+{% endswagger-parameter %}
+{% endswagger %}
+
+
+
+{% swagger method="delete" path="/users/{user_id}/followers" baseUrl="https://localhost/api/v1" summary="Block fan API" %}
+{% swagger-description %}
+You can block fan through this api.
+{% endswagger-description %}
+{% endswagger %}
+
+***
+
+## 💜 Followee(My Star)
+
+{% swagger method="get" path="/users/{user_id}/followee" baseUrl="https://localhost/api/v1" summary="Get My Stars List API" %}
+{% swagger-description %}
+You can get your stars list through this API. Whether you are a star or not, you can use this API. 
+{% endswagger-description %}
+
+{% swagger-parameter in="query" name="count" type="boolean" %}
+contain count or not
+{% endswagger-parameter %}
+
+{% swagger-parameter in="query" name="offset" type="long" %}
+followee page offset
+{% endswagger-parameter %}
+{% endswagger %}
+
+
+
+{% swagger method="post" path="/users/{user_id}/followee" baseUrl="https://localhost/api/v1" summary="Follow Star API" %}
+{% swagger-description %}
+You can follow star through this API. Whether you are a star or not, you can use this API.
+{% endswagger-description %}
+{% endswagger %}
+
+
+
+{% swagger method="delete" path="/users/{user_id}/followee" baseUrl="https://localhost/api/v1" summary="Unfollow Star API" %}
+{% swagger-description %}
+You can unfollow star through this API. 
+{% endswagger-description %}
 {% endswagger %}
