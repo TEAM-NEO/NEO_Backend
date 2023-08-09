@@ -89,13 +89,19 @@ Neo User ID
 
 
 
-{% swagger method="post" path="/users" baseUrl="https://localhost/api/v1" summary="Create User Information API" %}
+{% swagger method="post" path="/users/stars" baseUrl="https://localhost/api/v1" summary="Create User as Star and create Information API" %}
 {% swagger-description %}
-After register in Neo, make new information through this api.
+After register in Neo, make new information through this api. Only star use this api.
 {% endswagger-description %}
 {% endswagger %}
 
 
+
+{% swagger method="post" path="/users/fans" baseUrl="https://localhost/api/v1" summary="Create User as Fan and create Information API" %}
+{% swagger-description %}
+After register in Neo, make new information through this api. Only fan use this api.
+{% endswagger-description %}
+{% endswagger %}
 
 {% swagger method="delete" path="/users/{user_id}" baseUrl="https://localhost/api/v1" summary="Delete User Information API" %}
 {% swagger-description %}
