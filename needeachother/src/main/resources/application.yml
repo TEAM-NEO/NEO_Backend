@@ -1,18 +1,38 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/neo?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&profileSQL=true
+    url: jdbc:mysql://localhost:3306/neo?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: root
     password: neo8569
 
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      use-new-id-generator-mappings: false
     show-sql: true
     properties:
       hibernate.format_sql: true
       dialect: org.hibernate.dialect.MySQL8InnoDBDialect
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: neo
+
+    redis:
+      host: localhost
+      port: 6379
+
+
+springdoc:
+  version: "v1.0.0"
+  override-with-generic-response: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: method
+    tags-sorter: alpha
+    path: "swagger.html"
