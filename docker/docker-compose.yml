@@ -1,4 +1,4 @@
-version: '1'
+version: '3'
 
 services:
   # MySQL 컨테이너 설정
@@ -7,8 +7,8 @@ services:
     image: mysql:latest
     container_name: mysql-container
     environment:
-      MYSQL_ROOT_PASSWORD: neo8569
-      MYSQL_DATABASE: neo
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
       - "3306:3306"
     # RDB 의 볼륨 마운트 설정
