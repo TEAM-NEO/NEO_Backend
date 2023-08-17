@@ -2,6 +2,8 @@ package com.neo.needeachother.users.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.neo.needeachother.common.enums.NEOErrorCode;
+import com.neo.needeachother.users.exception.NEOUserExpectedException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,7 @@ public enum NEOStarDetailClassification {
     SINGER("SI", NEOStarClassification.CELEBRITY, "가수", null, null),
     SPORT_STAR("SP", NEOStarClassification.CELEBRITY, "스포츠스타", null, null),
     COMEDIAN("CO", NEOStarClassification.CELEBRITY, "코미디언", null, null),
-    CELEBRITY("CE", NEOStarClassification.CELEBRITY, "연예인", null,null),
+    CELEBRITY("CE", NEOStarClassification.CELEBRITY, "연예인", null, null),
 
     /* 인터넷 방송인 */
     YOUTUBER("YO", NEOStarClassification.INTERNET_BROADCASTER, "유튜버", Pattern.compile(".*youtube\\.com.*"), null),
@@ -73,7 +75,9 @@ public enum NEOStarDetailClassification {
         return Arrays.stream(NEOStarDetailClassification.values())
                 .filter(classification -> classificationStringDict.get(classification).contains(classificationCode))
                 .findAny()
-                .orElse(NONE);
+                .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.INVALID_FORMAT_STAR_CLASSIFICATION,
+                        "에러 원인 : " + classificationCode,
+                        "새로운 스타 정보 생성에 실패했습니다."));
     }
 
     @JsonValue
@@ -91,7 +95,7 @@ public enum NEOStarDetailClassification {
                 .collect(Collectors.toList());
     }
 
-    public static NEOStarDetailClassification convertClassificationCodeToEnum(String code){
+    public static NEOStarDetailClassification convertClassificationCodeToEnum(String code) {
         return Arrays.stream(NEOStarDetailClassification.values())
                 .filter(classification -> classification.classificationCode.equals(code))
                 .findAny()
