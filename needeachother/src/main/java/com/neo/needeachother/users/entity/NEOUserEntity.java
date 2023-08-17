@@ -4,9 +4,13 @@ import com.neo.needeachother.common.entity.NEOTimeDefaultEntity;
 import com.neo.needeachother.users.converter.NEOGenderTypeConverter;
 import com.neo.needeachother.users.enums.NEOGenderType;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -45,5 +49,9 @@ public class NEOUserEntity extends NEOTimeDefaultEntity {
     @Column(name = "gender")
     @Convert(converter = NEOGenderTypeConverter.class)
     private NEOGenderType gender;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "follower")
+    private List<NEOUserRelationEntity> subscribedStarList = new ArrayList<>();
 
 }

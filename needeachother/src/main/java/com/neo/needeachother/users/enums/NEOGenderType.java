@@ -1,6 +1,8 @@
 package com.neo.needeachother.users.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.neo.needeachother.common.enums.NEOErrorCode;
+import com.neo.needeachother.users.exception.NEOUserExpectedException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +35,9 @@ public enum NEOGenderType {
                         .map(NEOGenderType::convertGenderStringList)
                         .filter(strings -> strings.contains(requestFieldData))
                         .findAny()
-                        .orElseThrow()
+                        .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.INVALID_FORMAT_GENDER,
+                                "에러 대상 : " + requestFieldData,
+                                "새로운 스타 정보 생성에 실패했습니다."))
                         .get(0));
     }
 
