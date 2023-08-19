@@ -4,5 +4,6 @@ public enum NEODomainType {
     AUTH,
     USERS,
     CONTENTS,
-    QUESTIONS;
+    QUESTIONS,
+    COMMON;
 }
