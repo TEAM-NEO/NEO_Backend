@@ -31,4 +31,17 @@ public class NEOUserRelationEntity {
         this.followee = followee;
         followee.getFollowerList().add(this);
     }
+
+    public void setFollower(NEOUserEntity follower){
+        if(this.follower != null){
+            this.follower.getSubscribedStarList().remove(this);
+        }
+        this.follower = follower;
+        follower.getSubscribedStarList().add(this);
+    }
+
+    public void makeRelationFanWithStar(NEOUserEntity user, NEOStarEntity star){
+        setFollower(user);
+        setFollowee(star);
+    }
 }

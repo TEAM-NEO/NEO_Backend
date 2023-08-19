@@ -7,6 +7,8 @@ import com.neo.needeachother.users.request.NEOCreateStarInfoRequest;
 import org.springframework.http.ResponseEntity;
 
 public interface NEOUserInformationService {
-     ResponseEntity<NEOResponseBody> handleCreateNewStarInformationOrder(NEOCreateStarInfoRequest createStarInfoRequest, NEOUserInformationController.NEOUserOrder userOrder);
-     void handleCreateNewFanInformationOrder(NEOCreateFanInfoRequest createFanInfoRequest, NEOUserInformationController.NEOUserOrder userOrder);
+     ResponseEntity<NEOResponseBody> doCreateNewStarInformationOrder(NEOCreateStarInfoRequest createStarInfoRequest, NEOUserInformationController.NEOUserOrder userOrder);
+     ResponseEntity<NEOResponseBody> doCreateNewFanInformationOrder(NEOCreateFanInfoRequest createFanInfoRequest, NEOUserInformationController.NEOUserOrder userOrder);
+     ResponseEntity<?> doGetUserInformationOrder(String userID, NEOUserInformationController.NEOUserOrder userOrder);
+     ResponseEntity<?> doGetPublicUserInformationOrder(String userID, NEOUserInformationController.NEOUserOrder userOrder);
 }

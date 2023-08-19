@@ -1,6 +1,5 @@
 package com.neo.needeachother.users.controller;
 
-import com.neo.needeachother.common.enums.NEOErrorCode;
 import com.neo.needeachother.common.response.NEOErrorResponse;
 import com.neo.needeachother.common.response.NEOResponseBody;
 import com.neo.needeachother.users.exception.NEOUserExpectedException;
@@ -32,10 +31,13 @@ public class NEOUserInformationController {
     private final NEOUserInformationService userInformationService;
 
     @GetMapping("/{user_id}")
-    public void getUserInformationOrder(
+    public ResponseEntity<?> getUserInformationOrder(
             @PathVariable("user_id") String userID,
             @RequestParam(value = "public", required = false, defaultValue = "false") boolean isPublic){
-
+        if(isPublic){
+            return userInformationService.doGetPublicUserInformationOrder(userID, NEOUserOrder.GET_USER_PUBLIC_INFO);
+        }
+        return userInformationService.doGetUserInformationOrder(userID, NEOUserOrder.GET_USER_INFO);
     }
 
     @PutMapping("/{user_id}")
@@ -48,6 +50,7 @@ public class NEOUserInformationController {
      * OAuth2.0을 통한 회원가입 이후, 스타로서 NEO에 가입하기 위해 추가정보를 입력합니다.<br>
      * 추가 정보에 관한 내용은 {@code createStarInfoRequest}에서 확인할 수 있습니다.<br>
      * @param createStarInfoRequest 새로운 스타 정보 생성에 필요한 요청
+     * @param bindingResult 요청 객체 유효성 검사 결과
      * @return ResponseEntity<NEOResponseBody>
      */
     @Operation(summary = "새로운 스타 정보 생성",
@@ -58,18 +61,25 @@ public class NEOUserInformationController {
     public ResponseEntity<NEOResponseBody> createNewStarInformationOrder(@RequestBody @Validated final NEOCreateStarInfoRequest createStarInfoRequest, BindingResult bindingResult){
         NEOUserOrder userOrder = NEOUserOrder.CREATE_STAR_INFO;
         checkRequestValidationPassed(bindingResult, userOrder);
-        return userInformationService.handleCreateNewStarInformationOrder(createStarInfoRequest, userOrder);
+        return userInformationService.doCreateNewStarInformationOrder(createStarInfoRequest, userOrder);
     }
 
+    /**
+     * OAuth2.0을 통한 회원가입 이후, 팬으로서 NEO에 가입하기 위해 추가정보를 입력합니다.<br>
+     * 추가 정보에 관한 내용은 {@code createFanInfoRequest}에서 확인할 수 있습니다.
+     * @param createFanInfoRequest 새로운 팬 정보 생성에 필요한 요청
+     * @param bindingResult 요청 객체 유효성 검사 결과
+     * @return {@code ResponseEntity<NEOResponseBody>}
+     */
     @Operation(summary = "새로운 팬 정보 생성",
             description = "OAuth2.0을 통해 회원가입을 한 후, 팬에 대한 추가정보를 입력받을 수 있습니다. OAuth2.0가 적용되기 이전에는 " +
                     "회원의 나머지 정보도 받아오는 것을 대체합니다.",
             parameters = {@Parameter(name = "NEOCreateFanInfoRequest", description = "새로운 팬 정보생성에 필요한 요청")})
     @PostMapping("/fans")
-    public void createNewFanInformationOrder(@RequestBody @Validated final NEOCreateFanInfoRequest createFanInfoRequest, BindingResult bindingResult){
+    public ResponseEntity<NEOResponseBody> createNewFanInformationOrder(@RequestBody @Validated final NEOCreateFanInfoRequest createFanInfoRequest, BindingResult bindingResult){
         NEOUserOrder userOrder = NEOUserOrder.CREATE_FAN_INFO;
         checkRequestValidationPassed(bindingResult, userOrder);
-        userInformationService.handleCreateNewFanInformationOrder(createFanInfoRequest, userOrder);
+        return userInformationService.doCreateNewFanInformationOrder(createFanInfoRequest, userOrder);
     }
 
     @DeleteMapping("/{user_id}")
@@ -108,7 +118,9 @@ public class NEOUserInformationController {
     @RequiredArgsConstructor
     public enum NEOUserOrder{
         CREATE_STAR_INFO("새로운 스타 정보 생성에 성공했습니다.","새로운 스타 정보 생성에 실패했습니다.", "api/v1/users/stars"),
-        CREATE_FAN_INFO("새로운 팬 정보 생성에 성공했습니다.", "새로운 팬 정보 생성에 실패했습니다.", "api/v1/users/fans");
+        CREATE_FAN_INFO("새로운 팬 정보 생성에 성공했습니다.", "새로운 팬 정보 생성에 실패했습니다.", "api/v1/users/fans"),
+        GET_USER_INFO("사용자 전체 정보를 얻어오는데 성공했습니다.", "사용자 전체 정보를 얻어오는데 실패했습니다.", "api/v1/users/{user_id}"),
+        GET_USER_PUBLIC_INFO("사용자 공개 정보를 얻어오는데 성공했습니다.", "사용자 공개 정보를 얻어오는데 실패했습니다.", "api/v1/users/{user_id}");
 
         private final String successMessage;
         private final String failMessage;
