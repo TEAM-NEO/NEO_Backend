@@ -120,7 +120,10 @@ public class NEOUserInformationController {
         CREATE_STAR_INFO("새로운 스타 정보 생성에 성공했습니다.","새로운 스타 정보 생성에 실패했습니다.", "api/v1/users/stars"),
         CREATE_FAN_INFO("새로운 팬 정보 생성에 성공했습니다.", "새로운 팬 정보 생성에 실패했습니다.", "api/v1/users/fans"),
         GET_USER_INFO("사용자 전체 정보를 얻어오는데 성공했습니다.", "사용자 전체 정보를 얻어오는데 실패했습니다.", "api/v1/users/{user_id}"),
-        GET_USER_PUBLIC_INFO("사용자 공개 정보를 얻어오는데 성공했습니다.", "사용자 공개 정보를 얻어오는데 실패했습니다.", "api/v1/users/{user_id}");
+        GET_USER_PUBLIC_INFO("사용자 공개 정보를 얻어오는데 성공했습니다.", "사용자 공개 정보를 얻어오는데 실패했습니다.", "api/v1/users/{user_id}"),
+        COMMON(null ,null ,null);
+
+
 
         private final String successMessage;
         private final String failMessage;

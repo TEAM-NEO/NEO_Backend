@@ -2,7 +2,9 @@ package com.neo.needeachother.users.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.neo.needeachother.common.enums.NEODomainType;
 import com.neo.needeachother.common.enums.NEOErrorCode;
+import com.neo.needeachother.common.exception.NEOExpectedException;
 import com.neo.needeachother.users.exception.NEOUserExpectedException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -75,9 +77,9 @@ public enum NEOStarDetailClassification {
         return Arrays.stream(NEOStarDetailClassification.values())
                 .filter(classification -> classificationStringDict.get(classification).contains(classificationCode))
                 .findAny()
-                .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.INVALID_FORMAT_STAR_CLASSIFICATION,
+                .orElseThrow(() -> new NEOExpectedException(NEODomainType.COMMON, NEOErrorCode.INVALID_FORMAT_STAR_CLASSIFICATION,
                         "에러 원인 : " + classificationCode,
-                        "새로운 스타 정보 생성에 실패했습니다."));
+                        NEOErrorCode.INVALID_FORMAT_STAR_CLASSIFICATION.getErrorDescription()));
     }
 
     @JsonValue
