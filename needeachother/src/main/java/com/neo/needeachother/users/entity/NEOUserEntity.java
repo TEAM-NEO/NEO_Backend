@@ -18,13 +18,12 @@ import java.util.List;
  * @since 23.08.21<br>
  * NEO의 모든 유저가 기본적으로 가지고 있는 정보에 대한 엔티티입니다.
  */
-@Entity
 @Getter
+@Entity
 @Table(name = "user")
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "role_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class NEOUserEntity extends NEOTimeDefaultEntity {
