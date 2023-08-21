@@ -55,10 +55,16 @@ public class NEOUserInformationController {
     }
 
     @PutMapping("/{user_id}")
-    public void changeUserInformationOrder(@PathVariable("user_id") String userID){}
+    public void changeUserInformationOrder(@PathVariable("user_id") final String userID,
+                                           @RequestBody final NEOStarInfoDto changeStarInfoRequest){
+
+    }
 
     @PatchMapping("/{user_id}")
-    public void changePartialUserInformationOrder(@PathVariable("user_id") String userID){}
+    public void changePartialUserInformationOrder(@PathVariable("user_id") final String userID,
+                                                  @RequestBody final NEOStarInfoDto changePartialStarInfoRequest){
+
+    }
 
     /**
      * OAuth2.0을 통한 회원가입 이후, 스타로서 NEO에 가입하기 위해 추가정보를 입력합니다.<br>
