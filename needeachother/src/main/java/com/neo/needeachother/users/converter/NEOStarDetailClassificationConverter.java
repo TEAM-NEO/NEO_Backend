@@ -5,7 +5,8 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 /**
- * 23.08.12 이승훈<br>
+ * @author 이승훈<br>
+ * @since 23.08.21<br>
  * {@code NEOStarDetailClassification}을 엔티티에서 사용할 때, DB에 어떻게 저장할 것인지, 저장된 값을 어떻게 다시 Enum으로 살릴지 결정하는 컨버터입니다.
  */
 @Converter

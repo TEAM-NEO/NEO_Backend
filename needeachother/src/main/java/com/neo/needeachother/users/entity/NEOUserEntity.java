@@ -4,6 +4,7 @@ import com.neo.needeachother.common.entity.NEOTimeDefaultEntity;
 import com.neo.needeachother.users.converter.NEOGenderTypeConverter;
 import com.neo.needeachother.users.enums.NEOGenderType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,14 +13,21 @@ import lombok.experimental.SuperBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author 이승훈<br>
+ * @since 23.08.21<br>
+ * NEO의 모든 유저가 기본적으로 가지고 있는 정보에 대한 엔티티입니다.
+ */
 @Entity
 @Getter
 @Table(name = "user")
 @SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
+@MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "role_type", discriminatorType = DiscriminatorType.STRING)
-public class NEOUserEntity extends NEOTimeDefaultEntity {
+public abstract class NEOUserEntity extends NEOTimeDefaultEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -16,6 +16,11 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * @author 이승훈<br>
+ * @since 23.08.21<br>
+ * NEO에서 정의하는 스타의 상세 분류 타입입니다. 해당 타입을 토대로 스타 유형을 구분합니다.
+ */
 @Slf4j
 @Getter
 @RequiredArgsConstructor
@@ -58,6 +63,12 @@ public enum NEOStarDetailClassification {
     /* static field & method */
     public static HashMap<NEOStarDetailClassification, HashSet<String>> classificationStringDict;
 
+    /**
+     * {@code NEOStarDetailClassification}와 매칭되는 문자열 리스트를 집합의 형태로 만들어 주는 정적 팩토리 메소드.<br>
+     * {@code classificationStringDict}를 static 하게 구성하기 위해 사용합니다.
+     * @param classification 스타 상세 분류 타입
+     * @return {@code HashSet<String>} 해당 스타 상세 분류 타입과 매칭되는 문자열 집합
+     */
     public static HashSet<String> getClassificationStringList(NEOStarDetailClassification classification) {
         return new HashSet<>(
                 List.of(classification.name(),
@@ -65,6 +76,7 @@ public enum NEOStarDetailClassification {
                         classification.classificationCode));
     }
 
+    /* classificationStringDict 초기화 */
     static {
         classificationStringDict = new HashMap<>();
         Arrays.stream(NEOStarDetailClassification.values())
@@ -83,11 +95,18 @@ public enum NEOStarDetailClassification {
                 });
     }
 
+    /* JsonValue for response field convert to String */
     @JsonValue
     public String getClassificationCode() {
         return korStarClassification;
     }
 
+    /**
+     * {@code fromString} 메소드와 같은 로직으로, List <-> List 변환 로직을 갖습니다.<br>
+     * 차이점은, {@code NEOStarDetailClassification.NONE}에 대해 필터링을 거쳐 {@code List<NEOStarDetailClassification>}에 포함되지 않도록 합니다.
+     * @param classStringList 스타 상세 분류 문자열 리스트
+     * @return {@code List<NEOStarDetailClassification>} 스타 상세 분류 타입 리스트
+     */
     public static List<NEOStarDetailClassification> fromStringList(List<String> classStringList) {
         return classStringList.stream()
                 .map(classString -> Arrays.stream(NEOStarDetailClassification.values())
@@ -98,6 +117,12 @@ public enum NEOStarDetailClassification {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * DTO <-> Entity 변환 과정에서 사용되는 메소드입니다.<br>
+     * db에 저장된 코드 데이터를 기반으로 {@code NEOStarDetailClassification}로 변환합니다.
+     * @param code dt data
+     * @return {@code NEOStarDetailClassification} 스타 상세 분류 타입
+     */
     public static NEOStarDetailClassification convertClassificationCodeToEnum(String code) {
         return Arrays.stream(NEOStarDetailClassification.values())
                 .filter(classification -> classification.classificationCode.equals(code))

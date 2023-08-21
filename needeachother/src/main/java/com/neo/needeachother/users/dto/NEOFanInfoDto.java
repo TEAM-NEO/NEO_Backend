@@ -10,7 +10,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-
+/**
+ * @author 이승훈<br>
+ * @since 23.08.21<br>
+ * 팬 유저의 정보를 저장하는 DTO입니다.
+ */
 @Getter
 @ToString
 @Builder

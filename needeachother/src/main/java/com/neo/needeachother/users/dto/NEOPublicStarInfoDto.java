@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * @author 이승훈<br>
+ * @since 23.08.21<br>
+ * 스타 정보중에 모든 유저에게 공개되는 데이터에 대한 DTO
+ */
 @Getter
 @Setter
 @Builder

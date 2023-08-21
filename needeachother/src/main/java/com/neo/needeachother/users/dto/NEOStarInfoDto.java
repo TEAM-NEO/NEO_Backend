@@ -14,6 +14,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * @author 이승훈<br>
+ * @since 23.08.21<br>
+ * 스타 유저의 정보를 저장하는 DTO입니다.
+ */
 @Setter
 @Getter
 @ToString

@@ -7,6 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author 이승훈<br>
+ * @since 23.08.21<br>
+ * 코드 베이스에서 API 문서를 작성하기 위한 Swagger 설정을 진행합니다.
+ */
 @Configuration
 public class NEOSwaggerConfig {
 

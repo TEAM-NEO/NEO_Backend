@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * @author 이승훈<br>
+ * @since 23.08.21<br>
  * 스타의 정보를 담고 있는 스타 엔티티<br>
  * 모든 유저의 공통 정보를 포함한 {@code NEOUserEntity}를 상속 받습니다.<br>
  */
@@ -30,10 +32,6 @@ import java.util.stream.Collectors;
 public class NEOStarEntity extends NEOUserEntity {
 
     public static final NEOUserType USER_TYPE = NEOUserType.STAR;
-
-//    public NEOStarEntity(List<NEOStarTypeEntity> starTypeEntities){
-//        this.starTypeList = starTypeEntities;
-//    }
 
     /* 실제 스타가 사용하고 있는 스타 활동명 */
     @Column(name = "star_nickname")
@@ -74,16 +72,21 @@ public class NEOStarEntity extends NEOUserEntity {
                 .build();
     }
 
+    /**
+     * {@code List<NEOStarTypeEntity>}를 {@code HashSet<NEOStarDetailClassification>}로 변환한 값을 얻습니다.
+     * @return {@code HashSet<NEOStarDetailClassification>}
+     */
     private HashSet<NEOStarDetailClassification> getStarClassificationSet(){
         return this.getStarTypeList().stream()
                 .map(NEOStarTypeEntity::getStarType)
                 .collect(Collectors.toCollection(HashSet::new));
     }
 
+    /**
+     * 엔티티를 {@code NEOStarInfoDto}(스타 전체 정보)로 변환합니다.
+     * @return {@code NEOStarInfoDto}
+     */
     public NEOStarInfoDto toDTO() {
-
-        HashSet<NEOStarDetailClassification> starClassificationSet = this.getStarClassificationSet();
-
         return NEOStarInfoDto.builder()
                 .userID(this.getUserID())
                 .userName(this.getUserName())
@@ -92,14 +95,16 @@ public class NEOStarEntity extends NEOUserEntity {
                 .gender(this.getGender())
                 .phoneNumber(this.getPhoneNumber())
                 .starNickName(this.getStarNickName())
-                .starClassificationSet(starClassificationSet)
+                .starClassificationSet(this.getStarClassificationSet())
                 .build();
     }
 
+    /**
+     * 엔티티를 {@code NEOStarInfoDto}(스타 전체 정보)에 덧붙이기 합니다.
+     * @param infoDto 스타 정보 DTO
+     * @return {@code NEOStarInfoDto}
+     */
     public NEOStarInfoDto fetchDTO(NEOStarInfoDto infoDto) {
-
-        HashSet<NEOStarDetailClassification> starClassificationSet = this.getStarClassificationSet();
-
         infoDto.setUserID(this.getUserID());
         infoDto.setUserName(this.getUserName());
         infoDto.setEmail(this.getEmail());
@@ -107,10 +112,14 @@ public class NEOStarEntity extends NEOUserEntity {
         infoDto.setGender(this.getGender());
         infoDto.setPhoneNumber(this.getPhoneNumber());
         infoDto.setStarNickName(this.getStarNickName());
-        infoDto.setStarClassificationSet(starClassificationSet);
+        infoDto.setStarClassificationSet(this.getStarClassificationSet());
         return infoDto;
     }
 
+    /**
+     * 엔티티를 {@code NEOPublicStarInfoDto}(스타 공개 정보)로 변환합니다.
+     * @return {@code NEOPublicStarInfoDto}
+     */
     public NEOPublicStarInfoDto toPublicDto(){
         return NEOPublicStarInfoDto.builder()
                 .starNickName(this.getStarNickName())

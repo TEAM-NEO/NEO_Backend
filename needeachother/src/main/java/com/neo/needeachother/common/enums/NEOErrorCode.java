@@ -4,6 +4,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+/**
+ * @author 이승훈<br>
+ * @since 23.08.21<br>
+ * NEO에서 예측 가능한 범위의 에러에 대한 에러코드를 정의했습니다.<br>
+ * 대표적으로 {@code NEOExpectedException}에서 에러코드를 포함합니다.
+ */
 @Getter
 @RequiredArgsConstructor
 public enum NEOErrorCode {
@@ -27,6 +33,13 @@ public enum NEOErrorCode {
     private final String errorDescription;
     private final HttpStatus httpStatus;
 
+    /**
+     * @author 이승훈<br>
+     * @since 23.08.21<br>
+     * {@code @Validated}를 통해 발생한 {@code FieldError}가 가지는 메시지를 스트링 값으로 저장합니다.<br>
+     * {@code @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)}와 같이 {@code message}값을 {@code ValidationMessage}의 값으로 넣습니다.<br>
+     * {@code Enum.valueOf}를 사용해 해당 메시지로 Enum 인스턴스를 획득할 수 있습니다.
+     */
     public static final class ValidationMessage{
         public static final String BLANK_VALUE = "BLANK_VALUE";
         public static final String MIN_INVALID_USER_ID = "MIN_INVALID_USER_ID";
