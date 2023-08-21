@@ -7,6 +7,8 @@ import com.neo.needeachother.common.response.NEOResponseBody;
 import com.neo.needeachother.users.controller.NEOUserInformationController;
 import com.neo.needeachother.users.document.NEOStarInfoDocument;
 import com.neo.needeachother.users.dto.NEOFanInfoDto;
+import com.neo.needeachother.users.dto.NEOPublicFanInfoDto;
+import com.neo.needeachother.users.dto.NEOPublicStarInfoDto;
 import com.neo.needeachother.users.dto.NEOStarInfoDto;
 import com.neo.needeachother.users.entity.*;
 import com.neo.needeachother.users.enums.NEOStarDetailClassification;
@@ -145,6 +147,44 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
 
     @Override
     public ResponseEntity<?> doGetPublicUserInformationOrder(String userID, NEOUserInformationController.NEOUserOrder userOrder) {
-        return null;
+        if (userID.isEmpty()) {
+            throw new NEOUserExpectedException(NEOErrorCode.BLANK_VALUE, "user_id : null or blank", userOrder);
+        }
+
+        NEOUserEntity foundUser = userRepository.findByUserID(userID)
+                .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.NOT_EXIST_USER, "not exist this id : " + userID, userOrder));
+
+        if (foundUser instanceof NEOStarEntity) {
+            return renderPublicStarUserInformation((NEOStarEntity) foundUser, userOrder);
+        } else if (foundUser instanceof NEOFanEntity) {
+            return renderPublicFanUserInformation((NEOFanEntity) foundUser, userOrder);
+        } else {
+            throw new NEOUnexpectedException("찾아낸 유저가 star / fan 엔티티 어느쪽에도 속하지 않습니다.");
+        }
+    }
+
+    private ResponseEntity<NEOResponseBody<NEOPublicStarInfoDto>> renderPublicStarUserInformation(
+            NEOStarEntity star, NEOUserInformationController.NEOUserOrder userOrder){
+        Optional<NEOStarInfoDocument> maybeStarCustomInfo = starCustomInfoRepository.findByUserID(star.getUserID());
+        NEOPublicStarInfoDto starDto = star.toPublicDto();
+        if (maybeStarCustomInfo.isPresent()) {
+            starDto = maybeStarCustomInfo.get().fetchPublicDTO(starDto);
+        }
+        return ResponseEntity.ok(NEOResponseBody.<NEOPublicStarInfoDto>builder()
+                .requestedPath(userOrder.getRequestedPath())
+                .responseCode(NEOResponseCode.SUCCESS)
+                .msg(userOrder.getSuccessMessage())
+                .data(starDto)
+                .build());
+    }
+
+    private ResponseEntity<NEOResponseBody<NEOPublicFanInfoDto>> renderPublicFanUserInformation(
+            NEOFanEntity fan, NEOUserInformationController.NEOUserOrder userOrder) {
+        return ResponseEntity.ok(NEOResponseBody.<NEOPublicFanInfoDto>builder()
+                .requestedPath(userOrder.getRequestedPath())
+                .responseCode(NEOResponseCode.SUCCESS)
+                .msg(userOrder.getSuccessMessage())
+                .data(fan.toPublicDTO())
+                .build());
     }
 }

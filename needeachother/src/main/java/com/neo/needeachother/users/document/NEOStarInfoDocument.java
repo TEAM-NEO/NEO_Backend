@@ -1,5 +1,6 @@
 package com.neo.needeachother.users.document;
 
+import com.neo.needeachother.users.dto.NEOPublicStarInfoDto;
 import com.neo.needeachother.users.dto.NEOStarInfoDto;
 import lombok.*;
 import org.bson.types.ObjectId;
@@ -39,6 +40,10 @@ public class NEOStarInfoDocument {
         public NEOStarInfoDto.NEOCustomStarInformation convertToDtoFormat(){
             return new NEOStarInfoDto.NEOCustomStarInformation(this.customTitle, this.customContext);
         }
+
+        public NEOPublicStarInfoDto.NEOCustomStarInformation convertToPublicDtoFormat(){
+            return new NEOPublicStarInfoDto.NEOCustomStarInformation(this.customTitle, this.customContext);
+        }
     }
 
     public static NEOStarInfoDocument fromRequest(NEOStarInfoDto request){
@@ -72,6 +77,15 @@ public class NEOStarInfoDocument {
         starDto.setSubmittedUrl(this.getSubmittedUrl());
         starDto.setCustomIntroductionList(this.starCustomIntroductionList.stream()
                 .map(NEOStarCustomInformation::convertToDtoFormat)
+                .collect(Collectors.toList()));
+        return starDto;
+    }
+
+    public NEOPublicStarInfoDto fetchPublicDTO(NEOPublicStarInfoDto starDto){
+        starDto.setIntroduction(this.getIntroduction());
+        starDto.setSubmittedUrl(this.getSubmittedUrl());
+        starDto.setCustomIntroductionList(this.starCustomIntroductionList.stream()
+                .map(NEOStarCustomInformation::convertToPublicDtoFormat)
                 .collect(Collectors.toList()));
         return starDto;
     }

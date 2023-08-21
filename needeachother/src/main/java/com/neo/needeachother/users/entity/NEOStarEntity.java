@@ -1,5 +1,6 @@
 package com.neo.needeachother.users.entity;
 
+import com.neo.needeachother.users.dto.NEOPublicStarInfoDto;
 import com.neo.needeachother.users.dto.NEOStarInfoDto;
 import com.neo.needeachother.users.enums.NEOStarDetailClassification;
 import com.neo.needeachother.users.enums.NEOUserType;
@@ -73,11 +74,15 @@ public class NEOStarEntity extends NEOUserEntity {
                 .build();
     }
 
-    public NEOStarInfoDto toDTO() {
-
-        HashSet<NEOStarDetailClassification> starClassificationSet = this.getStarTypeList().stream()
+    private HashSet<NEOStarDetailClassification> getStarClassificationSet(){
+        return this.getStarTypeList().stream()
                 .map(NEOStarTypeEntity::getStarType)
                 .collect(Collectors.toCollection(HashSet::new));
+    }
+
+    public NEOStarInfoDto toDTO() {
+
+        HashSet<NEOStarDetailClassification> starClassificationSet = this.getStarClassificationSet();
 
         return NEOStarInfoDto.builder()
                 .userID(this.getUserID())
@@ -93,9 +98,7 @@ public class NEOStarEntity extends NEOUserEntity {
 
     public NEOStarInfoDto fetchDTO(NEOStarInfoDto infoDto) {
 
-        HashSet<NEOStarDetailClassification> starClassificationSet = this.getStarTypeList().stream()
-                .map(NEOStarTypeEntity::getStarType)
-                .collect(Collectors.toCollection(HashSet::new));
+        HashSet<NEOStarDetailClassification> starClassificationSet = this.getStarClassificationSet();
 
         infoDto.setUserID(this.getUserID());
         infoDto.setUserName(this.getUserName());
@@ -108,4 +111,11 @@ public class NEOStarEntity extends NEOUserEntity {
         return infoDto;
     }
 
+    public NEOPublicStarInfoDto toPublicDto(){
+        return NEOPublicStarInfoDto.builder()
+                .starNickName(this.getStarNickName())
+                .gender(this.getGender())
+                .starClassificationSet(this.getStarClassificationSet())
+                .build();
+    }
 }
