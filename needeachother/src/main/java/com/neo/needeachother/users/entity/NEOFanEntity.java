@@ -11,8 +11,10 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 /**
+ * @author 이승훈<br>
+ * @since 23.08.21<br>
  * 네오의 팬 엔티티로, 팬 개인의 정보를 담습니다.<br>
- * 모든 유저의 공통사항이 담긴 {@NEOUserEntity}를 상속받습니다.
+ * 모든 유저의 공통사항이 담긴 {@code NEOUserEntity}를 상속받습니다.
  */
 @Entity
 @Getter
@@ -45,6 +47,10 @@ public class NEOFanEntity extends NEOUserEntity{
                 .build();
     }
 
+    /**
+     * 엔티티에서 {@code NEOFanInfoDto}로 변환합니다.
+     * @return {@code NEOFanInfoDto}
+     */
     public NEOFanInfoDto toDTO(){
         return NEOFanInfoDto.builder()
                 .userID(this.getUserID())
@@ -56,6 +62,10 @@ public class NEOFanEntity extends NEOUserEntity{
                 .build();
     }
 
+    /**
+     * 엔티티에서 {@code NEOPublicFanInfoDto}로 변환합니다.
+     * @return {@code NEOPublicFanInfoDto}
+     */
     public NEOPublicFanInfoDto toPublicDTO(){
         return NEOPublicFanInfoDto.builder()
                 .neoNickName(this.getNeoNickName())

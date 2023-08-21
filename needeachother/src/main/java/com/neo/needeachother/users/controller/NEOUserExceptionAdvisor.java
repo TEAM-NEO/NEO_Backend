@@ -14,6 +14,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.List;
 
+/**
+ * @author 이승훈<br>
+ * @since 23.08.21<br>
+ * User 도메인에서 발생한 Exception을 컨트롤러 레벨에서 제어할 수 있습니다.
+ */
 @Slf4j
 @RestControllerAdvice(basePackages = "com.neo.needeachother.users.controller")
 public class NEOUserExceptionAdvisor extends ResponseEntityExceptionHandler {

@@ -11,6 +11,12 @@ import lombok.NonNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * @author 이승훈<br>
+ * @since 23.08.21<br>
+ * NEO의 최종 응답 객체입니다. {@code ResponseEntity<T>}와 함께 사용합니다.<br>
+ * @param <T> 응답 DTO
+ */
 @Getter
 @Builder
 @JsonFilter("NEOResponseJsonFilter")

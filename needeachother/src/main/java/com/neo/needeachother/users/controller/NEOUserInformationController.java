@@ -21,6 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author 이승훈<br>
+ * @since 23.08.21<br>
+ * 유저 정보와 관련된 엔드포인트 API입니다.
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +35,15 @@ public class NEOUserInformationController {
 
     private final NEOUserInformationService userInformationService;
 
+    /**
+     * 유저의 정보를 가져옵니다.<br>
+     * {@code isPublic}의 값에 따라 공개 정보 / 전체 정보를 얻어올 수 있습니다. <br>
+     * 팬 혹은 스타 관계 없이 해당 API를 사용해 유저 정보를 얻을 수 있습니다.<br>
+     * @param userID 유저의 아이디
+     * @param isPublic 공개 정보 / 전체 정보 여부
+     * @return {@code ResponseEntity<NEOFanInfoDto>}, {@code ResponseEntity<NEOStarInfoDto>},
+     * {@code ResponseEntity<NEOPublicFanInfoDto>}, {@code ResponseEntity<NEOPublicStarInfoDto>}
+     */
     @GetMapping("/{user_id}")
     public ResponseEntity<?> getUserInformationOrder(
             @PathVariable("user_id") String userID,
@@ -51,7 +65,7 @@ public class NEOUserInformationController {
      * 추가 정보에 관한 내용은 {@code createStarInfoRequest}에서 확인할 수 있습니다.<br>
      * @param createStarInfoRequest 새로운 스타 정보 생성에 필요한 요청
      * @param bindingResult 요청 객체 유효성 검사 결과
-     * @return ResponseEntity<NEOResponseBody>
+     * @return {@code ResponseEntity<NEOResponseBody>}
      */
     @Operation(summary = "새로운 스타 정보 생성",
             description = "OAuth2.0을 통해 회원가입을 한 후, 스타에 대한 추가정보를 입력받을 수 있습니다. OAuth2.0가 적용되기 이전에는 " +
@@ -86,7 +100,7 @@ public class NEOUserInformationController {
     public void deleteUserInformationOrder(@PathVariable("user_id") String userID){}
 
     /**
-     * Jackson을 통해 request를 직렬화 하는 과정에서, 유효성 검사에서 실패했는지 체크하는 메소드입니다. <br>
+     * Jackson을 통해 request를 역직렬화 하는 과정에서, 유효성 검사에서 실패했는지 체크하는 메소드입니다. <br>
      * 통과했다면, 그대로 서비스를 진행하고, 실패한다면 {@code NEOUserExpectedException}을 발생시켜<br>
      * {@code NEOUserExceptionAdvisor}에서 후처리를 진행하게끔 유도합니다.
      * @param bindingResult 유효성 검사 결과
@@ -122,8 +136,6 @@ public class NEOUserInformationController {
         GET_USER_INFO("사용자 전체 정보를 얻어오는데 성공했습니다.", "사용자 전체 정보를 얻어오는데 실패했습니다.", "api/v1/users/{user_id}"),
         GET_USER_PUBLIC_INFO("사용자 공개 정보를 얻어오는데 성공했습니다.", "사용자 공개 정보를 얻어오는데 실패했습니다.", "api/v1/users/{user_id}"),
         COMMON(null ,null ,null);
-
-
 
         private final String successMessage;
         private final String failMessage;

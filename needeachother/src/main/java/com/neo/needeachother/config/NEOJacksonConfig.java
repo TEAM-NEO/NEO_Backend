@@ -9,6 +9,12 @@ import com.neo.needeachother.users.filter.NEOInfoDtoJsonFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author 이승훈<br>
+ * @since 23.08.21<br>
+ * JSON 직렬화를 위한 Jackson에 대한 설정을 진행합니다.<br>
+ * 주로 {@code @JsonFilter}나 {@code LocalDateTime}를 생성/등록하기 위한 로직이 포함됩니다.<br>
+ */
 @Configuration
 public class NEOJacksonConfig {
 

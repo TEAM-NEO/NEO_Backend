@@ -34,14 +34,17 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
     private final NEOStarRepository starRepository;
     private final NEOFanRepository fanRepository;
     private final NEOUserRepository userRepository;
-
     private final NEOStarTypeRepository starTypeRepository;
-
     private final NEOStarCustomInfoRepository starCustomInfoRepository;
-
     private final NEOUserRelationRepository userRelationRepository;
 
 
+    /**
+     * 새로운 스타 정보를 생성합니다.
+     * @param createStarInfoRequest 스타 정보 생성 요청
+     * @param userOrder 요청 타입
+     * @return {@code ResponseEntity<NEOResponseBody>} 요청 응답 결과
+     */
     @Override
     public ResponseEntity<NEOResponseBody> doCreateNewStarInformationOrder(final NEOStarInfoDto createStarInfoRequest, final NEOUserInformationController.NEOUserOrder userOrder) {
         // 1. OAuth를 통해 가입한 엔티티를, request의 userID를 통해 찾아낸다. => 도입 이전까지 우선은 해당 파트 없이, 아예 새로 엔티티를 생성하는 방향으로 구현.
@@ -86,6 +89,12 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
                         .build());
     }
 
+    /**
+     * 새로운 팬 정보를 생성합니다.
+     * @param createFanInfoRequest 팬 정보 생성 요청
+     * @param userOrder 요청 타입
+     * @return {@code ResponseEntity<NEOResponseBody>} 요청 응답 결과
+     */
     @Override
     public ResponseEntity<NEOResponseBody> doCreateNewFanInformationOrder(final NEOFanInfoDto createFanInfoRequest, final NEOUserInformationController.NEOUserOrder userOrder) {
         // 1. OAuth를 통해 가입한 엔티티를, request의 userID를 통해 찾아낸다. => 도입 이전까지는 우선 해당 파트 없이 아예 새로운 엔티티를 만드는 방법으로 구현.
@@ -117,6 +126,12 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
                         .build());
     }
 
+    /**
+     * 사용자 정보를 얻어오는 메소드입니다.
+     * @param userID 사용자 아이디
+     * @param userOrder 요청 타입
+     * @return {@code ResponseEntity<NEOResponseBody<NEOStarInfoDto>>}, {@code ResponseEntity<NEOResponseBody<NEOFanInfoDto>>}
+     */
     @Override
     public ResponseEntity<?> doGetUserInformationOrder(String userID, NEOUserInformationController.NEOUserOrder userOrder) {
         if (userID.isEmpty()) {
@@ -135,6 +150,12 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
         }
     }
 
+    /**
+     * 스타 유저 정보를 렌더링하는 메소드입니다.
+     * @param star 스타
+     * @param userOrder 요청 타입
+     * @return {@code ResponseEntity<NEOResponseBody<NEOStarInfoDto>>} 유저 정보 요청에 대한 응답 결과
+     */
     private ResponseEntity<NEOResponseBody<NEOStarInfoDto>> renderStarUserInformation(NEOStarEntity star, NEOUserInformationController.NEOUserOrder userOrder) {
         Optional<NEOStarInfoDocument> maybeStarCustomInfo = starCustomInfoRepository.findByUserID(star.getUserID());
         NEOStarInfoDto starDto = star.toDTO();
@@ -149,6 +170,12 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
                 .build());
     }
 
+    /**
+     * 팬 유저 정보를 렌더링 하는 메소드입니다.
+     * @param fan 팬
+     * @param userOrder 요청 타입
+     * @return {@code ResponseEntity<NEOResponseBody<NEOFanInfoDto>>} 유저 정보 요청에 대한 응답 결과
+     */
     private ResponseEntity<NEOResponseBody<NEOFanInfoDto>> renderFanUserInformation(NEOFanEntity fan, NEOUserInformationController.NEOUserOrder userOrder) {
         return ResponseEntity.ok(NEOResponseBody.<NEOFanInfoDto>builder()
                 .requestedPath(userOrder.getRequestedPath())
@@ -158,6 +185,12 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
                 .build());
     }
 
+    /**
+     * 사용자 공개 정보를 얻어오는 메소드입니다.
+     * @param userID 사용자 아이디
+     * @param userOrder 요청 타입
+     * @return {@code ResponseEntity<NEOResponseBody<NEOPublicFanInfoDto>>}, {@code ResponseEntity<NEOResponseBody<NEOPublicStarInfoDto>>}
+     */
     @Override
     public ResponseEntity<?> doGetPublicUserInformationOrder(String userID, NEOUserInformationController.NEOUserOrder userOrder) {
         if (userID.isEmpty()) {
@@ -176,6 +209,12 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
         }
     }
 
+    /**
+     * 스타 공개 정보를 렌더링 하는 메소드입니다.
+     * @param star 스타
+     * @param userOrder 요청 타입
+     * @return {@code ResponseEntity<NEOResponseBody<NEOPublicStarInfoDto>>} 유저 정보 요청에 대한 응답 결과
+     */
     private ResponseEntity<NEOResponseBody<NEOPublicStarInfoDto>> renderPublicStarUserInformation(
             NEOStarEntity star, NEOUserInformationController.NEOUserOrder userOrder){
         Optional<NEOStarInfoDocument> maybeStarCustomInfo = starCustomInfoRepository.findByUserID(star.getUserID());
@@ -191,6 +230,12 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
                 .build());
     }
 
+    /**
+     * 팬 공개 정보를 렌더링 하는 메소드입니다.
+     * @param fan 팬
+     * @param userOrder 요청 타입
+     * @return {@code ResponseEntity<NEOResponseBody<NEOPublicFanInfoDto>>} 유저 정보 요청에 대한 응답 결과
+     */
     private ResponseEntity<NEOResponseBody<NEOPublicFanInfoDto>> renderPublicFanUserInformation(
             NEOFanEntity fan, NEOUserInformationController.NEOUserOrder userOrder) {
         return ResponseEntity.ok(NEOResponseBody.<NEOPublicFanInfoDto>builder()
