@@ -11,6 +11,7 @@ import com.neo.needeachother.users.dto.NEOPublicFanInfoDto;
 import com.neo.needeachother.users.dto.NEOPublicStarInfoDto;
 import com.neo.needeachother.users.dto.NEOStarInfoDto;
 import com.neo.needeachother.users.entity.*;
+import com.neo.needeachother.users.enums.NEOGenderType;
 import com.neo.needeachother.users.enums.NEOStarDetailClassification;
 import com.neo.needeachother.users.exception.NEOUserExpectedException;
 import com.neo.needeachother.users.repository.*;
@@ -50,8 +51,16 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
         log.info("request 값 체크 : " + createStarInfoRequest.toString());
         Set<NEOStarDetailClassification> starClassificationSet = createStarInfoRequest.getStarClassificationSet();
 
+        if(createStarInfoRequest.getGender().equals(NEOGenderType.NONE)){
+            throw new NEOUserExpectedException(NEOErrorCode.INVALID_FORMAT_GENDER, "gender에 적합한 코드를 입력하세요. gender code API를 통해 확인할 수 있습니다.", userOrder);
+        }
+
         if (starClassificationSet.isEmpty()) {
             throw new NEOUserExpectedException(NEOErrorCode.BLANK_VALUE, "star_classification_list : null or blank", userOrder);
+        }
+
+        if(starClassificationSet.contains(NEOStarDetailClassification.NONE)){
+            throw new NEOUserExpectedException(NEOErrorCode.INVALID_FORMAT_STAR_CLASSIFICATION, "스타 구분자에 적합한 코드를 입력하세요. 스타 구분자 API를 통해 확인할 수 있습니다.", userOrder);
         }
 
         NEOStarEntity createdStar = NEOStarEntity.fromRequest(createStarInfoRequest);
@@ -83,6 +92,10 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
         // 2. 들어온 요청을 DTO로 변환후, 엔티티를 업데이트 한다. (여기서는 생성)
         // 3. 들어온 요청의 favoriteStarID를 기반으로 존재하는 스타를 탐색한 후, 해당 엔티티를 찾아온다.
         // 4. 해당 엔티티와 연관관계를 맺고 삽입.
+
+        if(createFanInfoRequest.getGender().equals(NEOGenderType.NONE)){
+            throw new NEOUserExpectedException(NEOErrorCode.INVALID_FORMAT_GENDER, "gender에 적합한 코드를 입력하세요. gender code API를 통해 확인할 수 있습니다.", userOrder);
+        }
 
         NEOFanEntity createdFan = NEOFanEntity.fromRequest(createFanInfoRequest);
         NEOStarEntity favoriteStarOfFan = starRepository.findByUserID(createFanInfoRequest.getFavoriteStarID())

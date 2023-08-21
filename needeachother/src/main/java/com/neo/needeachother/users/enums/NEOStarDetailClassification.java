@@ -7,6 +7,7 @@ import com.neo.needeachother.common.enums.NEOErrorCode;
 import com.neo.needeachother.common.exception.NEOExpectedException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Getter
 @RequiredArgsConstructor
 public enum NEOStarDetailClassification {
@@ -75,9 +77,10 @@ public enum NEOStarDetailClassification {
         return Arrays.stream(NEOStarDetailClassification.values())
                 .filter(classification -> classificationStringDict.get(classification).contains(classificationCode))
                 .findAny()
-                .orElseThrow(() -> new NEOExpectedException(NEODomainType.COMMON, NEOErrorCode.INVALID_FORMAT_STAR_CLASSIFICATION,
-                        "에러 원인 : " + classificationCode,
-                        NEOErrorCode.INVALID_FORMAT_STAR_CLASSIFICATION.getErrorDescription()));
+                .orElseGet(() -> {
+                    log.warn("잘못 요청된 스타 구분자 코드 : " + classificationCode);
+                    return NONE;
+                });
     }
 
     @JsonValue
