@@ -1,6 +1,7 @@
 package com.neo.needeachother.users.document;
 
-import com.neo.needeachother.users.request.NEOCreateStarInfoRequest;
+import com.neo.needeachother.users.dto.NEOPublicStarInfoDto;
+import com.neo.needeachother.users.dto.NEOStarInfoDto;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -35,9 +36,17 @@ public class NEOStarInfoDocument {
         private ObjectId id;
         private String customTitle;
         private String customContext;
+
+        public NEOStarInfoDto.NEOCustomStarInformation convertToDtoFormat(){
+            return new NEOStarInfoDto.NEOCustomStarInformation(this.customTitle, this.customContext);
+        }
+
+        public NEOPublicStarInfoDto.NEOCustomStarInformation convertToPublicDtoFormat(){
+            return new NEOPublicStarInfoDto.NEOCustomStarInformation(this.customTitle, this.customContext);
+        }
     }
 
-    public static NEOStarInfoDocument fromRequest(NEOCreateStarInfoRequest request){
+    public static NEOStarInfoDocument fromRequest(NEOStarInfoDto request){
         return NEOStarInfoDocument.builder()
                 .userID(request.getUserID())
                 .introduction(request.getIntroduction())
@@ -49,6 +58,36 @@ public class NEOStarInfoDocument {
                         .collect(Collectors.toList()))
                 .submittedUrl(request.getSubmittedUrl())
                 .build();
+    }
+
+    public NEOStarInfoDto toDTO(){
+        return NEOStarInfoDto.builder()
+                .userID(this.getUserID())
+                .introduction(this.getIntroduction())
+                .submittedUrl(this.getSubmittedUrl())
+                .customIntroductionList(this.starCustomIntroductionList.stream()
+                        .map(NEOStarCustomInformation::convertToDtoFormat)
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    public NEOStarInfoDto fetchDTO(NEOStarInfoDto starDto){
+        starDto.setUserID(this.userID);
+        starDto.setIntroduction(this.getIntroduction());
+        starDto.setSubmittedUrl(this.getSubmittedUrl());
+        starDto.setCustomIntroductionList(this.starCustomIntroductionList.stream()
+                .map(NEOStarCustomInformation::convertToDtoFormat)
+                .collect(Collectors.toList()));
+        return starDto;
+    }
+
+    public NEOPublicStarInfoDto fetchPublicDTO(NEOPublicStarInfoDto starDto){
+        starDto.setIntroduction(this.getIntroduction());
+        starDto.setSubmittedUrl(this.getSubmittedUrl());
+        starDto.setCustomIntroductionList(this.starCustomIntroductionList.stream()
+                .map(NEOStarCustomInformation::convertToPublicDtoFormat)
+                .collect(Collectors.toList()));
+        return starDto;
     }
 
 }

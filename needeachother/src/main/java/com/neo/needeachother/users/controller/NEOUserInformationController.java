@@ -3,8 +3,8 @@ package com.neo.needeachother.users.controller;
 import com.neo.needeachother.common.response.NEOErrorResponse;
 import com.neo.needeachother.common.response.NEOResponseBody;
 import com.neo.needeachother.users.exception.NEOUserExpectedException;
-import com.neo.needeachother.users.request.NEOCreateFanInfoRequest;
-import com.neo.needeachother.users.request.NEOCreateStarInfoRequest;
+import com.neo.needeachother.users.dto.NEOFanInfoDto;
+import com.neo.needeachother.users.dto.NEOStarInfoDto;
 import com.neo.needeachother.users.service.NEOUserInformationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -56,9 +56,9 @@ public class NEOUserInformationController {
     @Operation(summary = "새로운 스타 정보 생성",
             description = "OAuth2.0을 통해 회원가입을 한 후, 스타에 대한 추가정보를 입력받을 수 있습니다. OAuth2.0가 적용되기 이전에는 " +
                     "회원의 나머지 정보도 받아오는 것을 대체합니다.",
-            parameters = {@Parameter(name = "NEOCreateStarInfoRequest", description = "새로운 스타 정보생성에 필요한 요청")})
+            parameters = {@Parameter(name = "NEOStarInfoDto", description = "새로운 스타 정보생성에 필요한 요청")})
     @PostMapping("/stars")
-    public ResponseEntity<NEOResponseBody> createNewStarInformationOrder(@RequestBody @Validated final NEOCreateStarInfoRequest createStarInfoRequest, BindingResult bindingResult){
+    public ResponseEntity<NEOResponseBody> createNewStarInformationOrder(@RequestBody @Validated final NEOStarInfoDto createStarInfoRequest, BindingResult bindingResult){
         NEOUserOrder userOrder = NEOUserOrder.CREATE_STAR_INFO;
         checkRequestValidationPassed(bindingResult, userOrder);
         return userInformationService.doCreateNewStarInformationOrder(createStarInfoRequest, userOrder);
@@ -74,9 +74,9 @@ public class NEOUserInformationController {
     @Operation(summary = "새로운 팬 정보 생성",
             description = "OAuth2.0을 통해 회원가입을 한 후, 팬에 대한 추가정보를 입력받을 수 있습니다. OAuth2.0가 적용되기 이전에는 " +
                     "회원의 나머지 정보도 받아오는 것을 대체합니다.",
-            parameters = {@Parameter(name = "NEOCreateFanInfoRequest", description = "새로운 팬 정보생성에 필요한 요청")})
+            parameters = {@Parameter(name = "NEOFanInfoDto", description = "새로운 팬 정보생성에 필요한 요청")})
     @PostMapping("/fans")
-    public ResponseEntity<NEOResponseBody> createNewFanInformationOrder(@RequestBody @Validated final NEOCreateFanInfoRequest createFanInfoRequest, BindingResult bindingResult){
+    public ResponseEntity<NEOResponseBody> createNewFanInformationOrder(@RequestBody @Validated final NEOFanInfoDto createFanInfoRequest, BindingResult bindingResult){
         NEOUserOrder userOrder = NEOUserOrder.CREATE_FAN_INFO;
         checkRequestValidationPassed(bindingResult, userOrder);
         return userInformationService.doCreateNewFanInformationOrder(createFanInfoRequest, userOrder);
