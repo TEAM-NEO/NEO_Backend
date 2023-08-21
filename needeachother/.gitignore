@@ -37,6 +37,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-### Application Properties ###
-/needeachother/src/main/resources/application.yml
