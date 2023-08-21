@@ -1,18 +1,26 @@
-package com.neo.needeachother.users.request;
+package com.neo.needeachother.users.dto;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neo.needeachother.common.enums.NEOErrorCode;
+import com.neo.needeachother.users.document.NEOStarInfoDocument;
 import com.neo.needeachother.users.enums.NEOGenderType;
+import com.neo.needeachother.users.enums.NEOStarDetailClassification;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
+@Setter
 @Getter
 @ToString
-@Schema(description = "OAuth2.0을 통한 회원가입 이후의, 팬의 추가 정보를 입력하기 위한 API의 Request DTO입니다.")
-public class NEOCreateFanInfoRequest {
+@Builder
+@JsonFilter("NEOInfoDtoJsonFilter")
+@Schema(description = "OAuth2.0을 통한 회원가입 이후의, 스타의 추가 정보를 입력하기 위한 API의 Request DTO입니다.")
+public class NEOStarInfoDto {
 
     /* OAuth2.0으로부터 받아온 사용자의 ID, OAuth를 도입하더라도 삭제되지 않고, 회원가입시 생성된 엔티티를 찾아내기 위한 식별용으로 보존. */
     @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
@@ -57,14 +65,57 @@ public class NEOCreateFanInfoRequest {
     @JsonProperty(value = "nickname", required = true)
     private String neoNickName;
 
+    /* 스타의 실제 활동명 */
+    @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
+    @Schema(description = "스타가 현실에서 실제로 활동하고 있는 활동명을 입력합니다. 이모티콘 혹은 활동명의 변조는 추후 인증 과정에서 불이익을 받을 수 있습니다.", example = "아이유")
+    @JsonProperty(value = "star_nickname", required = true)
+    private String starNickName;
+
     @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
     @Schema(description = "성별", example = "M")
     @JsonProperty(required = true)
     private NEOGenderType gender;
 
-    @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
-    @Schema(description = "최애의 아이디", example = "free_minkya")
-    @JsonProperty(required = true)
-    private String favoriteStarID;
+    /* 스타 구분, 중복 선택 가능 */
+    @NotEmpty(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
+    @Schema(description = """
+            어떤 분야의 스타인지 구별할 수 있는 구분자입니다.\s
+            여러 분야에서 일할 수 있으므로, 문자열 리스트의 형태로 값을 전달하면 됩니다.
+            문자열은 한국어 직업군, 대문자 영어 직업군, 분류 코드 모두 수용 가능합니다.""", example = "[\"YOUTUBER\", \"가수\", \"SN\"]")
+    @JsonProperty(value = "star_classification_list", required = true)
+    private HashSet<NEOStarDetailClassification> starClassificationSet = new HashSet<>();
 
+    /* 제출한 url */
+    @Schema(description = "제출한 URL로, 스타 구분에 맞는 URL을 식별합니다.", example = "[www.youtube.com/@seanhong2000]")
+    @JsonProperty("submitted_url")
+    private List<String> submittedUrl = new ArrayList<>();
+
+    /* 소개글 */
+    @Schema(description = "스타 페이지 및 검색에 노출될 간단한 소개줄입니다.", example = "안녕하세요, 가수 아이유입니다.")
+    private String introduction;
+
+    /* 커스텀 정보 입력 */
+    @Schema(description = "추가적으로 스타가 직접 입력하고 싶은 커스텀 정보를 입력합니다." +
+            "정보 제목과 정보 내용을 포함하고 있는 리스트 쌍을 제출합니다.", example = "[{\"customTitle\" : \"MBTI\", \"customContext\" : \"ISFJ\"}]")
+    @JsonProperty("custom_introduction_list")
+    private List<NEOCustomStarInformation> customIntroductionList;
+
+    @Getter
+    @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class NEOCustomStarInformation {
+
+        @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
+        @JsonProperty("custom_title")
+        private String customTitle;
+
+        @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
+        @JsonProperty("custom_context")
+        private String customContext;
+
+        public NEOStarInfoDocument.NEOStarCustomInformation convertToDocumentFormat(){
+            return new NEOStarInfoDocument.NEOStarCustomInformation(null, this.getCustomTitle(), this.getCustomContext());
+        }
+    }
 }

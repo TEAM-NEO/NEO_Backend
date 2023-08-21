@@ -3,10 +3,7 @@ package com.neo.needeachother.users.entity;
 import com.neo.needeachother.users.converter.NEOStarDetailClassificationConverter;
 import com.neo.needeachother.users.enums.NEOStarDetailClassification;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * 스타의 여러 유형에 대한 엔티티입니다. <br>
@@ -14,6 +11,7 @@ import lombok.Setter;
  */
 @Entity
 @Builder
+@Getter
 @Table(name = "star_type")
 @NoArgsConstructor
 @AllArgsConstructor

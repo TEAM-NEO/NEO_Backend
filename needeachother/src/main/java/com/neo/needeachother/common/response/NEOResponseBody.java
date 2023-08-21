@@ -1,10 +1,12 @@
 package com.neo.needeachother.common.response;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.neo.needeachother.common.enums.NEOResponseCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.List;
 public class NEOResponseBody<T> {
 
     @Builder.Default
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private final LocalDateTime timeStamp = LocalDateTime.now();
 
     private final String requestedPath;

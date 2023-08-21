@@ -1,9 +1,8 @@
 package com.neo.needeachother.users.mapper;
 
 import com.neo.needeachother.users.document.NEOStarInfoDocument;
+import com.neo.needeachother.users.dto.NEOStarInfoDto;
 import com.neo.needeachother.users.entity.NEOStarEntity;
-import com.neo.needeachother.users.entity.NEOStarTypeEntity;
-import com.neo.needeachother.users.request.NEOCreateStarInfoRequest;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,10 +15,10 @@ import java.util.ArrayList;
 public interface NEOStarMapper {
     NEOStarMapper INSTANCE = Mappers.getMapper(NEOStarMapper.class);
 
-    NEOStarEntity toStarEntity(NEOCreateStarInfoRequest request);
+    NEOStarEntity toStarEntity(NEOStarInfoDto request);
 
     @Mapping(source = "request.customIntroductionList", target="starCustomIntroductionList")
-    NEOStarInfoDocument toStarInfoDocument(NEOCreateStarInfoRequest request);
+    NEOStarInfoDocument toStarInfoDocument(NEOStarInfoDto request);
 
     @AfterMapping
     default void initializeListField(@MappingTarget NEOStarEntity.NEOStarEntityBuilder entityBuilder) {

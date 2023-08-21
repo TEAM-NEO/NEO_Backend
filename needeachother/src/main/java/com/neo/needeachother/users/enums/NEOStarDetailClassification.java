@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.neo.needeachother.common.enums.NEODomainType;
 import com.neo.needeachother.common.enums.NEOErrorCode;
 import com.neo.needeachother.common.exception.NEOExpectedException;
-import com.neo.needeachother.users.exception.NEOUserExpectedException;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
@@ -84,7 +82,7 @@ public enum NEOStarDetailClassification {
 
     @JsonValue
     public String getClassificationCode() {
-        return classificationCode;
+        return korStarClassification;
     }
 
     public static List<NEOStarDetailClassification> fromStringList(List<String> classStringList) {

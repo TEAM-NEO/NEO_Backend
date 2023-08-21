@@ -20,7 +20,8 @@ public enum NEOErrorCode {
     INVALID_FORMAT_STAR_CLASSIFICATION(-112, "유효하지 않은 스타 구분자를 입력했습니다.", HttpStatus.BAD_REQUEST),
 
     /* NOT FOUND (없는 데이터 요청) */
-    NOT_EXIST_STAR_ID(-200, "스타 아이디가 존재하지 않습니다.", HttpStatus.NOT_FOUND);
+    NOT_EXIST_STAR_ID(-200, "스타 아이디가 존재하지 않습니다.", HttpStatus.NOT_FOUND),
+    NOT_EXIST_USER(-201, "해당 유저가 존재하지 않습니다.", HttpStatus.NOT_FOUND);
 
     private final int errorCode;
     private final String errorDescription;

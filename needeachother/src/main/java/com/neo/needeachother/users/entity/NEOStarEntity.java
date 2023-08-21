@@ -1,6 +1,8 @@
 package com.neo.needeachother.users.entity;
+
+import com.neo.needeachother.users.dto.NEOStarInfoDto;
+import com.neo.needeachother.users.enums.NEOStarDetailClassification;
 import com.neo.needeachother.users.enums.NEOUserType;
-import com.neo.needeachother.users.request.NEOCreateStarInfoRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -9,7 +11,9 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 스타의 정보를 담고 있는 스타 엔티티<br>
@@ -46,13 +50,14 @@ public class NEOStarEntity extends NEOUserEntity {
     private List<NEOUserRelationEntity> followerList = new ArrayList<>();
 
     /**
-     * {@code NEOCreateStarInfoRequest}를 통해 새로운 스타 엔티티를 생성하는 정적 팩토리 메소드입니다. <br>
-     * 유효성 검사를 통과한 {@code NEOCreateStarInfoRequest} 객체를 삽입하면 사용할 수 있습니다. <br>
+     * {@code NEOStarInfoDto}를 통해 새로운 스타 엔티티를 생성하는 정적 팩토리 메소드입니다. <br>
+     * 유효성 검사를 통과한 {@code NEOStarInfoDto} 객체를 삽입하면 사용할 수 있습니다. <br>
      * TODO : OAuth 도입 이후 요청 DTO 변경 가능성 농후.
+     *
      * @param request 스타 정보 생성 요청 객체
      * @return {@code NEOStarEntity} 새로운 스타 엔티티
      */
-    public static NEOStarEntity fromRequest(NEOCreateStarInfoRequest request){
+    public static NEOStarEntity fromRequest(NEOStarInfoDto request) {
         return NEOStarEntity.builder()
                 .userID(request.getUserID())
                 .userName(request.getUserName())
@@ -66,6 +71,41 @@ public class NEOStarEntity extends NEOUserEntity {
                 .starTypeList(new ArrayList<>())
                 .followerList(new ArrayList<>())
                 .build();
+    }
+
+    public NEOStarInfoDto toDTO() {
+
+        HashSet<NEOStarDetailClassification> starClassificationSet = this.getStarTypeList().stream()
+                .map(NEOStarTypeEntity::getStarType)
+                .collect(Collectors.toCollection(HashSet::new));
+
+        return NEOStarInfoDto.builder()
+                .userID(this.getUserID())
+                .userName(this.getUserName())
+                .email(this.getEmail())
+                .neoNickName(this.getNeoNickName())
+                .gender(this.getGender())
+                .phoneNumber(this.getPhoneNumber())
+                .starNickName(this.getStarNickName())
+                .starClassificationSet(starClassificationSet)
+                .build();
+    }
+
+    public NEOStarInfoDto fetchDTO(NEOStarInfoDto infoDto) {
+
+        HashSet<NEOStarDetailClassification> starClassificationSet = this.getStarTypeList().stream()
+                .map(NEOStarTypeEntity::getStarType)
+                .collect(Collectors.toCollection(HashSet::new));
+
+        infoDto.setUserID(this.getUserID());
+        infoDto.setUserName(this.getUserName());
+        infoDto.setEmail(this.getEmail());
+        infoDto.setNeoNickName(this.getNeoNickName());
+        infoDto.setGender(this.getGender());
+        infoDto.setPhoneNumber(this.getPhoneNumber());
+        infoDto.setStarNickName(this.getStarNickName());
+        infoDto.setStarClassificationSet(starClassificationSet);
+        return infoDto;
     }
 
 }
