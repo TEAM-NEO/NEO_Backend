@@ -9,7 +9,6 @@ import com.neo.needeachother.users.dto.NEOStarInfoDto;
 import com.neo.needeachother.users.service.NEOUserInformationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.links.LinkParameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -56,24 +55,16 @@ public class NEOUserInformationController {
         return userInformationService.doGetUserInformationOrder(userID, NEOUserOrder.GET_USER_INFO);
     }
 
+    @PutMapping("/{user_id}")
+    public ResponseEntity<?> changeUserInformationOrder(@PathVariable("user_id") final String userID,
+                                           @RequestBody final NEOChangeableInfoDto changeInfoRequest){
+        return userInformationService.doChangePartialInformationOrder(userID, NEOUserOrder.CHANGE_USER_INFO, changeInfoRequest);
+    }
 
-    /**
-     * 기존 유저 정보를 변경합니다.<br>
-     * 스타 및 팬 구별없이 사용 가능하며 내부 로직에 의해 판단합니다. 요청의 일부 로직은 스타에게만 해당되며, 팬이 요청에 해당 필드를 포함하더라도 적용되지 않습니다.<br>
-     * @param userID 사용자 아이디
-     * @param changePartialStarInfoRequest 정보 변경에 필요한 요청
-     * @return {@code ResponseEntity<NEOResponseBody<NEOStarInfoDto>>}, {@code ResponseEntity<NEOResponseBody<NEOFanInfoDto>>}
-     */
-    @Operation(summary = "기존 유저 정보 변경",
-            description = "이미 생성된 유저 정보를 변경합니다. 스타 및 팬 구별없이 사용 가능하며 내부 로직에 의해 판단합니다." +
-            "요청의 일부 로직은 스타에게만 해당되며, 팬이 요청에 해당 필드를 포함하더라도 적용되지 않습니다.")
     @PatchMapping("/{user_id}")
-    public ResponseEntity<?> changePartialUserInformationOrder(@PathVariable("user_id") final String userID,
-                                                  @RequestBody final NEOChangeableInfoDto changePartialStarInfoRequest, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            log.info(bindingResult.getFieldErrors().get(0).getField());
-        }
-        return userInformationService.doChangePartialInformationOrder(userID, NEOUserOrder.CHANGE_USER_INFO, changePartialStarInfoRequest);
+    public void changePartialUserInformationOrder(@PathVariable("user_id") final String userID,
+                                                  @RequestBody final NEOStarInfoDto changePartialStarInfoRequest){
+
     }
 
     /**

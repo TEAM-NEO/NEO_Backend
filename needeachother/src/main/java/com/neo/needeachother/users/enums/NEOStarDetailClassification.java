@@ -97,7 +97,7 @@ public enum NEOStarDetailClassification {
 
     /* JsonValue for response field convert to String */
     @JsonValue
-    public String getKorClassificationCode() {
+    public String getClassificationCode() {
         return korStarClassification;
     }
 
