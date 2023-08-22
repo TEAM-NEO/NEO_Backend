@@ -291,15 +291,20 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
 
         if (changeInfoDto.getStarClassificationSet() != null) {
             HashSet<NEOStarDetailClassification> alreadyExistClassificationSet = new HashSet<>();
+            List<NEOStarTypeEntity> deleteTargetStarTypeList = new ArrayList<>();
+
             for (NEOStarTypeEntity starTypeEntity : star.getStarTypeList()) {
                 if (changeInfoDto.getStarClassificationSet().contains(starTypeEntity.getStarType())) {
                     // 변경 집합에도 포함 (엔티티 삭제 X)
                     alreadyExistClassificationSet.add(starTypeEntity.getStarType());
                 } else {
                     // 변경 집합에 미포함 (엔티티 삭제 O)
+                    deleteTargetStarTypeList.add(starTypeEntity);
                     starTypeRepository.delete(starTypeEntity);
                 }
             }
+
+            star.getStarTypeList().removeAll(deleteTargetStarTypeList);
 
             List<NEOStarTypeEntity> newCreatedClassificationList = changeInfoDto.getStarClassificationSet().stream()
                     .filter(classification -> !alreadyExistClassificationSet.contains(classification))
