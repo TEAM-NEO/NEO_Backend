@@ -2,6 +2,7 @@ package com.neo.needeachother.users.controller;
 
 import com.neo.needeachother.common.response.NEOErrorResponse;
 import com.neo.needeachother.common.response.NEOResponseBody;
+import com.neo.needeachother.users.dto.NEOChangeableInfoDto;
 import com.neo.needeachother.users.exception.NEOUserExpectedException;
 import com.neo.needeachother.users.dto.NEOFanInfoDto;
 import com.neo.needeachother.users.dto.NEOStarInfoDto;
@@ -54,16 +55,20 @@ public class NEOUserInformationController {
         return userInformationService.doGetUserInformationOrder(userID, NEOUserOrder.GET_USER_INFO);
     }
 
-    @PutMapping("/{user_id}")
-    public void changeUserInformationOrder(@PathVariable("user_id") final String userID,
-                                           @RequestBody final NEOStarInfoDto changeStarInfoRequest){
-
-    }
-
+    /**
+     * 기존 유저 정보를 변경합니다.<br>
+     * 스타 및 팬 구별없이 사용 가능하며 내부 로직에 의해 판단합니다. 요청의 일부 로직은 스타에게만 해당되며, 팬이 요청에 해당 필드를 포함하더라도 적용되지 않습니다.<br>
+     * @param userID 사용자 아이디
+     * @param changePartialStarInfoRequest 정보 변경에 필요한 요청
+     * @return {@code ResponseEntity<NEOResponseBody<NEOStarInfoDto>>}, {@code ResponseEntity<NEOResponseBody<NEOFanInfoDto>>}
+     */
+    @Operation(summary = "기존 유저 정보 변경",
+            description = "이미 생성된 유저 정보를 변경합니다. 스타 및 팬 구별없이 사용 가능하며 내부 로직에 의해 판단합니다." +
+                    "요청의 일부 로직은 스타에게만 해당되며, 팬이 요청에 해당 필드를 포함하더라도 적용되지 않습니다.")
     @PatchMapping("/{user_id}")
-    public void changePartialUserInformationOrder(@PathVariable("user_id") final String userID,
-                                                  @RequestBody final NEOStarInfoDto changePartialStarInfoRequest){
-
+    public ResponseEntity<?> changePartialUserInformationOrder(@PathVariable("user_id") final String userID,
+                                                  @RequestBody final NEOChangeableInfoDto changePartialStarInfoRequest){
+        return userInformationService.doChangePartialInformationOrder(userID, NEOUserOrder.CHANGE_USER_INFO, changePartialStarInfoRequest);
     }
 
     /**
@@ -137,15 +142,16 @@ public class NEOUserInformationController {
     @Getter
     @RequiredArgsConstructor
     public enum NEOUserOrder{
-        CREATE_STAR_INFO("새로운 스타 정보 생성에 성공했습니다.","새로운 스타 정보 생성에 실패했습니다.", "api/v1/users/stars"),
-        CREATE_FAN_INFO("새로운 팬 정보 생성에 성공했습니다.", "새로운 팬 정보 생성에 실패했습니다.", "api/v1/users/fans"),
-        GET_USER_INFO("사용자 전체 정보를 얻어오는데 성공했습니다.", "사용자 전체 정보를 얻어오는데 실패했습니다.", "api/v1/users/{user_id}"),
-        GET_USER_PUBLIC_INFO("사용자 공개 정보를 얻어오는데 성공했습니다.", "사용자 공개 정보를 얻어오는데 실패했습니다.", "api/v1/users/{user_id}"),
+        CREATE_STAR_INFO("새로운 스타 정보 생성에 성공했습니다.","새로운 스타 정보 생성에 실패했습니다.", "POST api/v1/users/stars"),
+        CREATE_FAN_INFO("새로운 팬 정보 생성에 성공했습니다.", "새로운 팬 정보 생성에 실패했습니다.", "POST api/v1/users/fans"),
+        GET_USER_INFO("사용자 전체 정보를 얻어오는데 성공했습니다.", "사용자 전체 정보를 얻어오는데 실패했습니다.", "GET api/v1/users/{user_id}"),
+        GET_USER_PUBLIC_INFO("사용자 공개 정보를 얻어오는데 성공했습니다.", "사용자 공개 정보를 얻어오는데 실패했습니다.", "GET api/v1/users/{user_id}"),
+        CHANGE_USER_INFO("사용자 정보 변경에 성공했습니다", "사용자 정보 변경에 실패했습니다.", "PATCH api/v1/users/{user_id}"),
         COMMON(null ,null ,null);
 
         private final String successMessage;
         private final String failMessage;
-        private final String requestedPath;
+        private final String requestedMethodAndURI;
     }
 
 }

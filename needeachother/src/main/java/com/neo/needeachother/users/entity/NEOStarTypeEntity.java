@@ -29,7 +29,6 @@ public class NEOStarTypeEntity {
     private NEOStarEntity neoStar;
 
     /* 스타 유형 */
-    @Setter
     @Column(name = "star_type")
     @Convert(converter = NEOStarDetailClassificationConverter.class)
     private NEOStarDetailClassification starType;

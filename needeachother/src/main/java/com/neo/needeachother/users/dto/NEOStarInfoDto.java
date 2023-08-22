@@ -3,7 +3,6 @@ package com.neo.needeachother.users.dto;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neo.needeachother.common.enums.NEOErrorCode;
-import com.neo.needeachother.users.document.NEOStarInfoDocument;
 import com.neo.needeachother.users.enums.NEOGenderType;
 import com.neo.needeachother.users.enums.NEOStarDetailClassification;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -105,22 +104,4 @@ public class NEOStarInfoDto {
     @JsonProperty("custom_introduction_list")
     private List<NEOCustomStarInformation> customIntroductionList;
 
-    @Getter
-    @ToString
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class NEOCustomStarInformation {
-
-        @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
-        @JsonProperty("custom_title")
-        private String customTitle;
-
-        @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
-        @JsonProperty("custom_context")
-        private String customContext;
-
-        public NEOStarInfoDocument.NEOStarCustomInformation convertToDocumentFormat(){
-            return new NEOStarInfoDocument.NEOStarCustomInformation(null, this.getCustomTitle(), this.getCustomContext());
-        }
-    }
 }

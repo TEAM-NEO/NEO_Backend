@@ -1,5 +1,6 @@
 package com.neo.needeachother.users.document;
 
+import com.neo.needeachother.users.dto.NEOCustomStarInformation;
 import com.neo.needeachother.users.dto.NEOPublicStarInfoDto;
 import com.neo.needeachother.users.dto.NEOStarInfoDto;
 import lombok.*;
@@ -24,30 +25,34 @@ public class NEOStarInfoDocument {
     @MongoId
     private ObjectId id;
 
+    @Setter
     private String userID;
 
+    @Setter
     private String introduction;
 
-    private List<NEOStarCustomInformation> starCustomIntroductionList;
+    @Setter
+    private List<NEOCustomStarInformationDocument> starCustomIntroductionList;
 
+    @Setter
     private List<String> submittedUrl;
 
     @Getter
     @Builder
     @ToString
     @AllArgsConstructor
-    public static class NEOStarCustomInformation {
+    public static class NEOCustomStarInformationDocument {
         @MongoId
         private ObjectId id;
         private String customTitle;
         private String customContext;
 
-        public NEOStarInfoDto.NEOCustomStarInformation convertToDtoFormat(){
-            return new NEOStarInfoDto.NEOCustomStarInformation(this.customTitle, this.customContext);
+        public NEOCustomStarInformation convertToDtoFormat(){
+            return new NEOCustomStarInformation(this.customTitle, this.customContext);
         }
 
-        public NEOPublicStarInfoDto.NEOCustomStarInformation convertToPublicDtoFormat(){
-            return new NEOPublicStarInfoDto.NEOCustomStarInformation(this.customTitle, this.customContext);
+        public static NEOCustomStarInformationDocument fromDTO(NEOCustomStarInformation dto){
+            return new NEOCustomStarInformationDocument(null, dto.getCustomTitle(), dto.getCustomContext());
         }
     }
 
@@ -61,7 +66,7 @@ public class NEOStarInfoDocument {
                 .userID(request.getUserID())
                 .introduction(request.getIntroduction())
                 .starCustomIntroductionList(request.getCustomIntroductionList().stream()
-                        .map(customInfo -> NEOStarCustomInformation.builder()
+                        .map(customInfo -> NEOCustomStarInformationDocument.builder()
                                 .customTitle(customInfo.getCustomTitle())
                                 .customContext(customInfo.getCustomContext())
                                 .build())
@@ -80,7 +85,7 @@ public class NEOStarInfoDocument {
                 .introduction(this.getIntroduction())
                 .submittedUrl(this.getSubmittedUrl())
                 .customIntroductionList(this.starCustomIntroductionList.stream()
-                        .map(NEOStarCustomInformation::convertToDtoFormat)
+                        .map(NEOCustomStarInformationDocument::convertToDtoFormat)
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -95,7 +100,7 @@ public class NEOStarInfoDocument {
         starDto.setIntroduction(this.getIntroduction());
         starDto.setSubmittedUrl(this.getSubmittedUrl());
         starDto.setCustomIntroductionList(this.starCustomIntroductionList.stream()
-                .map(NEOStarCustomInformation::convertToDtoFormat)
+                .map(NEOCustomStarInformationDocument::convertToDtoFormat)
                 .collect(Collectors.toList()));
         return starDto;
     }
@@ -109,7 +114,7 @@ public class NEOStarInfoDocument {
         starDto.setIntroduction(this.getIntroduction());
         starDto.setSubmittedUrl(this.getSubmittedUrl());
         starDto.setCustomIntroductionList(this.starCustomIntroductionList.stream()
-                .map(NEOStarCustomInformation::convertToPublicDtoFormat)
+                .map(NEOCustomStarInformationDocument::convertToDtoFormat)
                 .collect(Collectors.toList()));
         return starDto;
     }
