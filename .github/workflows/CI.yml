@@ -2,7 +2,7 @@ name: Java CI with Gradle # workflow 이름
 
 on:
   push:
-    branches: [ "main", "fix/#25"]
+    branches: [ "main"]
   pull_request:
     branches: [ "main" ]
 
