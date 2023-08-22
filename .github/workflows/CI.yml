@@ -1,15 +1,8 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-
 name: Java CI with Gradle # workflow 이름
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main"]
   pull_request:
     branches: [ "main" ]
 
@@ -44,7 +37,7 @@ jobs:
 
     - name: make application.yml
       run: |
-        cd ./src/main/resources
+        cd needeachother/src/main/resources
 
         # application.yml 파일 생성하기
         touch ./application-db.yml
@@ -56,15 +49,15 @@ jobs:
 
 
     - name: Build with Gradle
-      run: ./gradlew bootJar
+      run: |
+        cd needeachother
+        ./gradlew bootJar
 
     
     ## 도커 이미지 빌드 후 도커허브에 push하기
     - name: web docker build and push
       run: |
+        cd needeachother
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker build -t ${{ secrets.DOCKER_REPOSITORY }} .
         docker push ${{ secrets.DOCKER_REPOSITORY }}
-
-
-    
