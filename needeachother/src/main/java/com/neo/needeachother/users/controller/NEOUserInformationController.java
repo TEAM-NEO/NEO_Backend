@@ -2,6 +2,7 @@ package com.neo.needeachother.users.controller;
 
 import com.neo.needeachother.common.response.NEOErrorResponse;
 import com.neo.needeachother.common.response.NEOResponseBody;
+import com.neo.needeachother.users.dto.NEOChangeableInfoDto;
 import com.neo.needeachother.users.exception.NEOUserExpectedException;
 import com.neo.needeachother.users.dto.NEOFanInfoDto;
 import com.neo.needeachother.users.dto.NEOStarInfoDto;
@@ -55,9 +56,9 @@ public class NEOUserInformationController {
     }
 
     @PutMapping("/{user_id}")
-    public void changeUserInformationOrder(@PathVariable("user_id") final String userID,
-                                           @RequestBody final NEOStarInfoDto changeStarInfoRequest){
-
+    public ResponseEntity<?> changeUserInformationOrder(@PathVariable("user_id") final String userID,
+                                           @RequestBody final NEOChangeableInfoDto changeInfoRequest){
+        return userInformationService.doChangePartialInformationOrder(userID, NEOUserOrder.CHANGE_USER_INFO, changeInfoRequest);
     }
 
     @PatchMapping("/{user_id}")
@@ -137,15 +138,16 @@ public class NEOUserInformationController {
     @Getter
     @RequiredArgsConstructor
     public enum NEOUserOrder{
-        CREATE_STAR_INFO("새로운 스타 정보 생성에 성공했습니다.","새로운 스타 정보 생성에 실패했습니다.", "api/v1/users/stars"),
-        CREATE_FAN_INFO("새로운 팬 정보 생성에 성공했습니다.", "새로운 팬 정보 생성에 실패했습니다.", "api/v1/users/fans"),
-        GET_USER_INFO("사용자 전체 정보를 얻어오는데 성공했습니다.", "사용자 전체 정보를 얻어오는데 실패했습니다.", "api/v1/users/{user_id}"),
-        GET_USER_PUBLIC_INFO("사용자 공개 정보를 얻어오는데 성공했습니다.", "사용자 공개 정보를 얻어오는데 실패했습니다.", "api/v1/users/{user_id}"),
+        CREATE_STAR_INFO("새로운 스타 정보 생성에 성공했습니다.","새로운 스타 정보 생성에 실패했습니다.", "POST api/v1/users/stars"),
+        CREATE_FAN_INFO("새로운 팬 정보 생성에 성공했습니다.", "새로운 팬 정보 생성에 실패했습니다.", "POST api/v1/users/fans"),
+        GET_USER_INFO("사용자 전체 정보를 얻어오는데 성공했습니다.", "사용자 전체 정보를 얻어오는데 실패했습니다.", "GET api/v1/users/{user_id}"),
+        GET_USER_PUBLIC_INFO("사용자 공개 정보를 얻어오는데 성공했습니다.", "사용자 공개 정보를 얻어오는데 실패했습니다.", "GET api/v1/users/{user_id}"),
+        CHANGE_USER_INFO("사용자 정보 변경에 성공했습니다", "사용자 정보 변경에 실패했습니다.", "PATCH api/v1/users/{user_id}"),
         COMMON(null ,null ,null);
 
         private final String successMessage;
         private final String failMessage;
-        private final String requestedPath;
+        private final String requestedMethodAndURI;
     }
 
 }

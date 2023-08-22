@@ -34,11 +34,11 @@ public class NEOStarEntity extends NEOUserEntity {
     public static final NEOUserType USER_TYPE = NEOUserType.STAR;
 
     /* 실제 스타가 사용하고 있는 스타 활동명 */
+    @Setter
     @Column(name = "star_nickname")
     private String starNickName;
 
     /* 네오 스타가 가진 스타 유형 */
-    @Setter
     @Builder.Default
     @OneToMany(mappedBy = "neoStar")
     private List<NEOStarTypeEntity> starTypeList = new ArrayList<>();

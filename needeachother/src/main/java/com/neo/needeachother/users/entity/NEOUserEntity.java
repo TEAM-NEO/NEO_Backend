@@ -4,10 +4,7 @@ import com.neo.needeachother.common.entity.NEOTimeDefaultEntity;
 import com.neo.needeachother.users.converter.NEOGenderTypeConverter;
 import com.neo.needeachother.users.enums.NEOGenderType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
@@ -50,6 +47,7 @@ public abstract class NEOUserEntity extends NEOTimeDefaultEntity {
     @Column(name = "provider_type")
     private String providerType;
 
+    @Setter
     @Column(name = "neo_nick_name")
     private String neoNickName;
 

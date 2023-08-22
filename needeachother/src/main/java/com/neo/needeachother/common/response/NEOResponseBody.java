@@ -27,7 +27,7 @@ public class NEOResponseBody<T> {
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private final LocalDateTime timeStamp = LocalDateTime.now();
 
-    private final String requestedPath;
+    private final String requestedMethodAndURI;
 
     private final NEOResponseCode responseCode;
 

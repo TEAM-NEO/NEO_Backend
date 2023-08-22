@@ -1,11 +1,8 @@
 package com.neo.needeachother.users.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.neo.needeachother.common.enums.NEOErrorCode;
-import com.neo.needeachother.users.document.NEOStarInfoDocument;
 import com.neo.needeachother.users.enums.NEOGenderType;
 import com.neo.needeachother.users.enums.NEOStarDetailClassification;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -29,9 +26,11 @@ public class NEOPublicStarInfoDto {
     @JsonProperty(required = true)
     private NEOGenderType gender;
 
+    @Builder.Default
     @JsonProperty(value = "star_classification_list", required = true)
     private HashSet<NEOStarDetailClassification> starClassificationSet = new HashSet<>();
 
+    @Builder.Default
     @JsonProperty("submitted_url")
     private List<String> submittedUrl = new ArrayList<>();
 
@@ -40,22 +39,4 @@ public class NEOPublicStarInfoDto {
     @JsonProperty("custom_introduction_list")
     private List<NEOCustomStarInformation> customIntroductionList;
 
-    @Getter
-    @ToString
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class NEOCustomStarInformation {
-
-        @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
-        @JsonProperty("custom_title")
-        private String customTitle;
-
-        @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
-        @JsonProperty("custom_context")
-        private String customContext;
-
-        public NEOStarInfoDocument.NEOStarCustomInformation convertToDocumentFormat(){
-            return new NEOStarInfoDocument.NEOStarCustomInformation(null, this.getCustomTitle(), this.getCustomContext());
-        }
-    }
 }

@@ -6,7 +6,6 @@ import com.neo.needeachother.common.response.NEOErrorResponse;
 import com.neo.needeachother.common.response.NEOResponseBody;
 import com.neo.needeachother.users.exception.NEOUserExpectedException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -44,7 +43,7 @@ public class NEOUserExceptionAdvisor extends ResponseEntityExceptionHandler {
 
     public NEOResponseBody<?> renderResponseBody(final List<NEOErrorResponse> errorResponseList, final NEOUserInformationController.NEOUserOrder userOrder){
         return NEOResponseBody.builder()
-                .requestedPath(userOrder.getRequestedPath())
+                .requestedMethodAndURI(userOrder.getRequestedMethodAndURI())
                 .responseCode(NEOResponseCode.FAIL)
                 .msg(userOrder.getFailMessage())
                 .errors(errorResponseList)
