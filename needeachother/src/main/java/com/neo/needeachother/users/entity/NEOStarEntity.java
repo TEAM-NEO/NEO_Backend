@@ -4,10 +4,7 @@ import com.neo.needeachother.users.dto.NEOPublicStarInfoDto;
 import com.neo.needeachother.users.dto.NEOStarInfoDto;
 import com.neo.needeachother.users.enums.NEOStarDetailClassification;
 import com.neo.needeachother.users.enums.NEOUserType;
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -40,12 +37,12 @@ public class NEOStarEntity extends NEOUserEntity {
 
     /* 네오 스타가 가진 스타 유형 */
     @Builder.Default
-    @OneToMany(mappedBy = "neoStar")
+    @OneToMany(mappedBy = "neoStar", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<NEOStarTypeEntity> starTypeList = new ArrayList<>();
 
     /* 해당 스타 엔티티를 팔로우하고 있는 팔로워 리스트 */
     @Builder.Default
-    @OneToMany(mappedBy = "followee")
+    @OneToMany(mappedBy = "followee", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<NEOUserRelationEntity> followerList = new ArrayList<>();
 
     /**

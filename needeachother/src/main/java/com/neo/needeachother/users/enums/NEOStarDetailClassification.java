@@ -2,9 +2,6 @@ package com.neo.needeachother.users.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.neo.needeachother.common.enums.NEODomainType;
-import com.neo.needeachother.common.enums.NEOErrorCode;
-import com.neo.needeachother.common.exception.NEOExpectedException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

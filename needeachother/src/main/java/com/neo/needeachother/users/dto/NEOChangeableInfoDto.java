@@ -34,7 +34,7 @@ public class NEOChangeableInfoDto {
 
     @Schema(description = "제출한 URL로, 스타 구분에 맞는 URL을 식별합니다. \n" +
             "JSON에서 빈 리스트의 형태로 값을 전달하면, 이전에 설정된 스타 구분이 모두 사라지게 됩니다.\n" +
-            "팬은 수정되거나 추가되지 않습니다.", example = "[www.youtube.com/@seanhong2000]", nullable = true)
+            "팬은 수정되거나 추가되지 않습니다.", example = "[\"www.youtube.com/@seanhong2000]\"]", nullable = true)
     @JsonProperty("submitted_url")
     private List<String> submittedUrl;
 
