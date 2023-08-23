@@ -2,6 +2,7 @@ package com.neo.needeachother.common.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.neo.needeachother.common.enums.NEOErrorCode;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +18,19 @@ import org.springframework.validation.FieldError;
 @Getter
 @Builder
 @RequiredArgsConstructor
+@Schema(description = "NEO의 에러 응답 객체")
 public class NEOErrorResponse {
 
     @JsonIgnore
     private final NEOErrorCode neoErrorCode;
 
+    @Schema(description = "NEO의 에러 응답 코드", example = "-101")
     private final int errorCode;
+
+    @Schema(description = "에러 응답 코드와 매칭되는 설명", example = "아이디는 최소 4글자입니다.")
     private final String errorDescription;
+
+    @Schema(description = "해당 에러가 일어난 원인 혹은 상세 설명", example = "원인 대상 : user_id ")
     private final String errorDetail;
 
     /**
