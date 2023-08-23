@@ -4,10 +4,10 @@ import com.neo.needeachother.common.response.NEOErrorResponse;
 import com.neo.needeachother.common.response.NEOResponseBody;
 import com.neo.needeachother.users.docs.*;
 import com.neo.needeachother.users.dto.*;
+import com.neo.needeachother.users.enums.NEOUserOrder;
 import com.neo.needeachother.users.exception.NEOUserExpectedException;
 import com.neo.needeachother.users.service.NEOUserInformationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -104,7 +104,9 @@ public class NEOUserInformationController {
 
     @DeleteMapping("/{user_id}")
     @NEODeleteUserInfoOrderDocs
-    public void deleteUserInformationOrder(@PathVariable("user_id") String userID) {
+    public ResponseEntity<?> deleteUserInformationOrder(@PathVariable("user_id") String userID) {
+        NEOUserOrder userOrder = NEOUserOrder.DELETE_USER_ORDER;
+        return userInformationService.doDeleteUserInformationOrder(userID, userOrder);
     }
 
     /**
@@ -117,6 +119,8 @@ public class NEOUserInformationController {
     public void checkRequestValidationPassed(BindingResult bindingResult, NEOUserOrder userOrder) {
         if (bindingResult.hasErrors()) {
             // 유효성 검사 실패 시 처리
+            log.warn("유효성 검사 실패!");
+            log.warn(bindingResult.getFieldErrors().get(0).getField());
             List<NEOErrorResponse> renderedErrorResponseList = renderErrorResponseListByRequestValidationFieldError(bindingResult.getFieldErrors());
             throw new NEOUserExpectedException(renderedErrorResponseList, userOrder);
         }
@@ -132,25 +136,6 @@ public class NEOUserInformationController {
         return errors.stream()
                 .map(NEOErrorResponse::fromFieldError)
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * 각 컨트롤러의 엔드포인트 메서드가 고유하게 갖는 값입니다.<br>
-     * 해당 enum 값을 통해 어떤 요청인지, 성공시 최종 메시지 및 실패시 최종 메시지를 획득할 수 있습니다.
-     */
-    @Getter
-    @RequiredArgsConstructor
-    public enum NEOUserOrder {
-        CREATE_STAR_INFO("새로운 스타 정보 생성에 성공했습니다.", "새로운 스타 정보 생성에 실패했습니다.", "POST api/v1/users/stars"),
-        CREATE_FAN_INFO("새로운 팬 정보 생성에 성공했습니다.", "새로운 팬 정보 생성에 실패했습니다.", "POST api/v1/users/fans"),
-        GET_USER_INFO("사용자 전체 정보를 얻어오는데 성공했습니다.", "사용자 전체 정보를 얻어오는데 실패했습니다.", "GET api/v1/users/{user_id}"),
-        GET_USER_PUBLIC_INFO("사용자 공개 정보를 얻어오는데 성공했습니다.", "사용자 공개 정보를 얻어오는데 실패했습니다.", "GET api/v1/users/{user_id}"),
-        CHANGE_USER_INFO("사용자 정보 변경에 성공했습니다", "사용자 정보 변경에 실패했습니다.", "PATCH api/v1/users/{user_id}"),
-        COMMON(null, null, null);
-
-        private final String successMessage;
-        private final String failMessage;
-        private final String requestedMethodAndURI;
     }
 
 }
