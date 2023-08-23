@@ -11,7 +11,7 @@ import org.springframework.validation.FieldError;
 /**
  * @author 이승훈<br>
  * @since 23.08.21<br>
- * {@code NEOResponseBody}의 {@code errors} 필드에 포함된 에러 응답 객체를 정의했습니다. <br>
+ * {@code NEOFinalErrorResponse}의 {@code errors} 필드에 포함된 에러 응답 객체를 정의했습니다. <br>
  * 숫자 에러코드와 에러코드의 설명과 상세 설명을 포함하고 있습니다. <br>
  * 최종적으로 응답에서 해당 내용을 직렬화하게 됩니다.
  */

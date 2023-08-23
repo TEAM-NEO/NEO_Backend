@@ -1,7 +1,7 @@
 package com.neo.needeachother.users.controller;
 
 import com.neo.needeachother.common.response.NEOErrorResponse;
-import com.neo.needeachother.common.response.NEOResponseBody;
+import com.neo.needeachother.common.response.NEOFinalErrorResponse;
 import com.neo.needeachother.users.docs.*;
 import com.neo.needeachother.users.dto.*;
 import com.neo.needeachother.users.enums.NEOUserOrder;
@@ -60,7 +60,7 @@ public class NEOUserInformationController {
      *
      * @param userID                       사용자 아이디
      * @param changePartialStarInfoRequest 정보 변경에 필요한 요청
-     * @return {@code ResponseEntity<NEOResponseBody<NEOStarInfoDto>>}, {@code ResponseEntity<NEOResponseBody<NEOFanInfoDto>>}
+     * @return {@code ResponseEntity<NEOFinalErrorResponse<NEOStarInfoDto>>}, {@code ResponseEntity<NEOFinalErrorResponse<NEOFanInfoDto>>}
      */
     @PatchMapping("/{user_id}")
     @NEOChangeUserInfoOrderDocs
@@ -75,11 +75,11 @@ public class NEOUserInformationController {
      *
      * @param createStarInfoRequest 새로운 스타 정보 생성에 필요한 요청
      * @param bindingResult         요청 객체 유효성 검사 결과
-     * @return {@code ResponseEntity<NEOResponseBody>}
+     * @return {@code ResponseEntity<NEOFinalErrorResponse>}
      */
     @PostMapping("/stars")
     @NEOCreateStarInfoOrderDocs
-    public ResponseEntity<NEOResponseBody> createNewStarInformationOrder(@RequestBody @Validated final NEOStarInfoDto createStarInfoRequest, BindingResult bindingResult) {
+    public ResponseEntity<?> createNewStarInformationOrder(@RequestBody @Validated final NEOStarInfoDto createStarInfoRequest, BindingResult bindingResult) {
         NEOUserOrder userOrder = NEOUserOrder.CREATE_STAR_INFO;
         checkRequestValidationPassed(bindingResult, userOrder);
         return userInformationService.doCreateNewStarInformationOrder(createStarInfoRequest, userOrder);
@@ -91,11 +91,11 @@ public class NEOUserInformationController {
      *
      * @param createFanInfoRequest 새로운 팬 정보 생성에 필요한 요청
      * @param bindingResult        요청 객체 유효성 검사 결과
-     * @return {@code ResponseEntity<NEOResponseBody>}
+     * @return {@code ResponseEntity<NEOFinalErrorResponse>}
      */
     @PostMapping("/fans")
     @NEOCreateFanInfoOrderDocs
-    public ResponseEntity<NEOResponseBody> createNewFanInformationOrder(@RequestBody @Validated final NEOFanInfoDto createFanInfoRequest, BindingResult bindingResult) {
+    public ResponseEntity<?> createNewFanInformationOrder(@RequestBody @Validated final NEOFanInfoDto createFanInfoRequest, BindingResult bindingResult) {
         NEOUserOrder userOrder = NEOUserOrder.CREATE_FAN_INFO;
         checkRequestValidationPassed(bindingResult, userOrder);
         return userInformationService.doCreateNewFanInformationOrder(createFanInfoRequest, userOrder);
