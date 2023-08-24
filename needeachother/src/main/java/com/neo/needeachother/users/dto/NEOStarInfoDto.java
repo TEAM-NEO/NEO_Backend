@@ -1,6 +1,7 @@
 package com.neo.needeachother.users.dto;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neo.needeachother.common.enums.NEOErrorCode;
 import com.neo.needeachother.users.enums.NEOGenderType;
@@ -25,6 +26,7 @@ import java.util.List;
 @JsonFilter("NEOInfoDtoJsonFilter")
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "OAuth2.0을 통한 회원가입 이후의, 스타의 추가 정보를 입력하기 위한 API의 Request DTO입니다.")
 public class NEOStarInfoDto {
 
@@ -46,7 +48,7 @@ public class NEOStarInfoDto {
     @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
     @Email(message = NEOErrorCode.ValidationMessage.INVALID_FORMAT_EMAIL)
     @Schema(description = "OAuth2.0으로부터 받아온 사용자의 이메일, OAuth 도입 이후 request에서 제거 예정", example = "aaa@example.com")
-    @JsonProperty(required = true)
+    @JsonProperty(value = "email", required = true)
     private String email;
 
     /* OAuth2.0으로부터 받아온 사용자의 사용자 이름, OAuth 도입 이후 request에서 제거 예정 */
@@ -79,7 +81,7 @@ public class NEOStarInfoDto {
 
     // @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
     @Schema(description = "성별", example = "M")
-    @JsonProperty(required = true)
+    @JsonProperty(value = "gender", required = true)
     private NEOGenderType gender;
 
     /* 스타 구분, 중복 선택 가능 */
@@ -92,12 +94,13 @@ public class NEOStarInfoDto {
     private HashSet<NEOStarDetailClassification> starClassificationSet = new HashSet<>();
 
     /* 제출한 url */
-    @Schema(description = "제출한 URL로, 스타 구분에 맞는 URL을 식별합니다.", example = "[www.youtube.com/@seanhong2000]")
+    @Schema(description = "제출한 URL로, 스타 구분에 맞는 URL을 식별합니다.", example = "[\"www.youtube.com/@seanhong2000\"]")
     @JsonProperty("submitted_url")
     private List<String> submittedUrl = new ArrayList<>();
 
     /* 소개글 */
     @Schema(description = "스타 페이지 및 검색에 노출될 간단한 소개줄입니다.", example = "안녕하세요, 가수 아이유입니다.")
+    @JsonProperty(value = "introduction")
     private String introduction;
 
     /* 커스텀 정보 입력 */

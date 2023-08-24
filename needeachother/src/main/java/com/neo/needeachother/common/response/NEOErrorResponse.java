@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.springframework.validation.FieldError;
 
 /**
@@ -17,6 +18,7 @@ import org.springframework.validation.FieldError;
  */
 @Getter
 @Builder
+@ToString
 @RequiredArgsConstructor
 @Schema(description = "NEO의 에러 응답 객체")
 public class NEOErrorResponse {
@@ -41,6 +43,10 @@ public class NEOErrorResponse {
     public static NEOErrorResponse fromFieldError(FieldError error){
         NEOErrorCode errorCode = NEOErrorCode.valueOf(error.getDefaultMessage());
         return new NEOErrorResponse(errorCode, errorCode.getErrorCode(), errorCode.getErrorDescription(), error.getField() + " : " + error.getRejectedValue());
+    }
+
+    public static NEOErrorResponse fromErrorCodeWithDetail(NEOErrorCode errorCode, String errorDetail){
+        return new NEOErrorResponse(errorCode, errorCode.getErrorCode(), errorCode.getErrorDescription(), errorDetail);
     }
 
 }
