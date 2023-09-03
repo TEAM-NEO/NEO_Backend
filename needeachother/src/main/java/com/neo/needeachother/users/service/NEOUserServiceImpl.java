@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.util.*;
@@ -129,6 +130,29 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
                 .created(URI.create("/api/v1/users/" + savedFan.getUserID()))
                 .headers(userOrder.renderHttpHeadersByUserOrderAndResponseCode(NEOResponseCode.SUCCESS))
                 .body(createdUserInformation);
+    }
+
+    @Override
+    public ResponseEntity<NEOUserInformationDTO> doGetStarInformationOrder(String userID, boolean isPrivacy, boolean isDetail, NEOUserOrder userOrder) {
+
+        // 스타 엔티티 획득
+        NEOStarEntity foundStar = starRepository.findByUserID(userID)
+                .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.NOT_EXIST_USER, "not exist this star : " + userID, userOrder));
+
+        // 스타 위키 획득
+        NEOStarInfoDocument starCustomInfo = starCustomInfoRepository.findByUserID(foundStar.getUserID())
+                .orElseGet(() -> createEmptyStarInfoDocument(userID));
+
+        // 스타 정보 객체로 렌더링
+        NEOUserInformationDTO foundStarInformation = NEOUserInformationDTO.from(foundStar, starCustomInfo, isPrivacy, isDetail);
+
+        return ResponseEntity.ok()
+                .body(foundStarInformation);
+    }
+
+    @Transactional
+    public NEOStarInfoDocument createEmptyStarInfoDocument(String starID){
+        return starCustomInfoRepository.save(NEOStarInfoDocument.builder().userID(starID).build());
     }
 
     /**
@@ -269,6 +293,7 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
                 .headers(userOrder.renderHttpHeadersByUserOrderAndResponseCode(NEOResponseCode.SUCCESS))
                 .body(null);
     }
+
 
     private ResponseEntity<NEOAdditionalStarInfoRequest> modifyStarDataFromDto(NEOStarEntity star, NEOStarInfoDocument starDoc, NEOUserOrder userOrder, NEOChangeableInfoDTO changeInfoDto) {
 

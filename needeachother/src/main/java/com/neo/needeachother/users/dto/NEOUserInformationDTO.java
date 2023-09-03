@@ -90,16 +90,18 @@ public class NEOUserInformationDTO {
                 .build();
     }
 
-    public static NEOUserInformationDTO from(NEOStarEntity starEntity, NEOStarInfoDocument starInfoDocument, boolean isPrivate, boolean hasWiki) {
+    public static NEOUserInformationDTO from(final NEOStarEntity starEntity, final NEOStarInfoDocument starInfoDocument,
+                                             final boolean isPrivate, final boolean hasWiki) {
+
         List<NEOStarWikiInformationDTO> customIntroductionList = null;
 
-        if(hasWiki){
+        if (hasWiki) {
             customIntroductionList = starInfoDocument.getStarCustomIntroductionList().stream()
                     .map(NEOStarInfoDocument.NEOCustomStarInformationDocument::convertToDtoFormat)
                     .toList();
         }
 
-        if(isPrivate){
+        if (isPrivate) {
             return NEOUserInformationDTO.builder()
                     .userType(starEntity.getUserType())
                     .hasWiki(hasWiki)

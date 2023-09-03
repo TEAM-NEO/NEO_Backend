@@ -14,4 +14,5 @@ public interface NEOUserInformationService {
      ResponseEntity<?> doGetPublicUserInformationOrder(String userID, NEOUserOrder userOrder);
      ResponseEntity<?> doChangePartialInformationOrder(String userID, NEOUserOrder userOrder, NEOChangeableInfoDTO changeInfoDto);
      ResponseEntity<?> doDeleteUserInformationOrder(String userID, NEOUserOrder userOrder);
+     ResponseEntity<NEOUserInformationDTO> doGetStarInformationOrder(String userID, boolean isPrivacy, boolean isDetail, NEOUserOrder userOrder);
 }

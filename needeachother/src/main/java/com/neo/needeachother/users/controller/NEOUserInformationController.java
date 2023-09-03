@@ -33,6 +33,47 @@ public class NEOUserInformationController {
     private final NEOUserInformationService userInformationService;
 
     /**
+     * OAuth2.0을 통한 회원가입 이후, 스타로서 NEO에 가입하기 위해 추가정보를 입력합니다.<br>
+     * 추가 정보에 관한 내용은 {@code createStarInfoRequest}에서 확인할 수 있습니다.<br>
+     *
+     * @param createStarInfoRequest 새로운 스타 정보 생성에 필요한 요청
+     * @param bindingResult         요청 객체 유효성 검사 결과
+     * @return {@code ResponseEntity<NEOFinalErrorResponse>}
+     */
+    @PostMapping("/stars")
+    @NEOCreateStarInfoOrderDocs
+    public ResponseEntity<NEOUserInformationDTO> createNewStarInformationOrder(@RequestBody @Validated final NEOAdditionalStarInfoRequest createStarInfoRequest, BindingResult bindingResult) {
+        NEOUserOrder userOrder = NEOUserOrder.CREATE_STAR_INFO;
+        checkRequestValidationPassed(bindingResult, userOrder);
+        return userInformationService.doCreateNewStarInformationOrder(createStarInfoRequest, userOrder);
+    }
+
+    /**
+     * OAuth2.0을 통한 회원가입 이후, 팬으로서 NEO에 가입하기 위해 추가정보를 입력합니다.<br>
+     * 추가 정보에 관한 내용은 {@code createFanInfoRequest}에서 확인할 수 있습니다.
+     *
+     * @param createFanInfoRequest 새로운 팬 정보 생성에 필요한 요청
+     * @param bindingResult        요청 객체 유효성 검사 결과
+     * @return {@code ResponseEntity<NEOFinalErrorResponse>}
+     */
+    @PostMapping("/fans")
+    @NEOCreateFanInfoOrderDocs
+    public ResponseEntity<NEOUserInformationDTO> createNewFanInformationOrder(@RequestBody @Validated final NEOAdditionalFanInfoRequest createFanInfoRequest, BindingResult bindingResult) {
+        NEOUserOrder userOrder = NEOUserOrder.CREATE_FAN_INFO;
+        checkRequestValidationPassed(bindingResult, userOrder);
+        return userInformationService.doCreateNewFanInformationOrder(createFanInfoRequest, userOrder);
+    }
+
+    @GetMapping("/stars/{user_id}")
+    public ResponseEntity<NEOUserInformationDTO> getStarInformationOrder(
+            @PathVariable("user_id") String userID,
+            @RequestParam(value = "privacy", required = false, defaultValue = "false") boolean isPrivacy,
+            @RequestParam(value = "detail", required = false, defaultValue = "false") boolean isDetail) {
+        NEOUserOrder userOrder = NEOUserOrder.GET_STAR_INFO;
+        return userInformationService.doGetStarInformationOrder(userID, isPrivacy, isDetail, userOrder);
+    }
+
+    /**
      * 유저의 정보를 가져옵니다.<br>
      * {@code isPublic}의 값에 따라 공개 정보 / 전체 정보를 얻어올 수 있습니다. <br>
      * 팬 혹은 스타 관계 없이 해당 API를 사용해 유저 정보를 얻을 수 있습니다.<br>
@@ -66,38 +107,6 @@ public class NEOUserInformationController {
     public ResponseEntity<?> changePartialUserInformationOrder(@PathVariable("user_id") final String userID,
                                                                @RequestBody final NEOChangeableInfoDTO changePartialStarInfoRequest) {
         return userInformationService.doChangePartialInformationOrder(userID, NEOUserOrder.CHANGE_USER_INFO, changePartialStarInfoRequest);
-    }
-
-    /**
-     * OAuth2.0을 통한 회원가입 이후, 스타로서 NEO에 가입하기 위해 추가정보를 입력합니다.<br>
-     * 추가 정보에 관한 내용은 {@code createStarInfoRequest}에서 확인할 수 있습니다.<br>
-     *
-     * @param createStarInfoRequest 새로운 스타 정보 생성에 필요한 요청
-     * @param bindingResult         요청 객체 유효성 검사 결과
-     * @return {@code ResponseEntity<NEOFinalErrorResponse>}
-     */
-    @PostMapping("/stars")
-    @NEOCreateStarInfoOrderDocs
-    public ResponseEntity<NEOUserInformationDTO> createNewStarInformationOrder(@RequestBody @Validated final NEOAdditionalStarInfoRequest createStarInfoRequest, BindingResult bindingResult) {
-        NEOUserOrder userOrder = NEOUserOrder.CREATE_STAR_INFO;
-        checkRequestValidationPassed(bindingResult, userOrder);
-        return userInformationService.doCreateNewStarInformationOrder(createStarInfoRequest, userOrder);
-    }
-
-    /**
-     * OAuth2.0을 통한 회원가입 이후, 팬으로서 NEO에 가입하기 위해 추가정보를 입력합니다.<br>
-     * 추가 정보에 관한 내용은 {@code createFanInfoRequest}에서 확인할 수 있습니다.
-     *
-     * @param createFanInfoRequest 새로운 팬 정보 생성에 필요한 요청
-     * @param bindingResult        요청 객체 유효성 검사 결과
-     * @return {@code ResponseEntity<NEOFinalErrorResponse>}
-     */
-    @PostMapping("/fans")
-    @NEOCreateFanInfoOrderDocs
-    public ResponseEntity<NEOUserInformationDTO> createNewFanInformationOrder(@RequestBody @Validated final NEOAdditionalFanInfoRequest createFanInfoRequest, BindingResult bindingResult) {
-        NEOUserOrder userOrder = NEOUserOrder.CREATE_FAN_INFO;
-        checkRequestValidationPassed(bindingResult, userOrder);
-        return userInformationService.doCreateNewFanInformationOrder(createFanInfoRequest, userOrder);
     }
 
 
