@@ -9,6 +9,7 @@ import com.neo.needeachother.users.entity.*;
 import com.neo.needeachother.users.enums.NEOGenderType;
 import com.neo.needeachother.users.enums.NEOStarDetailClassification;
 import com.neo.needeachother.users.enums.NEOUserOrder;
+import com.neo.needeachother.users.enums.NEOUserType;
 import com.neo.needeachother.users.exception.NEOUserExpectedException;
 import com.neo.needeachother.users.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -284,15 +285,15 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
     }
 
     @Override
-    public ResponseEntity<?> doChangePartialInformationOrder(String userID, NEOUserOrder userOrder, NEOChangeableInfoDTO changeInfoDto) {
+    public ResponseEntity<NEOUserInformationDTO> doChangePartialInformationOrder(String userID, NEOUserOrder userOrder, NEOChangeableInfoDTO changeInfoDto) {
         NEOUserEntity foundUser = userRepository.findByUserID(userID)
                 .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.NOT_EXIST_USER, "에러 대상 : " + userID, userOrder));
 
-        if (foundUser instanceof NEOStarEntity) {
+        if (foundUser.getUserType() == NEOUserType.STAR) {
             NEOStarInfoDocument starDoc = starCustomInfoRepository.findByUserID(userID)
                     .orElseGet(() -> NEOStarInfoDocument.builder().userID(foundUser.getUserID()).build());
             return modifyStarDataFromDto((NEOStarEntity) foundUser, starDoc, userOrder, changeInfoDto);
-        } else if (foundUser instanceof NEOFanEntity) {
+        } else if (foundUser.getUserType() == NEOUserType.FAN) {
             return modifyFanDataFromDto((NEOFanEntity) foundUser, userOrder, changeInfoDto);
         } else {
             throw new NEOUnexpectedException("찾아낸 유저가 star / fan 엔티티 어느쪽에도 속하지 않습니다.");
@@ -311,8 +312,8 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
     }
 
 
-    private ResponseEntity<NEOAdditionalStarInfoRequest> modifyStarDataFromDto(NEOStarEntity star, NEOStarInfoDocument starDoc, NEOUserOrder userOrder, NEOChangeableInfoDTO changeInfoDto) {
-
+    private ResponseEntity<NEOUserInformationDTO> modifyStarDataFromDto(NEOStarEntity star, NEOStarInfoDocument starDoc, NEOUserOrder userOrder, NEOChangeableInfoDTO changeInfoDto) {
+        // 변경사항 검토 후 값 교체
         Optional.ofNullable(changeInfoDto.getNeoNickName()).ifPresent(star::setNeoNickName);
         Optional.ofNullable(changeInfoDto.getStarNickName()).ifPresent(star::setStarNickName);
         Optional.ofNullable(changeInfoDto.getIntroduction()).ifPresent(starDoc::setIntroduction);
@@ -323,14 +324,15 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
                         .map(NEOStarInfoDocument.NEOCustomStarInformationDocument::fromDTO)
                         .toList()));
 
+        // 스타 분류 변경 및 저장
         modifyStarClassificationFromDto(star, changeInfoDto);
 
+        // 변경 내용 반영
         NEOStarEntity savedStar = starRepository.save(star);
         NEOStarInfoDocument savedStarDoc = starCustomInfoRepository.save(starDoc);
 
         return ResponseEntity.ok()
-                .headers(userOrder.renderHttpHeadersByUserOrderAndResponseCode(NEOResponseCode.SUCCESS))
-                .body(savedStarDoc.fetchDTO(savedStar.toDTO()));
+                .body(NEOUserInformationDTO.from(savedStar, savedStarDoc, true, true));
     }
 
     private void modifyStarClassificationFromDto(NEOStarEntity star, NEOChangeableInfoDTO changeInfoDto){
@@ -365,15 +367,15 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
         starTypeRepository.saveAll(newCreatedClassificationList);
     }
 
-    private ResponseEntity<NEOAdditionalFanInfoRequest> modifyFanDataFromDto(NEOFanEntity fan, NEOUserOrder userOrder, NEOChangeableInfoDTO changeInfoDto) {
+    private ResponseEntity<NEOUserInformationDTO> modifyFanDataFromDto(NEOFanEntity fan, NEOUserOrder userOrder, NEOChangeableInfoDTO changeInfoDto) {
         String changedNeoNickName = Optional.ofNullable(changeInfoDto.getNeoNickName())
                 .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.BLANK_VALUE, "팬 정보 변경은, 닉네임 변경만 가능합니다. neo_nick_name 값이 null입니다.", userOrder));
 
         fan.setNeoNickName(changedNeoNickName);
         NEOFanEntity savedFan = fanRepository.save(fan);
 
+
         return ResponseEntity.ok()
-                .headers(userOrder.renderHttpHeadersByUserOrderAndResponseCode(NEOResponseCode.SUCCESS))
-                .body(savedFan.toDTO());
+                .body(NEOUserInformationDTO.from(savedFan, true));
     }
 }

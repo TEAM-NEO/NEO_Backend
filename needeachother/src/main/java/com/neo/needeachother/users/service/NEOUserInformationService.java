@@ -12,7 +12,7 @@ public interface NEOUserInformationService {
      ResponseEntity<NEOUserInformationDTO> doCreateNewFanInformationOrder(NEOAdditionalFanInfoRequest createFanInfoRequest, NEOUserOrder userOrder);
      ResponseEntity<?> doGetUserInformationOrder(String userID, NEOUserOrder userOrder);
      ResponseEntity<?> doGetPublicUserInformationOrder(String userID, NEOUserOrder userOrder);
-     ResponseEntity<?> doChangePartialInformationOrder(String userID, NEOUserOrder userOrder, NEOChangeableInfoDTO changeInfoDto);
+     ResponseEntity<NEOUserInformationDTO> doChangePartialInformationOrder(String userID, NEOUserOrder userOrder, NEOChangeableInfoDTO changeInfoDto);
      ResponseEntity<?> doDeleteUserInformationOrder(String userID, NEOUserOrder userOrder);
      ResponseEntity<NEOUserInformationDTO> doGetStarInformationOrder(String userID, boolean isPrivacy, boolean isDetail, NEOUserOrder userOrder);
      ResponseEntity<NEOUserInformationDTO> doGetFanInformationOrder(String userID, boolean isPrivacy, NEOUserOrder userOrder);

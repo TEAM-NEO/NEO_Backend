@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author 이승훈<br>
- * @since 23.08.21<br>
+ * @since 23.09.04<br>
  * 유저 정보와 관련된 엔드포인트 API입니다.
  */
 @Slf4j
@@ -33,12 +33,13 @@ public class NEOUserInformationController {
     private final NEOUserInformationService userInformationService;
 
     /**
+     * POST /api/v1/users/stars : 신규 스타 회원 추가정보 생성 API <br>
      * OAuth2.0을 통한 회원가입 이후, 스타로서 NEO에 가입하기 위해 추가정보를 입력합니다.<br>
      * 추가 정보에 관한 내용은 {@code createStarInfoRequest}에서 확인할 수 있습니다.<br>
      *
      * @param createStarInfoRequest 새로운 스타 정보 생성에 필요한 요청
      * @param bindingResult         요청 객체 유효성 검사 결과
-     * @return {@code ResponseEntity<NEOFinalErrorResponse>}
+     * @return {@code ResponseEntity<NEOUserInformationDTO>}
      */
     @PostMapping("/stars")
     @NEOCreateStarInfoOrderDocs
@@ -49,12 +50,13 @@ public class NEOUserInformationController {
     }
 
     /**
+     * POST /api/v1/users/fans : 신규 팬 회원 추가 정보 생성 API <br>
      * OAuth2.0을 통한 회원가입 이후, 팬으로서 NEO에 가입하기 위해 추가정보를 입력합니다.<br>
      * 추가 정보에 관한 내용은 {@code createFanInfoRequest}에서 확인할 수 있습니다.
      *
      * @param createFanInfoRequest 새로운 팬 정보 생성에 필요한 요청
      * @param bindingResult        요청 객체 유효성 검사 결과
-     * @return {@code ResponseEntity<NEOFinalErrorResponse>}
+     * @return {@code ResponseEntity<NEOUserInformationDTO>}
      */
     @PostMapping("/fans")
     @NEOCreateFanInfoOrderDocs
@@ -64,6 +66,15 @@ public class NEOUserInformationController {
         return userInformationService.doCreateNewFanInformationOrder(createFanInfoRequest, userOrder);
     }
 
+    /**
+     * GET /api/v1/users/stars/{user_id} : 기존 스타 회원 정보 획득 API<br>
+     * NEO의 스타 회원의 정보를 획득할 수 있습니다.<br>
+     * query parameter인 {@code privacy}와 {@code detail}을 통해 얻고자하는 정보를 제어할 수 있습니다.<br>
+     * @param userID 사용자 아이디, 스타 아이디가 아니라면 반려당합니다.
+     * @param isPrivacy 비밀개인정보 노출 여부, {@code true}라면 성명, 전화번호등 실제 개인 정보를 포함합니다.
+     * @param isDetail 상세 정보(위키) 노출 여부, {@code true}라면, 스타가 커스텀으로 올린 위키 정보를 포함합니다.
+     * @return {@code ResponseEntity<NEOUserInformationDTO>}
+     */
     @GetMapping("/stars/{user_id}")
     public ResponseEntity<NEOUserInformationDTO> getStarInformationOrder(
             @PathVariable("user_id") String userID,
@@ -73,6 +84,14 @@ public class NEOUserInformationController {
         return userInformationService.doGetStarInformationOrder(userID, isPrivacy, isDetail, userOrder);
     }
 
+    /**
+     * GET /api/v1/fans/stars/{user_id} : 기존 팬 회원 정보 획득 API<br>
+     * NEO의 팬 회원의 정보를 획득할 수 있습니다.<br>
+     * query parameter인 {@code privacy}와 {@code detail}을 통해 얻고자하는 정보를 제어할 수 있습니다.<br>
+     * @param userID 사용자 아이디, 스타 아이디가 아니라면 반려당합니다.
+     * @param isPrivacy 비밀개인정보 노출 여부, {@code true}라면 성명, 전화번호등 실제 개인 정보를 포함합니다.
+     * @return {@code ResponseEntity<NEOUserInformationDTO>}
+     */
     @GetMapping("/fans/{user_id}")
     public ResponseEntity<NEOUserInformationDTO> getFanInformationOrder(
             @PathVariable("user_id") String userID,
@@ -103,16 +122,17 @@ public class NEOUserInformationController {
     }
 
     /**
+     * PATCH /api/v1/stars/{user_id}, /api/v1/fans/{user_id} : 기존 회원 정보 수정 API<br>
      * 기존 유저 정보를 변경합니다.<br>
      * 스타 및 팬 구별없이 사용 가능하며 내부 로직에 의해 판단합니다. 요청의 일부 로직은 스타에게만 해당되며, 팬이 요청에 해당 필드를 포함하더라도 적용되지 않습니다.<br>
      *
      * @param userID                       사용자 아이디
      * @param changePartialStarInfoRequest 정보 변경에 필요한 요청
-     * @return {@code ResponseEntity<NEOFinalErrorResponse<NEOAdditionalStarInfoRequest>>}, {@code ResponseEntity<NEOFinalErrorResponse<NEOAdditionalFanInfoRequest>>}
+     * @return {@code ResponseEntity<NEOUserInformationDTO>}
      */
-    @PatchMapping("/{user_id}")
+    @PatchMapping(value = {"/stars/{user_id}", "/fans/{user_id}"})
     @NEOChangeUserInfoOrderDocs
-    public ResponseEntity<?> changePartialUserInformationOrder(@PathVariable("user_id") final String userID,
+    public ResponseEntity<NEOUserInformationDTO> changePartialUserInformationOrder(@PathVariable("user_id") final String userID,
                                                                @RequestBody final NEOChangeableInfoDTO changePartialStarInfoRequest) {
         return userInformationService.doChangePartialInformationOrder(userID, NEOUserOrder.CHANGE_USER_INFO, changePartialStarInfoRequest);
     }
@@ -132,7 +152,7 @@ public class NEOUserInformationController {
      *
      * @param bindingResult 유효성 검사 결과
      */
-    public void checkRequestValidationPassed(BindingResult bindingResult, NEOUserOrder userOrder) {
+    private void checkRequestValidationPassed(BindingResult bindingResult, NEOUserOrder userOrder) {
         if (bindingResult.hasErrors()) {
             // 유효성 검사 실패 시 처리
             log.warn("유효성 검사 실패!");
@@ -148,7 +168,7 @@ public class NEOUserInformationController {
      * @param errors 유효성 검사 발생 필드 에러
      * @return exception 통합 메시지
      */
-    public List<NEOErrorResponse> renderErrorResponseListByRequestValidationFieldError(List<FieldError> errors) {
+    private List<NEOErrorResponse> renderErrorResponseListByRequestValidationFieldError(List<FieldError> errors) {
         return errors.stream()
                 .map(NEOErrorResponse::fromFieldError)
                 .collect(Collectors.toList());
