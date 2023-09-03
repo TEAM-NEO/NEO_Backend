@@ -1,5 +1,6 @@
 package com.neo.needeachother.users.dto;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neo.needeachother.users.document.NEOStarInfoDocument;
 import com.neo.needeachother.users.entity.NEOFanEntity;
@@ -9,12 +10,15 @@ import com.neo.needeachother.users.enums.NEOStarDetailClassification;
 import com.neo.needeachother.users.enums.NEOUserType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.List;
 
+@Getter
 @Builder
+@JsonFilter("NEOInfoDtoJsonFilter")
 @NoArgsConstructor
 @AllArgsConstructor
 public class NEOUserInformationDTO {
@@ -61,7 +65,7 @@ public class NEOUserInformationDTO {
     @JsonProperty(value = "introduction")
     private String introduction;
 
-    @JsonProperty("custom_introduction_list")
+    @JsonProperty("custom_wiki_list")
     private List<NEOStarWikiInformationDTO> customWikiList;
 
     public static NEOUserInformationDTO from(NEOFanEntity fanEntity, boolean isPrivate) {

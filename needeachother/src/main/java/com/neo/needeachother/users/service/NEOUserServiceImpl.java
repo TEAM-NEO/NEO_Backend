@@ -73,26 +73,6 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
                 .body(createdUserInformation);
     }
 
-    private Set<NEOStarDetailClassification> validateAndGetStarClassification(final NEOAdditionalStarInfoRequest createStarInfoRequest, final NEOUserApiOrder userOrder){
-        Set<NEOStarDetailClassification> starClassificationSet = createStarInfoRequest.getStarClassificationSet();
-
-        // 잘못된 성별 문자열이 요청으로 들어온 경우
-        if (createStarInfoRequest.getGender().equals(NEOGenderType.NONE)) {
-            throw new NEOUserExpectedException(NEOErrorCode.INVALID_FORMAT_GENDER, "gender에 적합한 코드를 입력하세요. gender code API를 통해 확인할 수 있습니다.", userOrder);
-        }
-
-        // 스타 분류를 설정하지 않은 요청
-        if (starClassificationSet.isEmpty()) {
-            throw new NEOUserExpectedException(NEOErrorCode.BLANK_VALUE, "star_classification_list : null or blank", userOrder);
-        }
-
-        // 스타 분류 설정 중 잘못된 코드 포함 요청
-        if (starClassificationSet.contains(NEOStarDetailClassification.NONE)) {
-            throw new NEOUserExpectedException(NEOErrorCode.INVALID_FORMAT_STAR_CLASSIFICATION, "스타 구분자에 적합한 코드를 입력하세요. 스타 구분자 API를 통해 확인할 수 있습니다.", userOrder);
-        }
-        return starClassificationSet;
-    }
-
     /**
      * 새로운 팬 정보를 생성합니다.
      *
@@ -165,12 +145,6 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
                 .body(foundFanInformation);
     }
 
-    @Transactional
-    public NEOStarInfoDocument createEmptyStarInfoDocument(String starID){
-        return starCustomInfoRepository.save(NEOStarInfoDocument.builder().userID(starID).build());
-    }
-
-
     @Override
     public ResponseEntity<NEOUserInformationDTO> doChangePartialInformationOrder(String userID, NEOUserApiOrder userOrder, NEOChangeableInfoDTO changeInfoDto) {
         NEOUserEntity foundUser = userRepository.findByUserID(userID)
@@ -198,6 +172,67 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
                 .body(null);
     }
 
+    private Set<NEOStarDetailClassification> validateAndGetStarClassification(final NEOAdditionalStarInfoRequest createStarInfoRequest, final NEOUserApiOrder userOrder){
+        Set<NEOStarDetailClassification> starClassificationSet = createStarInfoRequest.getStarClassificationSet();
+
+        // 잘못된 성별 문자열이 요청으로 들어온 경우
+        if (createStarInfoRequest.getGender().equals(NEOGenderType.NONE)) {
+            throw new NEOUserExpectedException(NEOErrorCode.INVALID_FORMAT_GENDER, "gender에 적합한 코드를 입력하세요. gender code API를 통해 확인할 수 있습니다.", userOrder);
+        }
+
+        // 스타 분류를 설정하지 않은 요청
+        if (starClassificationSet.isEmpty()) {
+            throw new NEOUserExpectedException(NEOErrorCode.BLANK_VALUE, "star_classification_list : null or blank", userOrder);
+        }
+
+        // 스타 분류 설정 중 잘못된 코드 포함 요청
+        if (starClassificationSet.contains(NEOStarDetailClassification.NONE)) {
+            throw new NEOUserExpectedException(NEOErrorCode.INVALID_FORMAT_STAR_CLASSIFICATION, "스타 구분자에 적합한 코드를 입력하세요. 스타 구분자 API를 통해 확인할 수 있습니다.", userOrder);
+        }
+        return starClassificationSet;
+    }
+
+
+    @Transactional
+    public NEOStarInfoDocument createEmptyStarInfoDocument(String starID){
+        return starCustomInfoRepository.save(NEOStarInfoDocument.builder().userID(starID).build());
+    }
+
+
+    private void modifyStarClassificationFromDto(NEOStarEntity star, NEOChangeableInfoDTO changeInfoDto){
+        // 변경사항 없다면, early return
+        if (changeInfoDto.getStarClassificationSet() == null){
+            return;
+        }
+
+        HashSet<NEOStarDetailClassification> alreadyExistClassificationSet = new HashSet<>();
+        List<NEOStarTypeEntity> deleteTargetStarTypeList = new ArrayList<>();
+
+        // 기존 스타가 가진 스타 분류와 변경 대상을 비교
+        for (NEOStarTypeEntity starTypeEntity : star.getStarTypeList()) {
+            if (changeInfoDto.getStarClassificationSet().contains(starTypeEntity.getStarType())) {
+                // 변경 집합에도 포함 (엔티티 삭제 X)
+                alreadyExistClassificationSet.add(starTypeEntity.getStarType());
+            } else {
+                // 변경 집합에 미포함 (엔티티 삭제 O)
+                deleteTargetStarTypeList.add(starTypeEntity);
+                starTypeRepository.delete(starTypeEntity);
+            }
+        }
+        star.getStarTypeList().removeAll(deleteTargetStarTypeList);
+
+        // 기존 분류에 없던 분류만 생성
+        List<NEOStarTypeEntity> newCreatedClassificationList = changeInfoDto.getStarClassificationSet().stream()
+                .filter(classification -> !alreadyExistClassificationSet.contains(classification))
+                .map(classification -> {
+                    NEOStarTypeEntity newStarType = NEOStarTypeEntity.builder().starType(classification).build();
+                    newStarType.setNeoStar(star);
+                    return newStarType;
+                })
+                .collect(Collectors.toList());
+
+        starTypeRepository.saveAll(newCreatedClassificationList);
+    }
 
     private ResponseEntity<NEOUserInformationDTO> modifyStarDataFromDto(NEOStarEntity star, NEOStarInfoDocument starDoc, NEOUserApiOrder userOrder, NEOChangeableInfoDTO changeInfoDto) {
         // 변경사항 검토 후 값 교체
@@ -220,38 +255,6 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
 
         return ResponseEntity.ok()
                 .body(NEOUserInformationDTO.from(savedStar, savedStarDoc, true, true));
-    }
-
-    private void modifyStarClassificationFromDto(NEOStarEntity star, NEOChangeableInfoDTO changeInfoDto){
-        if (changeInfoDto.getStarClassificationSet() == null){
-            return;
-        }
-
-        HashSet<NEOStarDetailClassification> alreadyExistClassificationSet = new HashSet<>();
-        List<NEOStarTypeEntity> deleteTargetStarTypeList = new ArrayList<>();
-
-        for (NEOStarTypeEntity starTypeEntity : star.getStarTypeList()) {
-            if (changeInfoDto.getStarClassificationSet().contains(starTypeEntity.getStarType())) {
-                // 변경 집합에도 포함 (엔티티 삭제 X)
-                alreadyExistClassificationSet.add(starTypeEntity.getStarType());
-            } else {
-                // 변경 집합에 미포함 (엔티티 삭제 O)
-                deleteTargetStarTypeList.add(starTypeEntity);
-                starTypeRepository.delete(starTypeEntity);
-            }
-        }
-        star.getStarTypeList().removeAll(deleteTargetStarTypeList);
-
-        List<NEOStarTypeEntity> newCreatedClassificationList = changeInfoDto.getStarClassificationSet().stream()
-                .filter(classification -> !alreadyExistClassificationSet.contains(classification))
-                .map(classification -> {
-                    NEOStarTypeEntity newStarType = NEOStarTypeEntity.builder().starType(classification).build();
-                    newStarType.setNeoStar(star);
-                    return newStarType;
-                })
-                .collect(Collectors.toList());
-
-        starTypeRepository.saveAll(newCreatedClassificationList);
     }
 
     private ResponseEntity<NEOUserInformationDTO> modifyFanDataFromDto(NEOFanEntity fan, NEOUserApiOrder userOrder, NEOChangeableInfoDTO changeInfoDto) {

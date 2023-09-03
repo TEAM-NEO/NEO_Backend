@@ -16,7 +16,6 @@ import lombok.*;
 @Getter
 @ToString
 @Builder
-@JsonFilter("NEOInfoDtoJsonFilter")
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "OAuth2.0을 통한 회원가입 이후의, 팬의 추가 정보를 입력하기 위한 API의 Request DTO입니다.")

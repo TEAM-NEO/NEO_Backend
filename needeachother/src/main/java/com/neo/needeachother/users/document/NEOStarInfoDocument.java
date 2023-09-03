@@ -64,7 +64,7 @@ public class NEOStarInfoDocument {
         return NEOStarInfoDocument.builder()
                 .userID(request.getUserID())
                 .introduction(request.getIntroduction())
-                .starCustomIntroductionList(request.getCustomIntroductionList().stream()
+                .starCustomIntroductionList(request.getCustomWikiList().stream()
                         .map(customInfo -> NEOCustomStarInformationDocument.builder()
                                 .customTitle(customInfo.getCustomTitle())
                                 .customContext(customInfo.getCustomContext())
