@@ -42,11 +42,15 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
      */
     @Override
     public ResponseEntity<NEOUserInformationDTO> doCreateNewStarInformationOrder(final NEOAdditionalStarInfoRequest createStarInfoRequest, final NEOUserOrder userOrder) {
+        // 추가 유효성 검사 및 스타 분류 집합 획득
         Set<NEOStarDetailClassification> starClassificationSet = validateAndGetStarClassification(createStarInfoRequest, userOrder);
 
+        // 'request'로부터, 엔티티 생성
         NEOStarEntity createdStar = NEOStarEntity.fromRequest(createStarInfoRequest);
         NEOStarInfoDocument starCustomInfo = NEOStarInfoDocument.fromRequest(createStarInfoRequest);
 
+        // 엔티티 저장 및 연관관계 설정
+        // TODO : 영속성 전이로 코드 단축 가능
         NEOStarEntity savedStar = starRepository.save(createdStar);
         List<NEOStarTypeEntity> starTypeEntities = starClassificationSet.stream()
                 .map(classification -> NEOStarTypeEntity.builder().starType(classification).build())
@@ -54,8 +58,11 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
                 .collect(Collectors.toList());
 
         starTypeRepository.saveAll(starTypeEntities);
+
+        // 위키 및 소개글 MongoDB 별도 저장
         NEOStarInfoDocument savedStarWikiDoc = starCustomInfoRepository.save(starCustomInfo);
 
+        // 최종 응답 생성 (생성된 사용자 정보)
         NEOUserInformationDTO createdUserInformation = NEOUserInformationDTO.from(savedStar, savedStarWikiDoc, true, true);
 
         return ResponseEntity
@@ -67,14 +74,17 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
     private Set<NEOStarDetailClassification> validateAndGetStarClassification(final NEOAdditionalStarInfoRequest createStarInfoRequest, final NEOUserOrder userOrder){
         Set<NEOStarDetailClassification> starClassificationSet = createStarInfoRequest.getStarClassificationSet();
 
+        // 잘못된 성별 문자열이 요청으로 들어온 경우
         if (createStarInfoRequest.getGender().equals(NEOGenderType.NONE)) {
             throw new NEOUserExpectedException(NEOErrorCode.INVALID_FORMAT_GENDER, "gender에 적합한 코드를 입력하세요. gender code API를 통해 확인할 수 있습니다.", userOrder);
         }
 
+        // 스타 분류를 설정하지 않은 요청
         if (starClassificationSet.isEmpty()) {
             throw new NEOUserExpectedException(NEOErrorCode.BLANK_VALUE, "star_classification_list : null or blank", userOrder);
         }
 
+        // 스타 분류 설정 중 잘못된 코드 포함 요청
         if (starClassificationSet.contains(NEOStarDetailClassification.NONE)) {
             throw new NEOUserExpectedException(NEOErrorCode.INVALID_FORMAT_STAR_CLASSIFICATION, "스타 구분자에 적합한 코드를 입력하세요. 스타 구분자 API를 통해 확인할 수 있습니다.", userOrder);
         }
@@ -89,31 +99,36 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
      * @return {@code ResponseEntity<NEOFinalErrorResponse>} 요청 응답 결과
      */
     @Override
-    public ResponseEntity<?> doCreateNewFanInformationOrder(final NEOAdditionalFanInfoRequest createFanInfoRequest, final NEOUserOrder userOrder) {
-        // 1. OAuth를 통해 가입한 엔티티를, request의 userID를 통해 찾아낸다. => 도입 이전까지는 우선 해당 파트 없이 아예 새로운 엔티티를 만드는 방법으로 구현.
-        // 2. 들어온 요청을 DTO로 변환후, 엔티티를 업데이트 한다. (여기서는 생성)
-        // 3. 들어온 요청의 favoriteStarID를 기반으로 존재하는 스타를 탐색한 후, 해당 엔티티를 찾아온다.
-        // 4. 해당 엔티티와 연관관계를 맺고 삽입.
+    public ResponseEntity<NEOUserInformationDTO> doCreateNewFanInformationOrder(final NEOAdditionalFanInfoRequest createFanInfoRequest, final NEOUserOrder userOrder) {
 
+        // 잘못된 성별 문자열이 요청으로 들어온 경우
         if (createFanInfoRequest.getGender().equals(NEOGenderType.NONE)) {
             throw new NEOUserExpectedException(NEOErrorCode.INVALID_FORMAT_GENDER, "gender에 적합한 코드를 입력하세요. gender code API를 통해 확인할 수 있습니다.", userOrder);
         }
 
+        // 요청으로부터 엔티티 생성
         NEOFanEntity createdFan = NEOFanEntity.fromRequest(createFanInfoRequest);
+
+        // 팔로우 관계를 맺을 스타 탐색 및 예외
         NEOStarEntity favoriteStarOfFan = starRepository.findByUserID(createFanInfoRequest.getFavoriteStarID())
                 .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.NOT_EXIST_STAR_ID,
                         "에러 대상 : " + createFanInfoRequest.getFavoriteStarID(),
                         userOrder));
 
+        // 엔티티 저장 및 연관관계 설정 및 저장
+        // TODO : 영속성 전이로 코드 단축 가능
         NEOFanEntity savedFan = fanRepository.save(createdFan);
         NEOUserRelationEntity userRelation = new NEOUserRelationEntity();
         userRelation.makeRelationFanWithStar(savedFan, favoriteStarOfFan);
         userRelationRepository.save(userRelation);
 
+        // 최종 응답 생성 (생성된 사용자 정보)
+        NEOUserInformationDTO createdUserInformation = NEOUserInformationDTO.from(savedFan, true);
+
         return ResponseEntity
                 .created(URI.create("/api/v1/users/" + savedFan.getUserID()))
                 .headers(userOrder.renderHttpHeadersByUserOrderAndResponseCode(NEOResponseCode.SUCCESS))
-                .body(null);
+                .body(createdUserInformation);
     }
 
     /**

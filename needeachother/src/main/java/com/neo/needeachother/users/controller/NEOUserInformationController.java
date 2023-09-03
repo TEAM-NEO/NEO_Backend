@@ -94,7 +94,7 @@ public class NEOUserInformationController {
      */
     @PostMapping("/fans")
     @NEOCreateFanInfoOrderDocs
-    public ResponseEntity<?> createNewFanInformationOrder(@RequestBody @Validated final NEOAdditionalFanInfoRequest createFanInfoRequest, BindingResult bindingResult) {
+    public ResponseEntity<NEOUserInformationDTO> createNewFanInformationOrder(@RequestBody @Validated final NEOAdditionalFanInfoRequest createFanInfoRequest, BindingResult bindingResult) {
         NEOUserOrder userOrder = NEOUserOrder.CREATE_FAN_INFO;
         checkRequestValidationPassed(bindingResult, userOrder);
         return userInformationService.doCreateNewFanInformationOrder(createFanInfoRequest, userOrder);

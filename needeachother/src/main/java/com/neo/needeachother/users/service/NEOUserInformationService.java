@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface NEOUserInformationService {
      ResponseEntity<NEOUserInformationDTO> doCreateNewStarInformationOrder(NEOAdditionalStarInfoRequest createStarInfoRequest, NEOUserOrder userOrder);
-     ResponseEntity<?> doCreateNewFanInformationOrder(NEOAdditionalFanInfoRequest createFanInfoRequest, NEOUserOrder userOrder);
+     ResponseEntity<NEOUserInformationDTO> doCreateNewFanInformationOrder(NEOAdditionalFanInfoRequest createFanInfoRequest, NEOUserOrder userOrder);
      ResponseEntity<?> doGetUserInformationOrder(String userID, NEOUserOrder userOrder);
      ResponseEntity<?> doGetPublicUserInformationOrder(String userID, NEOUserOrder userOrder);
      ResponseEntity<?> doChangePartialInformationOrder(String userID, NEOUserOrder userOrder, NEOChangeableInfoDTO changeInfoDto);
