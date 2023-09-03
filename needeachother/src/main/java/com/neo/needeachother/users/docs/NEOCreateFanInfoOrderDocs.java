@@ -18,8 +18,7 @@ import java.lang.annotation.Target;
         description = "OAuth2.0을 통해 회원가입을 한 후, 팬에 대한 추가정보를 입력받을 수 있습니다. <br> " +
                 "OAuth2.0가 적용되기 이전에는 회원의 나머지 정보도 받아오는 것을 대체합니다.")
 @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "팬 정보 생성 성공",
-                content = {@Content(schema = @Schema(implementation = NEOFinalErrorResponse.class))}),
+        @ApiResponse(responseCode = "201", description = "팬 정보 생성 성공"),
         @ApiResponse(responseCode = "400", description = "실패 : 잘못된 요청",
                 content = {@Content(schema = @Schema(implementation = NEOFinalErrorResponse.class))})
 })

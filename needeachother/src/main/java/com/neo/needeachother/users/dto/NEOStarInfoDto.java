@@ -26,7 +26,6 @@ import java.util.List;
 @JsonFilter("NEOInfoDtoJsonFilter")
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "OAuth2.0을 통한 회원가입 이후의, 스타의 추가 정보를 입력하기 위한 API의 Request DTO입니다.")
 public class NEOStarInfoDto {
 

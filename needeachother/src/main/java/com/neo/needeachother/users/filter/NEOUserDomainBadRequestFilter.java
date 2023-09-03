@@ -2,7 +2,6 @@ package com.neo.needeachother.users.filter;
 
 import com.neo.needeachother.common.filter.NEORereadableRequestWrapper;
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;

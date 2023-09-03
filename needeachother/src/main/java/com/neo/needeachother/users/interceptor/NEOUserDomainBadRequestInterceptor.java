@@ -1,23 +1,16 @@
 package com.neo.needeachother.users.interceptor;
 
 import com.neo.needeachother.common.enums.NEOErrorCode;
-import com.neo.needeachother.common.enums.NEOResponseCode;
-import com.neo.needeachother.common.response.NEOErrorResponse;
 import com.neo.needeachother.common.response.NEOFinalErrorResponse;
 import com.neo.needeachother.common.service.NEOInterceptorService;
 import com.neo.needeachother.users.enums.NEOUserOrder;
-import jakarta.servlet.ReadListener;
-import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -38,7 +31,7 @@ public class NEOUserDomainBadRequestInterceptor implements HandlerInterceptor {
 
         // HTTP 메소드와 URI를 기반으로 User 도메인의 어떤 요청인지 분류
         NEOUserOrder userOrder = NEOUserOrder.fromHttpMethodAndRequestURI(request.getMethod(), request.getRequestURI());
-        log.info("Request Arrived : " + request.getMethod() + " " + request.getRequestURI() + userOrder.name());
+        log.info("Request Arrived : " + request.getMethod() + " " + request.getRequestURI() + ", " + userOrder.name());
 
         // NEOUserOrder에 매칭되지 않은 API Method와 URI 요청
         if (userOrder.equals(NEOUserOrder.NONE)) {
@@ -58,7 +51,7 @@ public class NEOUserDomainBadRequestInterceptor implements HandlerInterceptor {
 
         // 해당 API는 원래 요구하는 RequestBody가 없는 경우
         if (requestBody.isEmpty() && jsonPropertyNameSet.isEmpty()) {
-            log.info("requestbody not exist");
+            log.info("User Domain Bad Request 검증 인터셉터를 통과했습니다.");
             return true;
         }
 
@@ -75,8 +68,6 @@ public class NEOUserDomainBadRequestInterceptor implements HandlerInterceptor {
         log.info(String.valueOf(requestBodyMap.size()));
         log.info(requestBodyMap.toString());
 
-
-
         // 문제가 되는 경우는, DTO로 역직렬화가 불가능한 경우로 requestBody의 필드가 jsonPropertyNameSet에는 존재하지 않는 경우가 문제. 나머지는 상관 없음.
         List<String> errorJsonFieldNameList = new ArrayList<>();
         for (String paramName : requestBodyMap.keySet()) {
@@ -88,7 +79,7 @@ public class NEOUserDomainBadRequestInterceptor implements HandlerInterceptor {
 
         // 문제가 없는 경우 -> 컨트롤러로
         if (errorJsonFieldNameList.isEmpty()) {
-            log.info("문제 없음");
+            log.info("User Domain Bad Request 검증 인터셉터를 통과했습니다.");
             return true;
         }
 
