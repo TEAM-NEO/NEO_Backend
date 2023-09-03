@@ -1,14 +1,13 @@
 package com.neo.needeachother.users.dto;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neo.needeachother.common.enums.NEOErrorCode;
 import com.neo.needeachother.users.enums.NEOGenderType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * @author 이승훈<br>
@@ -19,6 +18,8 @@ import lombok.ToString;
 @ToString
 @Builder
 @JsonFilter("NEOInfoDtoJsonFilter")
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(description = "OAuth2.0을 통한 회원가입 이후의, 팬의 추가 정보를 입력하기 위한 API의 Request DTO입니다.")
 public class NEOFanInfoDto {
 
@@ -40,7 +41,7 @@ public class NEOFanInfoDto {
     @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
     @Email(message = NEOErrorCode.ValidationMessage.INVALID_FORMAT_EMAIL)
     @Schema(description = "OAuth2.0으로부터 받아온 사용자의 이메일, OAuth 도입 이후 request에서 제거 예정", example = "aaa@example.com")
-    @JsonProperty(required = true)
+    @JsonProperty(value = "email", required = true)
     private String email;
 
     /* OAuth2.0으로부터 받아온 사용자의 사용자 이름, OAuth 도입 이후 request에서 제거 예정 */
@@ -65,9 +66,8 @@ public class NEOFanInfoDto {
     @JsonProperty(value = "nickname", required = true)
     private String neoNickName;
 
-    @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
     @Schema(description = "성별", example = "M")
-    @JsonProperty(required = true)
+    @JsonProperty(value = "gender", required = true)
     private NEOGenderType gender;
 
     @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)

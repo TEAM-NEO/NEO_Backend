@@ -1,5 +1,6 @@
 package com.neo.needeachother.users.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neo.needeachother.users.enums.NEOGenderType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,7 +24,7 @@ public class NEOPublicFanInfoDto {
     private String neoNickName;
 
     @Schema(description = "성별", example = "여성")
-    @JsonProperty(required = true)
+    @JsonProperty(value = "gender", required = true)
     private NEOGenderType gender;
 
 }

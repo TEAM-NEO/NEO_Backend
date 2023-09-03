@@ -14,7 +14,11 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum NEOErrorCode {
 
-    /* BAD REQUEST (잘못된 요청) */
+    /* BAD REQUEST (잘못된 요청, 형식) */
+    INVALID_JSON_FORMAT_REQUEST(-98, "잘못된 JSON 포맷의 요청이 왔습니다.", HttpStatus.BAD_REQUEST),
+    INVALID_JSON_FIELD_NAME(-99, "서버에서 요구하는 JSON 필드명과 매칭되지 않는 필드명이 존재합니다.", HttpStatus.BAD_REQUEST),
+
+    /* BAD REQUEST (잘못된 요청, 데이터 측면) */
     BLANK_VALUE(-100, "입력된 값이 null이거나 값이 비어있습니다.", HttpStatus.BAD_REQUEST),
     MIN_INVALID_USER_ID(-101, "아이디는 최소 4글자입니다.", HttpStatus.BAD_REQUEST),
     MIN_INVALID_USER_PW(-103, "비밀번호는 최소 4글자입니다.", HttpStatus.BAD_REQUEST),
@@ -48,7 +52,5 @@ public enum NEOErrorCode {
         public static final String NOT_ONLY_KOR_USERNAME = "NOT_ONLY_KOR_USERNAME";
         public static final String MIN_INVALID_USERNAME = "MIN_INVALID_USERNAME";
         public static final String INVALID_FORMAT_PHONE_NUMBER = "INVALID_FORMAT_PHONE_NUMBER";
-        public static final String INVALID_FORMAT_GENDER = "INVALID_FORMAT_GENDER";
-        public static final String INVALID_FORMAT_STAR_CLASSIFICATION = "INVALID_FORMAT_STAR_CLASSIFICATION";
     }
 }

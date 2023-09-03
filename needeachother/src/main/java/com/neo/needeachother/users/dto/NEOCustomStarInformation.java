@@ -18,12 +18,12 @@ public class NEOCustomStarInformation {
 
     @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
     @Schema(description = "스타가 원하는 자기 소개 커스텀 제목", example = "내가 좋아하는 동물!")
-    @JsonProperty("custom_title")
+    @JsonProperty(value = "custom_title")
     private String customTitle;
 
     @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
     @Schema(description = "위에서 정의한 제목에 매칭되는 커스텀 내용", example = "고양이")
-    @JsonProperty("custom_context")
+    @JsonProperty(value = "custom_context")
     private String customContext;
 
 }

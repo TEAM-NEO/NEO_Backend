@@ -29,6 +29,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+	// IOUtils
+	implementation 'org.apache.directory.studio:org.apache.commons.io:2.4'
 
 	// security & oauth
 	// implementation 'org.springframework.boot:spring-boot-starter-security'

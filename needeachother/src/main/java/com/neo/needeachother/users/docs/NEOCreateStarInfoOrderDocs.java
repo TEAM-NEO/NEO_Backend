@@ -1,6 +1,6 @@
 package com.neo.needeachother.users.docs;
 
-import com.neo.needeachother.common.response.NEOResponseBody;
+import com.neo.needeachother.common.response.NEOFinalErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,9 +19,9 @@ import java.lang.annotation.Target;
                 "OAuth2.0가 적용되기 이전에는 회원의 나머지 정보도 받아오는 것을 대체합니다.")
 @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "스타 정보 생성 성공",
-                content = {@Content(schema = @Schema(implementation = NEOResponseBody.class))}),
+                content = {@Content(schema = @Schema(implementation = NEOFinalErrorResponse.class))}),
         @ApiResponse(responseCode = "400", description = "실패 : 잘못된 요청",
-                content = {@Content(schema = @Schema(implementation = NEOResponseBody.class))})
+                content = {@Content(schema = @Schema(implementation = NEOFinalErrorResponse.class))})
 })
 public @interface NEOCreateStarInfoOrderDocs {
 }

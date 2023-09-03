@@ -1,6 +1,6 @@
 package com.neo.needeachother.users.docs;
 
-import com.neo.needeachother.common.response.NEOResponseBody;
+import com.neo.needeachother.common.response.NEOFinalErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,9 +22,9 @@ import java.lang.annotation.Target;
                 "빈 리스트를 전달하면, 초기화의 의미를 갖습니다.")
 @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "유저 정보 변경 성공",
-                content = {@Content(schema = @Schema(implementation = NEOResponseBody.class))}),
+                content = {@Content(schema = @Schema(implementation = NEOFinalErrorResponse.class))}),
         @ApiResponse(responseCode = "404", description = "실패 : 요청 대상을 찾을 수 없음",
-                content = {@Content(schema = @Schema(implementation = NEOResponseBody.class))})
+                content = {@Content(schema = @Schema(implementation = NEOFinalErrorResponse.class))})
 })
 public @interface NEOChangeUserInfoOrderDocs {
 }

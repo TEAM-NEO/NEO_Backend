@@ -17,7 +17,9 @@ import java.util.List;
  */
 @Getter
 @Entity
-@Table(name = "user")
+@Table(name = "user", uniqueConstraints = {
+        @UniqueConstraint(name = "UNIQUE_ID_EMAIL_NAME_IDX", columnNames = {"user_id", "email", "user_name"})
+})
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,7 +29,7 @@ public abstract class NEOUserEntity extends NEOTimeDefaultEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "user_id")
     private String userID;
@@ -41,14 +43,14 @@ public abstract class NEOUserEntity extends NEOTimeDefaultEntity {
     @Column
     private String email;
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", unique = true)
     private String phoneNumber;
 
     @Column(name = "provider_type")
     private String providerType;
 
     @Setter
-    @Column(name = "neo_nick_name")
+    @Column(name = "neo_nick_name", unique = true)
     private String neoNickName;
 
     @Column(name = "gender")
