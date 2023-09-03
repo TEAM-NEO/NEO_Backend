@@ -150,10 +150,26 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
                 .body(foundStarInformation);
     }
 
+    @Override
+    public ResponseEntity<NEOUserInformationDTO> doGetFanInformationOrder(String userID, boolean isPrivacy, NEOUserOrder userOrder) {
+
+        // 팬 엔티티 획득
+        NEOFanEntity foundFan = fanRepository.findByUserID(userID)
+                .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.NOT_EXIST_USER, "not exist this fan : " + userID, userOrder));
+
+        // 팬 정보 객체로 렌더링
+        NEOUserInformationDTO foundFanInformation = NEOUserInformationDTO.from(foundFan, isPrivacy);
+
+        return ResponseEntity.ok()
+                .body(foundFanInformation);
+    }
+
     @Transactional
     public NEOStarInfoDocument createEmptyStarInfoDocument(String starID){
         return starCustomInfoRepository.save(NEOStarInfoDocument.builder().userID(starID).build());
     }
+
+
 
     /**
      * 사용자 정보를 얻어오는 메소드입니다.

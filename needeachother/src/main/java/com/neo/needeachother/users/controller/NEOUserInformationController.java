@@ -73,6 +73,14 @@ public class NEOUserInformationController {
         return userInformationService.doGetStarInformationOrder(userID, isPrivacy, isDetail, userOrder);
     }
 
+    @GetMapping("/fans/{user_id}")
+    public ResponseEntity<NEOUserInformationDTO> getFanInformationOrder(
+            @PathVariable("user_id") String userID,
+            @RequestParam(value = "privacy", required = false, defaultValue = "false") boolean isPrivacy) {
+        NEOUserOrder userOrder = NEOUserOrder.GET_FAN_INFO;
+        return userInformationService.doGetFanInformationOrder(userID, isPrivacy, userOrder);
+    }
+
     /**
      * 유저의 정보를 가져옵니다.<br>
      * {@code isPublic}의 값에 따라 공개 정보 / 전체 정보를 얻어올 수 있습니다. <br>

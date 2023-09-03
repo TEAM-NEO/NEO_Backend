@@ -25,6 +25,8 @@ public enum NEOUserOrder {
             "새로운 팬 정보 생성에 실패했습니다.", Pattern.compile("^/api/v1/users/fans$"), NEOAdditionalFanInfoRequest.class),
     GET_STAR_INFO("GET", "api/v1/users/stars/{user_id}", "스타 정보를 성공적으로 반환합니다.",
             "스타 정보를 반환하는데 실패했습니다.", Pattern.compile("^/api/v1/users/stars/\\{[a-zA-Z]+\\}(\\?privacy=(true|false))?(&detail=(true|false))?$"), null),
+    GET_FAN_INFO("GET", "api/v1/users/fans/{user_id}", "팬 정보를 성공적으로 반환합니다.",
+            "팬 정보를 반환하는데 실패했습니다.", Pattern.compile("^/api/v1/users/fans/\\{[a-zA-Z]+\\}(\\?privacy=(true|false))?$"), null),
     GET_USER_INFO("GET", "api/v1/users/{user_id}","사용자 전체 정보를 얻어오는데 성공했습니다.",
             "사용자 전체 정보를 얻어오는데 실패했습니다.", Pattern.compile("^/api/v1/users/[^/]+$"), null),
     GET_USER_PUBLIC_INFO("GET", "api/v1/users/{user_id}","사용자 공개 정보를 얻어오는데 성공했습니다.",
