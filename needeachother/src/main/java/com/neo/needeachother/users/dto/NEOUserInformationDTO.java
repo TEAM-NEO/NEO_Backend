@@ -1,0 +1,135 @@
+package com.neo.needeachother.users.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.neo.needeachother.users.document.NEOStarInfoDocument;
+import com.neo.needeachother.users.entity.NEOFanEntity;
+import com.neo.needeachother.users.entity.NEOStarEntity;
+import com.neo.needeachother.users.entity.NEOUserEntity;
+import com.neo.needeachother.users.enums.NEOGenderType;
+import com.neo.needeachother.users.enums.NEOStarDetailClassification;
+import com.neo.needeachother.users.enums.NEOUserType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.List;
+
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class NEOUserInformationDTO {
+
+    @JsonProperty(value = "user_type")
+    private NEOUserType userType;
+
+    @JsonProperty(value = "has_wiki")
+    private boolean hasWiki;
+
+    @JsonProperty(value = "is_private")
+    private boolean isPrivate;
+
+    @JsonProperty(value = "user_id")
+    private String userID;
+
+    @JsonProperty(value = "user_pw")
+    private String userPW;
+
+    @JsonProperty(value = "email")
+    private String email;
+
+    @JsonProperty(value = "user_name")
+    private String userName;
+
+    @JsonProperty(value = "phone_number")
+    private String phoneNumber;
+
+    @JsonProperty(value = "nickname")
+    private String neoNickName;
+
+    @JsonProperty(value = "star_nickname")
+    private String starNickName;
+
+    @JsonProperty(value = "gender")
+    private NEOGenderType gender;
+
+    @JsonProperty(value = "star_classification_list")
+    private HashSet<NEOStarDetailClassification> starClassificationSet;
+
+    @JsonProperty("submitted_url")
+    private List<String> submittedUrl;
+
+    @JsonProperty(value = "introduction")
+    private String introduction;
+
+    @JsonProperty("custom_introduction_list")
+    private List<NEOStarWikiInformationDTO> customIntroductionList;
+
+    public static NEOUserInformationDTO from(NEOFanEntity fanEntity, boolean isPrivate) {
+        if (isPrivate) {
+            return NEOUserInformationDTO.builder()
+                    .userType(fanEntity.getUserType())
+                    .hasWiki(false)
+                    .isPrivate(isPrivate)
+                    .userID(fanEntity.getUserID())
+                    .userName(fanEntity.getUserName())
+                    .email(fanEntity.getEmail())
+                    .phoneNumber(fanEntity.getPhoneNumber())
+                    .neoNickName(fanEntity.getNeoNickName())
+                    .gender(fanEntity.getGender())
+                    .build();
+        }
+
+        return NEOUserInformationDTO.builder()
+                .userType(fanEntity.getUserType())
+                .hasWiki(false)
+                .isPrivate(isPrivate)
+                .userID(fanEntity.getUserID())
+                .neoNickName(fanEntity.getNeoNickName())
+                .gender(fanEntity.getGender())
+                .build();
+    }
+
+    public static NEOUserInformationDTO from(NEOStarEntity starEntity, NEOStarInfoDocument starInfoDocument, boolean isPrivate, boolean hasWiki) {
+        List<NEOStarWikiInformationDTO> customIntroductionList = null;
+
+        if(hasWiki){
+            customIntroductionList = starInfoDocument.getStarCustomIntroductionList().stream()
+                    .map(NEOStarInfoDocument.NEOCustomStarInformationDocument::convertToDtoFormat)
+                    .toList();
+        }
+
+        if(isPrivate){
+            return NEOUserInformationDTO.builder()
+                    .userType(starEntity.getUserType())
+                    .hasWiki(hasWiki)
+                    .isPrivate(isPrivate)
+                    .userID(starEntity.getUserID())
+                    .userName(starEntity.getUserName())
+                    .email(starEntity.getEmail())
+                    .phoneNumber(starEntity.getPhoneNumber())
+                    .neoNickName(starEntity.getNeoNickName())
+                    .starNickName(starEntity.getStarNickName())
+                    .gender(starEntity.getGender())
+                    .starClassificationSet(starEntity.getStarClassificationSet())
+                    .submittedUrl(starInfoDocument.getSubmittedUrl())
+                    .introduction(starInfoDocument.getIntroduction())
+                    .customIntroductionList(customIntroductionList)
+                    .build();
+        }
+
+        return NEOUserInformationDTO.builder()
+                .userType(starEntity.getUserType())
+                .hasWiki(hasWiki)
+                .isPrivate(isPrivate)
+                .userID(starEntity.getUserID())
+                .neoNickName(starEntity.getNeoNickName())
+                .starNickName(starEntity.getStarNickName())
+                .gender(starEntity.getGender())
+                .starClassificationSet(starEntity.getStarClassificationSet())
+                .submittedUrl(starInfoDocument.getSubmittedUrl())
+                .introduction(starInfoDocument.getIntroduction())
+                .customIntroductionList(customIntroductionList)
+                .build();
+    }
+}

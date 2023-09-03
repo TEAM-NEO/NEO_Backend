@@ -1,6 +1,6 @@
 package com.neo.needeachother.users.entity;
 
-import com.neo.needeachother.users.dto.NEOFanInfoDto;
+import com.neo.needeachother.users.dto.NEOAdditionalFanInfoRequest;
 import com.neo.needeachother.users.dto.NEOPublicFanInfoDto;
 import com.neo.needeachother.users.enums.NEOUserType;
 import jakarta.persistence.DiscriminatorValue;
@@ -26,14 +26,19 @@ public class NEOFanEntity extends NEOUserEntity{
 
     public static final NEOUserType USER_TYPE = NEOUserType.FAN;
 
+    @Override
+    public NEOUserType getUserType() {
+        return USER_TYPE;
+    }
+
     /**
-     * {@code NEOFanInfoDto}로부터 새로운 팬 엔티티를 생성하는 정적 팩토리 메소드입니다.<br>
-     * 유효성 검사를 통과한 {@code NEOFanInfoDto} 객체를 삽입하면 사용할 수 있습니다. <br>
+     * {@code NEOAdditionalFanInfoRequest}로부터 새로운 팬 엔티티를 생성하는 정적 팩토리 메소드입니다.<br>
+     * 유효성 검사를 통과한 {@code NEOAdditionalFanInfoRequest} 객체를 삽입하면 사용할 수 있습니다. <br>
      * TODO : OAuth가 개발된 이후에는, NEOCreateFanInfoRequest가 아닌 다른 DTO로 변경 가능성 농후.
      * @param request 새로운 팬 정보 삽입 요청 객체
      * @return {@code NEOFanEntity} 새로운 팬 엔티티
      */
-    public static NEOFanEntity fromRequest(final NEOFanInfoDto request){
+    public static NEOFanEntity fromRequest(final NEOAdditionalFanInfoRequest request){
         return NEOFanEntity.builder()
                 .userID(request.getUserID())
                 .userName(request.getUserName())
@@ -48,11 +53,11 @@ public class NEOFanEntity extends NEOUserEntity{
     }
 
     /**
-     * 엔티티에서 {@code NEOFanInfoDto}로 변환합니다.
-     * @return {@code NEOFanInfoDto}
+     * 엔티티에서 {@code NEOAdditionalFanInfoRequest}로 변환합니다.
+     * @return {@code NEOAdditionalFanInfoRequest}
      */
-    public NEOFanInfoDto toDTO(){
-        return NEOFanInfoDto.builder()
+    public NEOAdditionalFanInfoRequest toDTO(){
+        return NEOAdditionalFanInfoRequest.builder()
                 .userID(this.getUserID())
                 .userName(this.getUserName())
                 .email(this.getEmail())

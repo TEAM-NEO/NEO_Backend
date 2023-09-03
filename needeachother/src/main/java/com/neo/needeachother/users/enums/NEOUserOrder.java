@@ -1,9 +1,9 @@
 package com.neo.needeachother.users.enums;
 
 import com.neo.needeachother.common.enums.NEOResponseCode;
-import com.neo.needeachother.users.dto.NEOChangeableInfoDto;
-import com.neo.needeachother.users.dto.NEOFanInfoDto;
-import com.neo.needeachother.users.dto.NEOStarInfoDto;
+import com.neo.needeachother.users.dto.NEOAdditionalFanInfoRequest;
+import com.neo.needeachother.users.dto.NEOChangeableInfoDTO;
+import com.neo.needeachother.users.dto.NEOAdditionalStarInfoRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -20,15 +20,15 @@ import java.util.regex.Pattern;
 public enum NEOUserOrder {
 
     CREATE_STAR_INFO("POST", "api/v1/users/stars", "새로운 스타 정보 생성에 성공했습니다.",
-            "새로운 스타 정보 생성에 실패했습니다.", Pattern.compile("^/api/v1/users/stars$"), NEOStarInfoDto.class),
+            "새로운 스타 정보 생성에 실패했습니다.", Pattern.compile("^/api/v1/users/stars$"), NEOAdditionalStarInfoRequest.class),
     CREATE_FAN_INFO("POST", "api/v1/users/fans","새로운 팬 정보 생성에 성공했습니다.",
-            "새로운 팬 정보 생성에 실패했습니다.", Pattern.compile("^/api/v1/users/fans$"), NEOFanInfoDto.class),
+            "새로운 팬 정보 생성에 실패했습니다.", Pattern.compile("^/api/v1/users/fans$"), NEOAdditionalFanInfoRequest.class),
     GET_USER_INFO("GET", "api/v1/users/{user_id}","사용자 전체 정보를 얻어오는데 성공했습니다.",
             "사용자 전체 정보를 얻어오는데 실패했습니다.", Pattern.compile("^/api/v1/users/[^/]+$"), null),
     GET_USER_PUBLIC_INFO("GET", "api/v1/users/{user_id}","사용자 공개 정보를 얻어오는데 성공했습니다.",
             "사용자 공개 정보를 얻어오는데 실패했습니다.", Pattern.compile("^/api/v1/users/[^/]+$"), null),
     CHANGE_USER_INFO("PATCH", "api/v1/users/{user_id}","사용자 정보 변경에 성공했습니다",
-            "사용자 정보 변경에 실패했습니다.", Pattern.compile("^/api/v1/users/[^/]+$"), NEOChangeableInfoDto.class),
+            "사용자 정보 변경에 실패했습니다.", Pattern.compile("^/api/v1/users/[^/]+$"), NEOChangeableInfoDTO.class),
     DELETE_USER_ORDER("DELETE", "api/v1/users/{user_id}","사용자 정보 삭제에 성공했습니다.",
             "사용자 정보 삭제에 실패했습니다.", Pattern.compile("^/api/v1/users/[^/]+$"), null),
 

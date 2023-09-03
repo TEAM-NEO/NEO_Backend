@@ -14,7 +14,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "NEO 스타 유저의 커스텀 자기 소개 정보 객체")
-public class NEOCustomStarInformation {
+public class NEOStarWikiInformationDTO {
 
     @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
     @Schema(description = "스타가 원하는 자기 소개 커스텀 제목", example = "내가 좋아하는 동물!")

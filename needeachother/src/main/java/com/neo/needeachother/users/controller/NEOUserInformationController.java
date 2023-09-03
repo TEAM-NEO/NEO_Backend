@@ -1,7 +1,6 @@
 package com.neo.needeachother.users.controller;
 
 import com.neo.needeachother.common.response.NEOErrorResponse;
-import com.neo.needeachother.common.response.NEOFinalErrorResponse;
 import com.neo.needeachother.users.docs.*;
 import com.neo.needeachother.users.dto.*;
 import com.neo.needeachother.users.enums.NEOUserOrder;
@@ -40,7 +39,7 @@ public class NEOUserInformationController {
      *
      * @param userID   유저의 아이디
      * @param isPublic 공개 정보 / 전체 정보 여부
-     * @return {@code ResponseEntity<NEOFanInfoDto>}, {@code ResponseEntity<NEOStarInfoDto>},
+     * @return {@code ResponseEntity<NEOAdditionalFanInfoRequest>}, {@code ResponseEntity<NEOAdditionalStarInfoRequest>},
      * {@code ResponseEntity<NEOPublicFanInfoDto>}, {@code ResponseEntity<NEOPublicStarInfoDto>}
      */
     @GetMapping("/{user_id}")
@@ -60,12 +59,12 @@ public class NEOUserInformationController {
      *
      * @param userID                       사용자 아이디
      * @param changePartialStarInfoRequest 정보 변경에 필요한 요청
-     * @return {@code ResponseEntity<NEOFinalErrorResponse<NEOStarInfoDto>>}, {@code ResponseEntity<NEOFinalErrorResponse<NEOFanInfoDto>>}
+     * @return {@code ResponseEntity<NEOFinalErrorResponse<NEOAdditionalStarInfoRequest>>}, {@code ResponseEntity<NEOFinalErrorResponse<NEOAdditionalFanInfoRequest>>}
      */
     @PatchMapping("/{user_id}")
     @NEOChangeUserInfoOrderDocs
     public ResponseEntity<?> changePartialUserInformationOrder(@PathVariable("user_id") final String userID,
-                                                               @RequestBody final NEOChangeableInfoDto changePartialStarInfoRequest) {
+                                                               @RequestBody final NEOChangeableInfoDTO changePartialStarInfoRequest) {
         return userInformationService.doChangePartialInformationOrder(userID, NEOUserOrder.CHANGE_USER_INFO, changePartialStarInfoRequest);
     }
 
@@ -79,7 +78,7 @@ public class NEOUserInformationController {
      */
     @PostMapping("/stars")
     @NEOCreateStarInfoOrderDocs
-    public ResponseEntity<?> createNewStarInformationOrder(@RequestBody @Validated final NEOStarInfoDto createStarInfoRequest, BindingResult bindingResult) {
+    public ResponseEntity<NEOUserInformationDTO> createNewStarInformationOrder(@RequestBody @Validated final NEOAdditionalStarInfoRequest createStarInfoRequest, BindingResult bindingResult) {
         NEOUserOrder userOrder = NEOUserOrder.CREATE_STAR_INFO;
         checkRequestValidationPassed(bindingResult, userOrder);
         return userInformationService.doCreateNewStarInformationOrder(createStarInfoRequest, userOrder);
@@ -95,7 +94,7 @@ public class NEOUserInformationController {
      */
     @PostMapping("/fans")
     @NEOCreateFanInfoOrderDocs
-    public ResponseEntity<?> createNewFanInformationOrder(@RequestBody @Validated final NEOFanInfoDto createFanInfoRequest, BindingResult bindingResult) {
+    public ResponseEntity<?> createNewFanInformationOrder(@RequestBody @Validated final NEOAdditionalFanInfoRequest createFanInfoRequest, BindingResult bindingResult) {
         NEOUserOrder userOrder = NEOUserOrder.CREATE_FAN_INFO;
         checkRequestValidationPassed(bindingResult, userOrder);
         return userInformationService.doCreateNewFanInformationOrder(createFanInfoRequest, userOrder);

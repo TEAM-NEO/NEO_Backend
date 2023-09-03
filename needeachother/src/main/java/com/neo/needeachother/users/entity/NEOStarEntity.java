@@ -1,7 +1,7 @@
 package com.neo.needeachother.users.entity;
 
 import com.neo.needeachother.users.dto.NEOPublicStarInfoDto;
-import com.neo.needeachother.users.dto.NEOStarInfoDto;
+import com.neo.needeachother.users.dto.NEOAdditionalStarInfoRequest;
 import com.neo.needeachother.users.enums.NEOStarDetailClassification;
 import com.neo.needeachother.users.enums.NEOUserType;
 import jakarta.persistence.*;
@@ -45,15 +45,20 @@ public class NEOStarEntity extends NEOUserEntity {
     @OneToMany(mappedBy = "followee", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<NEOUserRelationEntity> followerList = new ArrayList<>();
 
+    @Override
+    public NEOUserType getUserType() {
+        return USER_TYPE;
+    }
+
     /**
-     * {@code NEOStarInfoDto}를 통해 새로운 스타 엔티티를 생성하는 정적 팩토리 메소드입니다. <br>
-     * 유효성 검사를 통과한 {@code NEOStarInfoDto} 객체를 삽입하면 사용할 수 있습니다. <br>
+     * {@code NEOAdditionalStarInfoRequest}를 통해 새로운 스타 엔티티를 생성하는 정적 팩토리 메소드입니다. <br>
+     * 유효성 검사를 통과한 {@code NEOAdditionalStarInfoRequest} 객체를 삽입하면 사용할 수 있습니다. <br>
      * TODO : OAuth 도입 이후 요청 DTO 변경 가능성 농후.
      *
      * @param request 스타 정보 생성 요청 객체
      * @return {@code NEOStarEntity} 새로운 스타 엔티티
      */
-    public static NEOStarEntity fromRequest(NEOStarInfoDto request) {
+    public static NEOStarEntity fromRequest(NEOAdditionalStarInfoRequest request) {
         return NEOStarEntity.builder()
                 .userID(request.getUserID())
                 .userName(request.getUserName())
@@ -73,18 +78,18 @@ public class NEOStarEntity extends NEOUserEntity {
      * {@code List<NEOStarTypeEntity>}를 {@code HashSet<NEOStarDetailClassification>}로 변환한 값을 얻습니다.
      * @return {@code HashSet<NEOStarDetailClassification>}
      */
-    private HashSet<NEOStarDetailClassification> getStarClassificationSet(){
+    public HashSet<NEOStarDetailClassification> getStarClassificationSet(){
         return this.getStarTypeList().stream()
                 .map(NEOStarTypeEntity::getStarType)
                 .collect(Collectors.toCollection(HashSet::new));
     }
 
     /**
-     * 엔티티를 {@code NEOStarInfoDto}(스타 전체 정보)로 변환합니다.
-     * @return {@code NEOStarInfoDto}
+     * 엔티티를 {@code NEOAdditionalStarInfoRequest}(스타 전체 정보)로 변환합니다.
+     * @return {@code NEOAdditionalStarInfoRequest}
      */
-    public NEOStarInfoDto toDTO() {
-        return NEOStarInfoDto.builder()
+    public NEOAdditionalStarInfoRequest toDTO() {
+        return NEOAdditionalStarInfoRequest.builder()
                 .userID(this.getUserID())
                 .userName(this.getUserName())
                 .email(this.getEmail())
@@ -97,11 +102,11 @@ public class NEOStarEntity extends NEOUserEntity {
     }
 
     /**
-     * 엔티티를 {@code NEOStarInfoDto}(스타 전체 정보)에 덧붙이기 합니다.
+     * 엔티티를 {@code NEOAdditionalStarInfoRequest}(스타 전체 정보)에 덧붙이기 합니다.
      * @param infoDto 스타 정보 DTO
-     * @return {@code NEOStarInfoDto}
+     * @return {@code NEOAdditionalStarInfoRequest}
      */
-    public NEOStarInfoDto fetchDTO(NEOStarInfoDto infoDto) {
+    public NEOAdditionalStarInfoRequest fetchDTO(NEOAdditionalStarInfoRequest infoDto) {
         infoDto.setUserID(this.getUserID());
         infoDto.setUserName(this.getUserName());
         infoDto.setEmail(this.getEmail());
@@ -124,4 +129,5 @@ public class NEOStarEntity extends NEOUserEntity {
                 .starClassificationSet(this.getStarClassificationSet())
                 .build();
     }
+
 }

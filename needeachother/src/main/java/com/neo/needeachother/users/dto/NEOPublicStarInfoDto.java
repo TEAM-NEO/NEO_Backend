@@ -1,6 +1,5 @@
 package com.neo.needeachother.users.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neo.needeachother.users.enums.NEOGenderType;
 import com.neo.needeachother.users.enums.NEOStarDetailClassification;
@@ -47,6 +46,6 @@ public class NEOPublicStarInfoDto {
 
     @Schema(description = "스타의 커스텀 자기소개 리스트", example = "[{\"custom_title\" : \"MBTI\", \"custom_context\" : \"ISTJ\"}]")
     @JsonProperty(value = "custom_introduction_list")
-    private List<NEOCustomStarInformation> customIntroductionList;
+    private List<NEOStarWikiInformationDTO> customIntroductionList;
 
 }
