@@ -3,7 +3,7 @@ package com.neo.needeachother.users.controller;
 import com.neo.needeachother.common.enums.NEOResponseCode;
 import com.neo.needeachother.common.response.NEOErrorResponse;
 import com.neo.needeachother.common.response.NEOFinalErrorResponse;
-import com.neo.needeachother.users.enums.NEOUserOrder;
+import com.neo.needeachother.users.enums.NEOUserApiOrder;
 import com.neo.needeachother.users.exception.NEOUserExpectedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +30,13 @@ public class NEOUserExceptionAdvisor extends ResponseEntityExceptionHandler {
 
     public ResponseEntity<NEOFinalErrorResponse> handleUserExceptionInternal(final NEOUserExpectedException ex){
         List<NEOErrorResponse> errorResponseList = ex.getErrorResponseList();
-        NEOUserOrder userOrder = ex.getUserOrder();
+        NEOUserApiOrder userOrder = ex.getUserOrder();
 
         return ResponseEntity.status(ex.getErrorResponseList().get(0).getNeoErrorCode().getHttpStatus())
                 .body(renderResponseBody(errorResponseList, userOrder));
     }
 
-    public NEOFinalErrorResponse renderResponseBody(final List<NEOErrorResponse> errorResponseList, final NEOUserOrder userOrder){
+    public NEOFinalErrorResponse renderResponseBody(final List<NEOErrorResponse> errorResponseList, final NEOUserApiOrder userOrder){
         return NEOFinalErrorResponse.builder()
                 .requestedMethodAndURI(userOrder.getRequestedMethodAndURI())
                 .responseCode(NEOResponseCode.FAIL)

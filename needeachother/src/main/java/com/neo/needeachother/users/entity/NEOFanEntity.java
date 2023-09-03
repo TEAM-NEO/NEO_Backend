@@ -1,7 +1,6 @@
 package com.neo.needeachother.users.entity;
 
 import com.neo.needeachother.users.dto.NEOAdditionalFanInfoRequest;
-import com.neo.needeachother.users.dto.NEOPublicFanInfoDto;
 import com.neo.needeachother.users.enums.NEOUserType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -52,29 +51,4 @@ public class NEOFanEntity extends NEOUserEntity{
                 .build();
     }
 
-    /**
-     * 엔티티에서 {@code NEOAdditionalFanInfoRequest}로 변환합니다.
-     * @return {@code NEOAdditionalFanInfoRequest}
-     */
-    public NEOAdditionalFanInfoRequest toDTO(){
-        return NEOAdditionalFanInfoRequest.builder()
-                .userID(this.getUserID())
-                .userName(this.getUserName())
-                .email(this.getEmail())
-                .neoNickName(this.getNeoNickName())
-                .phoneNumber(this.getPhoneNumber())
-                .gender(this.getGender())
-                .build();
-    }
-
-    /**
-     * 엔티티에서 {@code NEOPublicFanInfoDto}로 변환합니다.
-     * @return {@code NEOPublicFanInfoDto}
-     */
-    public NEOPublicFanInfoDto toPublicDTO(){
-        return NEOPublicFanInfoDto.builder()
-                .neoNickName(this.getNeoNickName())
-                .gender(this.getGender())
-                .build();
-    }
 }

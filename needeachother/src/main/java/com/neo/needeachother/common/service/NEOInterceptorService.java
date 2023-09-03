@@ -7,18 +7,11 @@ import com.neo.needeachother.common.enums.NEOErrorCode;
 import com.neo.needeachother.common.enums.NEOResponseCode;
 import com.neo.needeachother.common.response.NEOErrorResponse;
 import com.neo.needeachother.common.response.NEOFinalErrorResponse;
-import com.neo.needeachother.users.enums.NEOUserOrder;
-import jakarta.servlet.ReadListener;
-import jakarta.servlet.ServletInputStream;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
-import lombok.Getter;
+import com.neo.needeachother.users.enums.NEOUserApiOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.List;
@@ -62,7 +55,7 @@ public class NEOInterceptorService {
         return objectMapper.readValue(requestBody, Map.class);
     }
 
-    public NEOFinalErrorResponse getFinalErrorResponseWithJsonFieldError(List<String> errorJsonFieldNameList, NEOUserOrder userOrder) {
+    public NEOFinalErrorResponse getFinalErrorResponseWithJsonFieldError(List<String> errorJsonFieldNameList, NEOUserApiOrder userOrder) {
 
         // 문제가 있는 경우, 문제 대상 리스트를 기반으로 NEOErrorResponse 리스트 생성
         List<NEOErrorResponse> errorResponseList = errorJsonFieldNameList.stream()
@@ -77,7 +70,7 @@ public class NEOInterceptorService {
                 .errors(errorResponseList).build();
     }
 
-    public NEOFinalErrorResponse getFinalErrorResponseWithJsonFormatError(NEOUserOrder userOrder) {
+    public NEOFinalErrorResponse getFinalErrorResponseWithJsonFormatError(NEOUserApiOrder userOrder) {
         List<NEOErrorResponse> errorResponseList = List.of(
                 NEOErrorResponse.fromErrorCodeWithDetail(NEOErrorCode.INVALID_JSON_FORMAT_REQUEST,
                         "요청을 Map 형식으로 변환할 수 없습니다. 다시 확인해주세요."));

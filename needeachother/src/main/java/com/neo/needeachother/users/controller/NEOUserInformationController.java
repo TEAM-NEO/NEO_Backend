@@ -3,7 +3,7 @@ package com.neo.needeachother.users.controller;
 import com.neo.needeachother.common.response.NEOErrorResponse;
 import com.neo.needeachother.users.docs.*;
 import com.neo.needeachother.users.dto.*;
-import com.neo.needeachother.users.enums.NEOUserOrder;
+import com.neo.needeachother.users.enums.NEOUserApiOrder;
 import com.neo.needeachother.users.exception.NEOUserExpectedException;
 import com.neo.needeachother.users.service.NEOUserInformationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,7 +44,7 @@ public class NEOUserInformationController {
     @PostMapping("/stars")
     @NEOCreateStarInfoOrderDocs
     public ResponseEntity<NEOUserInformationDTO> createNewStarInformationOrder(@RequestBody @Validated final NEOAdditionalStarInfoRequest createStarInfoRequest, BindingResult bindingResult) {
-        NEOUserOrder userOrder = NEOUserOrder.CREATE_STAR_INFO;
+        NEOUserApiOrder userOrder = NEOUserApiOrder.CREATE_STAR_INFO;
         checkRequestValidationPassed(bindingResult, userOrder);
         return userInformationService.doCreateNewStarInformationOrder(createStarInfoRequest, userOrder);
     }
@@ -61,7 +61,7 @@ public class NEOUserInformationController {
     @PostMapping("/fans")
     @NEOCreateFanInfoOrderDocs
     public ResponseEntity<NEOUserInformationDTO> createNewFanInformationOrder(@RequestBody @Validated final NEOAdditionalFanInfoRequest createFanInfoRequest, BindingResult bindingResult) {
-        NEOUserOrder userOrder = NEOUserOrder.CREATE_FAN_INFO;
+        NEOUserApiOrder userOrder = NEOUserApiOrder.CREATE_FAN_INFO;
         checkRequestValidationPassed(bindingResult, userOrder);
         return userInformationService.doCreateNewFanInformationOrder(createFanInfoRequest, userOrder);
     }
@@ -80,7 +80,7 @@ public class NEOUserInformationController {
             @PathVariable("user_id") String userID,
             @RequestParam(value = "privacy", required = false, defaultValue = "false") boolean isPrivacy,
             @RequestParam(value = "detail", required = false, defaultValue = "false") boolean isDetail) {
-        NEOUserOrder userOrder = NEOUserOrder.GET_STAR_INFO;
+        NEOUserApiOrder userOrder = NEOUserApiOrder.GET_STAR_INFO;
         return userInformationService.doGetStarInformationOrder(userID, isPrivacy, isDetail, userOrder);
     }
 
@@ -96,29 +96,8 @@ public class NEOUserInformationController {
     public ResponseEntity<NEOUserInformationDTO> getFanInformationOrder(
             @PathVariable("user_id") String userID,
             @RequestParam(value = "privacy", required = false, defaultValue = "false") boolean isPrivacy) {
-        NEOUserOrder userOrder = NEOUserOrder.GET_FAN_INFO;
+        NEOUserApiOrder userOrder = NEOUserApiOrder.GET_FAN_INFO;
         return userInformationService.doGetFanInformationOrder(userID, isPrivacy, userOrder);
-    }
-
-    /**
-     * 유저의 정보를 가져옵니다.<br>
-     * {@code isPublic}의 값에 따라 공개 정보 / 전체 정보를 얻어올 수 있습니다. <br>
-     * 팬 혹은 스타 관계 없이 해당 API를 사용해 유저 정보를 얻을 수 있습니다.<br>
-     *
-     * @param userID   유저의 아이디
-     * @param isPublic 공개 정보 / 전체 정보 여부
-     * @return {@code ResponseEntity<NEOAdditionalFanInfoRequest>}, {@code ResponseEntity<NEOAdditionalStarInfoRequest>},
-     * {@code ResponseEntity<NEOPublicFanInfoDto>}, {@code ResponseEntity<NEOPublicStarInfoDto>}
-     */
-    @GetMapping("/{user_id}")
-    @NEOGetUserInfoOrderDocs
-    public ResponseEntity<?> getUserInformationOrder(
-            @PathVariable("user_id") String userID,
-            @RequestParam(value = "public", required = false, defaultValue = "false") boolean isPublic) {
-        if (isPublic) {
-            return userInformationService.doGetPublicUserInformationOrder(userID, NEOUserOrder.GET_USER_PUBLIC_INFO);
-        }
-        return userInformationService.doGetUserInformationOrder(userID, NEOUserOrder.GET_USER_INFO);
     }
 
     /**
@@ -134,14 +113,14 @@ public class NEOUserInformationController {
     @NEOChangeUserInfoOrderDocs
     public ResponseEntity<NEOUserInformationDTO> changePartialUserInformationOrder(@PathVariable("user_id") final String userID,
                                                                @RequestBody final NEOChangeableInfoDTO changePartialStarInfoRequest) {
-        return userInformationService.doChangePartialInformationOrder(userID, NEOUserOrder.CHANGE_USER_INFO, changePartialStarInfoRequest);
+        return userInformationService.doChangePartialInformationOrder(userID, NEOUserApiOrder.CHANGE_USER_INFO, changePartialStarInfoRequest);
     }
 
 
     @DeleteMapping("/{user_id}")
     @NEODeleteUserInfoOrderDocs
     public ResponseEntity<?> deleteUserInformationOrder(@PathVariable("user_id") String userID) {
-        NEOUserOrder userOrder = NEOUserOrder.DELETE_USER_ORDER;
+        NEOUserApiOrder userOrder = NEOUserApiOrder.DELETE_USER_ORDER;
         return userInformationService.doDeleteUserInformationOrder(userID, userOrder);
     }
 
@@ -152,7 +131,7 @@ public class NEOUserInformationController {
      *
      * @param bindingResult 유효성 검사 결과
      */
-    private void checkRequestValidationPassed(BindingResult bindingResult, NEOUserOrder userOrder) {
+    private void checkRequestValidationPassed(BindingResult bindingResult, NEOUserApiOrder userOrder) {
         if (bindingResult.hasErrors()) {
             // 유효성 검사 실패 시 처리
             log.warn("유효성 검사 실패!");

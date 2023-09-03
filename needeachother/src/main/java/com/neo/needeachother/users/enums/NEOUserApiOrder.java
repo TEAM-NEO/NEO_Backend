@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  */
 @Getter
 @RequiredArgsConstructor
-public enum NEOUserOrder {
+public enum NEOUserApiOrder {
 
     CREATE_STAR_INFO("POST", "api/v1/users/stars", "새로운 스타 정보 생성에 성공했습니다.",
             "새로운 스타 정보 생성에 실패했습니다.", Pattern.compile("^/api/v1/users/stars$"), NEOAdditionalStarInfoRequest.class),
@@ -27,10 +27,6 @@ public enum NEOUserOrder {
             "스타 정보를 반환하는데 실패했습니다.", Pattern.compile("^/api/v1/users/stars/\\{[a-zA-Z]+\\}(\\?privacy=(true|false))?(&detail=(true|false))?$"), null),
     GET_FAN_INFO("GET", "api/v1/users/fans/{user_id}", "팬 정보를 성공적으로 반환합니다.",
             "팬 정보를 반환하는데 실패했습니다.", Pattern.compile("^/api/v1/users/fans/\\{[a-zA-Z]+\\}(\\?privacy=(true|false))?$"), null),
-    GET_USER_INFO("GET", "api/v1/users/{user_id}","사용자 전체 정보를 얻어오는데 성공했습니다.",
-            "사용자 전체 정보를 얻어오는데 실패했습니다.", Pattern.compile("^/api/v1/users/[^/]+$"), null),
-    GET_USER_PUBLIC_INFO("GET", "api/v1/users/{user_id}","사용자 공개 정보를 얻어오는데 성공했습니다.",
-            "사용자 공개 정보를 얻어오는데 실패했습니다.", Pattern.compile("^/api/v1/users/[^/]+$"), null),
     CHANGE_USER_INFO("PATCH", "api/v1/users/{user_id}","사용자 정보 변경에 성공했습니다",
             "사용자 정보 변경에 실패했습니다.", Pattern.compile("^/api/v1/users/[^/]+$"), NEOChangeableInfoDTO.class),
     DELETE_USER_ORDER("DELETE", "api/v1/users/{user_id}","사용자 정보 삭제에 성공했습니다.",
@@ -57,9 +53,9 @@ public enum NEOUserOrder {
         return headers;
     }
 
-    public static NEOUserOrder fromHttpMethodAndRequestURI(String httpMethod, String requestURI){
-        return Arrays.stream(NEOUserOrder.values())
-                .filter(order -> !order.equals(NEOUserOrder.NONE))
+    public static NEOUserApiOrder fromHttpMethodAndRequestURI(String httpMethod, String requestURI){
+        return Arrays.stream(NEOUserApiOrder.values())
+                .filter(order -> !order.equals(NEOUserApiOrder.NONE))
                 .filter(order -> order.getHttpMethod().equals(httpMethod))
                 .filter(order -> order.getRequestURIRegex().matcher(requestURI).matches())
                 .findAny()

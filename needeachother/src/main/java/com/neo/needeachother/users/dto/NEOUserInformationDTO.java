@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neo.needeachother.users.document.NEOStarInfoDocument;
 import com.neo.needeachother.users.entity.NEOFanEntity;
 import com.neo.needeachother.users.entity.NEOStarEntity;
-import com.neo.needeachother.users.entity.NEOUserEntity;
 import com.neo.needeachother.users.enums.NEOGenderType;
 import com.neo.needeachother.users.enums.NEOStarDetailClassification;
 import com.neo.needeachother.users.enums.NEOUserType;
@@ -63,7 +62,7 @@ public class NEOUserInformationDTO {
     private String introduction;
 
     @JsonProperty("custom_introduction_list")
-    private List<NEOStarWikiInformationDTO> customIntroductionList;
+    private List<NEOStarWikiInformationDTO> customWikiList;
 
     public static NEOUserInformationDTO from(NEOFanEntity fanEntity, boolean isPrivate) {
         if (isPrivate) {
@@ -93,10 +92,10 @@ public class NEOUserInformationDTO {
     public static NEOUserInformationDTO from(final NEOStarEntity starEntity, final NEOStarInfoDocument starInfoDocument,
                                              final boolean isPrivate, final boolean hasWiki) {
 
-        List<NEOStarWikiInformationDTO> customIntroductionList = null;
+        List<NEOStarWikiInformationDTO> customWikiList = null;
 
         if (hasWiki) {
-            customIntroductionList = starInfoDocument.getStarCustomIntroductionList().stream()
+            customWikiList = starInfoDocument.getStarCustomIntroductionList().stream()
                     .map(NEOStarInfoDocument.NEOCustomStarInformationDocument::convertToDtoFormat)
                     .toList();
         }
@@ -116,7 +115,7 @@ public class NEOUserInformationDTO {
                     .starClassificationSet(starEntity.getStarClassificationSet())
                     .submittedUrl(starInfoDocument.getSubmittedUrl())
                     .introduction(starInfoDocument.getIntroduction())
-                    .customIntroductionList(customIntroductionList)
+                    .customWikiList(customWikiList)
                     .build();
         }
 
@@ -131,7 +130,7 @@ public class NEOUserInformationDTO {
                 .starClassificationSet(starEntity.getStarClassificationSet())
                 .submittedUrl(starInfoDocument.getSubmittedUrl())
                 .introduction(starInfoDocument.getIntroduction())
-                .customIntroductionList(customIntroductionList)
+                .customWikiList(customWikiList)
                 .build();
     }
 }

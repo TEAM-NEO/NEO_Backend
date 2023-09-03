@@ -1,6 +1,5 @@
 package com.neo.needeachother.users.entity;
 
-import com.neo.needeachother.users.dto.NEOPublicStarInfoDto;
 import com.neo.needeachother.users.dto.NEOAdditionalStarInfoRequest;
 import com.neo.needeachother.users.enums.NEOStarDetailClassification;
 import com.neo.needeachother.users.enums.NEOUserType;
@@ -82,52 +81,6 @@ public class NEOStarEntity extends NEOUserEntity {
         return this.getStarTypeList().stream()
                 .map(NEOStarTypeEntity::getStarType)
                 .collect(Collectors.toCollection(HashSet::new));
-    }
-
-    /**
-     * 엔티티를 {@code NEOAdditionalStarInfoRequest}(스타 전체 정보)로 변환합니다.
-     * @return {@code NEOAdditionalStarInfoRequest}
-     */
-    public NEOAdditionalStarInfoRequest toDTO() {
-        return NEOAdditionalStarInfoRequest.builder()
-                .userID(this.getUserID())
-                .userName(this.getUserName())
-                .email(this.getEmail())
-                .neoNickName(this.getNeoNickName())
-                .gender(this.getGender())
-                .phoneNumber(this.getPhoneNumber())
-                .starNickName(this.getStarNickName())
-                .starClassificationSet(this.getStarClassificationSet())
-                .build();
-    }
-
-    /**
-     * 엔티티를 {@code NEOAdditionalStarInfoRequest}(스타 전체 정보)에 덧붙이기 합니다.
-     * @param infoDto 스타 정보 DTO
-     * @return {@code NEOAdditionalStarInfoRequest}
-     */
-    public NEOAdditionalStarInfoRequest fetchDTO(NEOAdditionalStarInfoRequest infoDto) {
-        infoDto.setUserID(this.getUserID());
-        infoDto.setUserName(this.getUserName());
-        infoDto.setEmail(this.getEmail());
-        infoDto.setNeoNickName(this.getNeoNickName());
-        infoDto.setGender(this.getGender());
-        infoDto.setPhoneNumber(this.getPhoneNumber());
-        infoDto.setStarNickName(this.getStarNickName());
-        infoDto.setStarClassificationSet(this.getStarClassificationSet());
-        return infoDto;
-    }
-
-    /**
-     * 엔티티를 {@code NEOPublicStarInfoDto}(스타 공개 정보)로 변환합니다.
-     * @return {@code NEOPublicStarInfoDto}
-     */
-    public NEOPublicStarInfoDto toPublicDto(){
-        return NEOPublicStarInfoDto.builder()
-                .starNickName(this.getStarNickName())
-                .gender(this.getGender())
-                .starClassificationSet(this.getStarClassificationSet())
-                .build();
     }
 
 }
