@@ -117,7 +117,7 @@ public class NEOUserInformationController {
     }
 
 
-    @DeleteMapping("/{user_id}")
+    @DeleteMapping(value = {"/stars/{user_id}", "/fans/{user_id}"})
     @NEODeleteUserInfoOrderDocs
     public ResponseEntity<?> deleteUserInformationOrder(@PathVariable("user_id") String userID) {
         NEOUserApiOrder userOrder = NEOUserApiOrder.DELETE_USER_ORDER;
