@@ -4,7 +4,7 @@ import com.neo.needeachother.common.enums.NEODomainType;
 import com.neo.needeachother.common.enums.NEOErrorCode;
 import com.neo.needeachother.common.exception.NEOExpectedException;
 import com.neo.needeachother.common.response.NEOErrorResponse;
-import com.neo.needeachother.users.enums.NEOUserOrder;
+import com.neo.needeachother.users.enums.NEOUserApiOrder;
 import lombok.Getter;
 
 import java.util.List;
@@ -17,13 +17,13 @@ import java.util.List;
 @Getter
 public class NEOUserExpectedException extends NEOExpectedException {
 
-    private final NEOUserOrder userOrder;
+    private final NEOUserApiOrder userOrder;
 
     /**
      * @param errorCode NEO 에러코드
      * @param userOrder 클라이언트 요청 구분 enum 객체
      */
-    public NEOUserExpectedException(NEOErrorCode errorCode, NEOUserOrder userOrder) {
+    public NEOUserExpectedException(NEOErrorCode errorCode, NEOUserApiOrder userOrder) {
         super(NEODomainType.USERS, errorCode, userOrder.getFailMessage());
         this.userOrder = userOrder;
     }
@@ -33,7 +33,7 @@ public class NEOUserExpectedException extends NEOExpectedException {
      * @param errorDetailMessage 해당 에러에 대한 상세 메시지
      * @param userOrder 클라이언트 요청 구분 enum 객체
      */
-    public NEOUserExpectedException(NEOErrorCode errorCode, String errorDetailMessage, NEOUserOrder userOrder){
+    public NEOUserExpectedException(NEOErrorCode errorCode, String errorDetailMessage, NEOUserApiOrder userOrder){
         super(NEODomainType.USERS, errorCode, errorDetailMessage, userOrder.getFailMessage());
         this.userOrder = userOrder;
     }
@@ -42,7 +42,7 @@ public class NEOUserExpectedException extends NEOExpectedException {
      * @param errorResponse 최종 응답에 포함되는 에러 응답
      * @param userOrder 클라이언트 요청 구분 enum 객체
      */
-    public NEOUserExpectedException(NEOErrorResponse errorResponse, NEOUserOrder userOrder){
+    public NEOUserExpectedException(NEOErrorResponse errorResponse, NEOUserApiOrder userOrder){
         super(NEODomainType.USERS, errorResponse, userOrder.getFailMessage());
         this.userOrder = userOrder;
     }
@@ -51,7 +51,7 @@ public class NEOUserExpectedException extends NEOExpectedException {
      * @param errorResponseList 최종 응답에 포함되는 에러 응답 리스트
      * @param userOrder 클라이언트 요청 구분 enum 객체
      */
-    public NEOUserExpectedException(List<NEOErrorResponse> errorResponseList, NEOUserOrder userOrder){
+    public NEOUserExpectedException(List<NEOErrorResponse> errorResponseList, NEOUserApiOrder userOrder){
         super(NEODomainType.USERS, errorResponseList, userOrder.getFailMessage());
         this.userOrder = userOrder;
     }

@@ -3,7 +3,7 @@ package com.neo.needeachother.users.interceptor;
 import com.neo.needeachother.common.enums.NEOErrorCode;
 import com.neo.needeachother.common.response.NEOFinalErrorResponse;
 import com.neo.needeachother.common.service.NEOInterceptorService;
-import com.neo.needeachother.users.enums.NEOUserOrder;
+import com.neo.needeachother.users.enums.NEOUserApiOrder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,11 +30,11 @@ public class NEOUserDomainBadRequestInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         // HTTP 메소드와 URI를 기반으로 User 도메인의 어떤 요청인지 분류
-        NEOUserOrder userOrder = NEOUserOrder.fromHttpMethodAndRequestURI(request.getMethod(), request.getRequestURI());
+        NEOUserApiOrder userOrder = NEOUserApiOrder.fromHttpMethodAndRequestURI(request.getMethod(), request.getRequestURI());
         log.info("Request Arrived : " + request.getMethod() + " " + request.getRequestURI() + ", " + userOrder.name());
 
         // NEOUserOrder에 매칭되지 않은 API Method와 URI 요청
-        if (userOrder.equals(NEOUserOrder.NONE)) {
+        if (userOrder.equals(NEOUserApiOrder.NONE)) {
             log.warn("경고 : NEOUserOrder에 매칭된 API가 없습니다. 정상적인 요청이 아니거나, Enum에 등록되지 않았을 가능성이 있습니다.");
             return false;
         }

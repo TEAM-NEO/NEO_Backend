@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "NEO 유저의 개인 정보 변경 요청 객체")
-public class NEOChangeableInfoDto {
+public class NEOChangeableInfoDTO {
 
     @Schema(description = "스타가 현실에서 실제로 활동하고 있는 활동명을 입력합니다. 이모티콘 혹은 활동명의 변조는 추후 인증 과정에서 불이익을 받을 수 있습니다.\n" +
             "팬은 수정되거나 추가되지 않습니다.", example = "아이유", nullable = true)
@@ -47,6 +47,6 @@ public class NEOChangeableInfoDto {
             "정보 제목과 정보 내용을 포함하고 있는 리스트 쌍을 제출합니다.\n" +
             "팬은 수정되거나 추가되지 않습니다.", example = "[{\"customTitle\" : \"MBTI\", \"customContext\" : \"ISFJ\"}]", nullable = true)
     @JsonProperty(value = "custom_introduction_list")
-    private List<NEOCustomStarInformation> customIntroductionList;
+    private List<NEOStarWikiInformationDTO> customIntroductionList;
 
 }

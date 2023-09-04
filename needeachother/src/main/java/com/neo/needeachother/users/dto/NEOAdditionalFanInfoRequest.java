@@ -1,7 +1,6 @@
 package com.neo.needeachother.users.dto;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neo.needeachother.common.enums.NEOErrorCode;
 import com.neo.needeachother.users.enums.NEOGenderType;
@@ -17,11 +16,10 @@ import lombok.*;
 @Getter
 @ToString
 @Builder
-@JsonFilter("NEOInfoDtoJsonFilter")
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "OAuth2.0을 통한 회원가입 이후의, 팬의 추가 정보를 입력하기 위한 API의 Request DTO입니다.")
-public class NEOFanInfoDto {
+public class NEOAdditionalFanInfoRequest {
 
     /* OAuth2.0으로부터 받아온 사용자의 ID, OAuth를 도입하더라도 삭제되지 않고, 회원가입시 생성된 엔티티를 찾아내기 위한 식별용으로 보존. */
     @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)

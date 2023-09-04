@@ -1,7 +1,5 @@
 package com.neo.needeachother.users.dto;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neo.needeachother.common.enums.NEOErrorCode;
 import com.neo.needeachother.users.enums.NEOGenderType;
@@ -23,11 +21,10 @@ import java.util.List;
 @Getter
 @ToString
 @Builder
-@JsonFilter("NEOInfoDtoJsonFilter")
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "OAuth2.0을 통한 회원가입 이후의, 스타의 추가 정보를 입력하기 위한 API의 Request DTO입니다.")
-public class NEOStarInfoDto {
+public class NEOAdditionalStarInfoRequest {
 
     /* OAuth2.0으로부터 받아온 사용자의 ID, OAuth를 도입하더라도 삭제되지 않고, 회원가입시 생성된 엔티티를 찾아내기 위한 식별용으로 보존. */
     @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
@@ -105,7 +102,7 @@ public class NEOStarInfoDto {
     /* 커스텀 정보 입력 */
     @Schema(description = "추가적으로 스타가 직접 입력하고 싶은 커스텀 정보를 입력합니다." +
             "정보 제목과 정보 내용을 포함하고 있는 리스트 쌍을 제출합니다.", example = "[{\"custom_title\" : \"MBTI\", \"custom_context\" : \"ISFJ\"}]")
-    @JsonProperty("custom_introduction_list")
-    private List<NEOCustomStarInformation> customIntroductionList;
+    @JsonProperty("custom_wiki_list")
+    private List<NEOStarWikiInformationDTO> customWikiList;
 
 }
