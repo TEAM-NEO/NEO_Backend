@@ -14,6 +14,7 @@ import com.neo.needeachother.users.exception.NEOUserExpectedException;
 import com.neo.needeachother.users.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,15 +52,13 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
         NEOStarEntity createdStar = NEOStarEntity.fromRequest(createStarInfoRequest);
         NEOStarInfoDocument starCustomInfo = NEOStarInfoDocument.fromRequest(createStarInfoRequest);
 
-        // 엔티티 저장 및 연관관계 설정
-        // TODO : 영속성 전이로 코드 단축 가능
-        NEOStarEntity savedStar = starRepository.save(createdStar);
-        List<NEOStarTypeEntity> starTypeEntities = starClassificationSet.stream()
+        // 엔티티 저장 및 연관관계 설정, 영속성 전이 PERSIST
+        starClassificationSet.stream()
                 .map(classification -> NEOStarTypeEntity.builder().starType(classification).build())
-                .map(starTypeEntity -> starTypeEntity.setNeoStar(savedStar))
-                .collect(Collectors.toList());
+                .forEach(createdStar::addStarType);
 
-        starTypeRepository.saveAll(starTypeEntities);
+        // 스타 분류 연관관계와 함께 저장
+        NEOStarEntity savedStar = saveStarWithInformationAndClassificationType(createdStar, userOrder);
 
         // 위키 및 소개글 MongoDB 별도 저장
         NEOStarInfoDocument savedStarWikiDoc = starCustomInfoRepository.save(starCustomInfo);
@@ -69,8 +68,18 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
 
         return ResponseEntity
                 .created(URI.create("/api/v1/users/" + savedStar.getUserID()))
-                .headers(userOrder.renderHttpHeadersByUserOrderAndResponseCode(NEOResponseCode.SUCCESS))
                 .body(createdUserInformation);
+    }
+
+    private NEOStarEntity saveStarWithInformationAndClassificationType(NEOStarEntity wantSaveStar, NEOUserApiOrder userOrder){
+        try {
+            return starRepository.save(wantSaveStar);
+        } catch (DataIntegrityViolationException ex){
+            if (ex.getCause().toString().contains("UNIQUE_ID_EMAIL_NAME_IDX")){
+                throw new NEOUserExpectedException(NEOErrorCode.ALREADY_EXIST_USER, userOrder);
+            }
+            throw new NEOUnexpectedException("새로운 스타 추가 정보 입력 중 서버에 문제가 생겼습니다.");
+        }
     }
 
     /**
@@ -98,19 +107,26 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
                         userOrder));
 
         // 엔티티 저장 및 연관관계 설정 및 저장
-        // TODO : 영속성 전이로 코드 단축 가능
-        NEOFanEntity savedFan = fanRepository.save(createdFan);
-        NEOUserRelationEntity userRelation = new NEOUserRelationEntity();
-        userRelation.makeRelationFanWithStar(savedFan, favoriteStarOfFan);
-        userRelationRepository.save(userRelation);
+        createdFan.subscribeNeoStar(favoriteStarOfFan);
+        NEOFanEntity savedFan = saveFanWithInformationAndFavoriteStar(createdFan, userOrder);
 
         // 최종 응답 생성 (생성된 사용자 정보)
         NEOUserInformationDTO createdUserInformation = NEOUserInformationDTO.from(savedFan, true);
 
         return ResponseEntity
                 .created(URI.create("/api/v1/users/" + savedFan.getUserID()))
-                .headers(userOrder.renderHttpHeadersByUserOrderAndResponseCode(NEOResponseCode.SUCCESS))
                 .body(createdUserInformation);
+    }
+
+    private NEOFanEntity saveFanWithInformationAndFavoriteStar(NEOFanEntity wantSaveFan, NEOUserApiOrder userOrder){
+        try {
+            return fanRepository.save(wantSaveFan);
+        } catch (DataIntegrityViolationException ex){
+            if (ex.getCause().toString().contains("UNIQUE_ID_EMAIL_NAME_IDX")){
+                throw new NEOUserExpectedException(NEOErrorCode.ALREADY_EXIST_USER, userOrder);
+            }
+            throw new NEOUnexpectedException("새로운 팬 추가 정보 입력 중 서버에 문제가 생겼습니다.");
+        }
     }
 
     @Override
@@ -147,18 +163,23 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
 
     @Override
     public ResponseEntity<NEOUserInformationDTO> doChangePartialInformationOrder(String userID, NEOUserApiOrder userOrder, NEOChangeableInfoDTO changeInfoDto) {
+
+        // 요청과 매핑되는 유저 찾기
         NEOUserEntity foundUser = userRepository.findByUserID(userID)
                 .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.NOT_EXIST_USER, "에러 대상 : " + userID, userOrder));
 
-        if (foundUser.getUserType() == NEOUserType.STAR) {
-            NEOStarInfoDocument starDoc = starCustomInfoRepository.findByUserID(userID)
-                    .orElseGet(() -> NEOStarInfoDocument.builder().userID(foundUser.getUserID()).build());
-            return modifyStarDataFromDto((NEOStarEntity) foundUser, starDoc, userOrder, changeInfoDto);
-        } else if (foundUser.getUserType() == NEOUserType.FAN) {
-            return modifyFanDataFromDto((NEOFanEntity) foundUser, userOrder, changeInfoDto);
-        } else {
-            throw new NEOUnexpectedException("찾아낸 유저가 star / fan 엔티티 어느쪽에도 속하지 않습니다.");
+        // 사용자 유형별 다른 처리
+        switch(foundUser.getUserType()){
+            case STAR:
+                NEOStarInfoDocument starDoc = starCustomInfoRepository.findByUserID(userID)
+                        .orElseGet(() -> NEOStarInfoDocument.builder().userID(foundUser.getUserID()).build());
+                return modifyStarDataFromDto((NEOStarEntity) foundUser, starDoc, userOrder, changeInfoDto);
+            case FAN:
+                return modifyFanDataFromDto((NEOFanEntity) foundUser, userOrder, changeInfoDto);
+            default:
+                throw new NEOUnexpectedException("찾아낸 유저가 star / fan 엔티티 어느쪽에도 속하지 않습니다.");
         }
+
     }
 
     @Override
@@ -168,7 +189,6 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
 
         userRepository.delete(foundUser);
         return ResponseEntity.ok()
-                .headers(userOrder.renderHttpHeadersByUserOrderAndResponseCode(NEOResponseCode.SUCCESS))
                 .body(null);
     }
 

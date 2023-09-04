@@ -47,7 +47,6 @@ public class NEOFanEntity extends NEOUserEntity{
                 .providerType(null)
                 .neoNickName(request.getNeoNickName())
                 .gender(request.getGender())
-                // .subscribedStarList(new ArrayList<>())
                 .build();
     }
 

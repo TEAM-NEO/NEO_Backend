@@ -57,6 +57,8 @@ public class QNEOFanEntity extends EntityPathBase<NEOFanEntity> {
     //inherited
     public final StringPath userPW = _super.userPW;
 
+    public final EnumPath<com.neo.needeachother.users.enums.NEOUserType> userType = createEnum("userType", com.neo.needeachother.users.enums.NEOUserType.class);
+
     public QNEOFanEntity(String variable) {
         super(NEOFanEntity.class, forVariable(variable));
     }

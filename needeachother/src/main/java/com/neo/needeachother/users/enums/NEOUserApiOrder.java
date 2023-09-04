@@ -24,13 +24,13 @@ public enum NEOUserApiOrder {
     CREATE_FAN_INFO("POST", "api/v1/users/fans","새로운 팬 정보 생성에 성공했습니다.",
             "새로운 팬 정보 생성에 실패했습니다.", Pattern.compile("^/api/v1/users/fans$"), NEOAdditionalFanInfoRequest.class),
     GET_STAR_INFO("GET", "api/v1/users/stars/{user_id}", "스타 정보를 성공적으로 반환합니다.",
-            "스타 정보를 반환하는데 실패했습니다.", Pattern.compile("^/api/v1/users/stars/\\{[a-zA-Z]+\\}(\\?privacy=(true|false))?(&detail=(true|false))?$"), null),
+            "스타 정보를 반환하는데 실패했습니다.", Pattern.compile("^/api/v1/users/stars/[a-zA-Z_]+(\\?privacy=(true|false))?(&detail=(true|false))?$"), null),
     GET_FAN_INFO("GET", "api/v1/users/fans/{user_id}", "팬 정보를 성공적으로 반환합니다.",
-            "팬 정보를 반환하는데 실패했습니다.", Pattern.compile("^/api/v1/users/fans/\\{[a-zA-Z]+\\}(\\?privacy=(true|false))?$"), null),
+            "팬 정보를 반환하는데 실패했습니다.", Pattern.compile("^/api/v1/users/fans/[a-zA-Z_]+(\\?privacy=(true|false))?$"), null),
     CHANGE_USER_INFO("PATCH", "api/v1/users/{user_id}","사용자 정보 변경에 성공했습니다",
-            "사용자 정보 변경에 실패했습니다.", Pattern.compile("^/api/v1/users/[^/]+$"), NEOChangeableInfoDTO.class),
+            "사용자 정보 변경에 실패했습니다.", Pattern.compile("^/api/v1/users/(stars|fans)/[a-zA-Z_]+$"), NEOChangeableInfoDTO.class),
     DELETE_USER_ORDER("DELETE", "api/v1/users/{user_id}","사용자 정보 삭제에 성공했습니다.",
-            "사용자 정보 삭제에 실패했습니다.", Pattern.compile("^/api/v1/users/[^/]+$"), null),
+            "사용자 정보 삭제에 실패했습니다.", Pattern.compile("^/api/v1/users/(stars|fans)/[a-zA-Z_]+$"), null),
 
     NONE(null, null, null, null, null, null);
 
@@ -43,14 +43,6 @@ public enum NEOUserApiOrder {
 
     public String getRequestedMethodAndURI(){
         return this.httpMethod + " " + this.requestURI;
-    }
-
-    public HttpHeaders renderHttpHeadersByUserOrderAndResponseCode(NEOResponseCode respCode){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("responseCode", respCode.name());
-        headers.add("requestedMethodAndURI", this.getRequestedMethodAndURI());
-        headers.add("msg", respCode.equals(NEOResponseCode.SUCCESS) ? this.getSuccessMessage() : this.getFailMessage());
-        return headers;
     }
 
     public static NEOUserApiOrder fromHttpMethodAndRequestURI(String httpMethod, String requestURI){

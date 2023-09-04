@@ -36,7 +36,7 @@ public class NEOStarEntity extends NEOUserEntity {
 
     /* 네오 스타가 가진 스타 유형 */
     @Builder.Default
-    @OneToMany(mappedBy = "neoStar", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "neoStar", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
     private List<NEOStarTypeEntity> starTypeList = new ArrayList<>();
 
     /* 해당 스타 엔티티를 팔로우하고 있는 팔로워 리스트 */
@@ -47,6 +47,11 @@ public class NEOStarEntity extends NEOUserEntity {
     @Override
     public NEOUserType getUserType() {
         return USER_TYPE;
+    }
+
+    public void addStarType(NEOStarTypeEntity starTypeEntity){
+        this.starTypeList.add(starTypeEntity);
+        starTypeEntity.setNeoStar(this);
     }
 
     /**
@@ -66,6 +71,7 @@ public class NEOStarEntity extends NEOUserEntity {
                 .phoneNumber(request.getPhoneNumber())
                 .providerType(null)
                 .neoNickName(request.getNeoNickName())
+                .starNickName(request.getStarNickName())
                 .gender(request.getGender())
                 .subscribedStarList(new ArrayList<>())
                 .starTypeList(new ArrayList<>())

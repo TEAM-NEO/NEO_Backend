@@ -59,8 +59,13 @@ public abstract class NEOUserEntity extends NEOTimeDefaultEntity {
     private NEOGenderType gender;
 
     @Builder.Default
-    @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
     private List<NEOUserRelationEntity> subscribedStarList = new ArrayList<>();
+
+    public void subscribeNeoStar(NEOStarEntity followWantStar){
+        NEOUserRelationEntity userRelation = new NEOUserRelationEntity();
+        userRelation.makeRelationFanWithStar(this, followWantStar);
+    }
 
     public abstract NEOUserType getUserType();
 

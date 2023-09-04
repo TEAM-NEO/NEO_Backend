@@ -85,7 +85,7 @@ public class NEOUserInformationController {
     }
 
     /**
-     * GET /api/v1/fans/stars/{user_id} : 기존 팬 회원 정보 획득 API<br>
+     * GET /api/v1/users/fans/{user_id} : 기존 팬 회원 정보 획득 API<br>
      * NEO의 팬 회원의 정보를 획득할 수 있습니다.<br>
      * query parameter인 {@code privacy}와 {@code detail}을 통해 얻고자하는 정보를 제어할 수 있습니다.<br>
      * @param userID 사용자 아이디, 스타 아이디가 아니라면 반려당합니다.

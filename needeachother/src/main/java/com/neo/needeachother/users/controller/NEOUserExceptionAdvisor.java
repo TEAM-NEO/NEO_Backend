@@ -1,11 +1,13 @@
 package com.neo.needeachother.users.controller;
 
 import com.neo.needeachother.common.enums.NEOResponseCode;
+import com.neo.needeachother.common.exception.NEOUnexpectedException;
 import com.neo.needeachother.common.response.NEOErrorResponse;
 import com.neo.needeachother.common.response.NEOFinalErrorResponse;
 import com.neo.needeachother.users.enums.NEOUserApiOrder;
 import com.neo.needeachother.users.exception.NEOUserExpectedException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -28,7 +30,18 @@ public class NEOUserExceptionAdvisor extends ResponseEntityExceptionHandler {
         return handleUserExceptionInternal(ex);
     }
 
-    public ResponseEntity<NEOFinalErrorResponse> handleUserExceptionInternal(final NEOUserExpectedException ex){
+    @ExceptionHandler(value = {NEOUnexpectedException.class})
+    public ResponseEntity<NEOFinalErrorResponse> handleUnexpectedException(NEOUnexpectedException ex){
+        log.warn(ex.getMessage());
+        return ResponseEntity.internalServerError()
+                .body(NEOFinalErrorResponse.builder()
+                        .responseCode(NEOResponseCode.FAIL)
+                        .msg(ex.getMessage())
+                        .errors(List.of(NEOErrorResponse.builder().errorCode(-900).errorDescription("서버 내부 문제 발생").errorDetail("자세한 내용은 서버 측에 문의하세요.").build()))
+                        .build());
+    }
+
+    private ResponseEntity<NEOFinalErrorResponse> handleUserExceptionInternal(final NEOUserExpectedException ex){
         List<NEOErrorResponse> errorResponseList = ex.getErrorResponseList();
         NEOUserApiOrder userOrder = ex.getUserOrder();
 
@@ -36,7 +49,7 @@ public class NEOUserExceptionAdvisor extends ResponseEntityExceptionHandler {
                 .body(renderResponseBody(errorResponseList, userOrder));
     }
 
-    public NEOFinalErrorResponse renderResponseBody(final List<NEOErrorResponse> errorResponseList, final NEOUserApiOrder userOrder){
+    private NEOFinalErrorResponse renderResponseBody(final List<NEOErrorResponse> errorResponseList, final NEOUserApiOrder userOrder){
         return NEOFinalErrorResponse.builder()
                 .requestedMethodAndURI(userOrder.getRequestedMethodAndURI())
                 .responseCode(NEOResponseCode.FAIL)
