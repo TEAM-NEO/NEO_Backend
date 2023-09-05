@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.1.2'
 	id 'io.spring.dependency-management' version '1.1.2'
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'com.neo'
@@ -15,11 +16,14 @@ repositories {
 	mavenCentral()
 }
 
-// add
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+}
+
+ext {
+	snippetsDir = file('build/generated-snippets')
 }
 
 dependencies {
@@ -43,6 +47,7 @@ dependencies {
 
 	// lombok library
 	implementation 'org.projectlombok:lombok:1.18.26'
+	// implementation 'junit:junit:4.13.2'
 	annotationProcessor 'org.projectlombok:lombok:1.18.26'
 
 	// swagger implement
@@ -62,7 +67,38 @@ dependencies {
 
 	// for test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
+	// testImplementation 'org.springframework.security:spring-security-test'
+
+	// for spring rest docs with test
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+}
+
+bootJar {
+	dependsOn asciidoctor
+	copy {
+		from "${asciidoctor.outputDir}"
+		into 'BOOT-INF/classes/static/docs'
+	}
+}
+
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+test {
+	useJUnitPlatform()
+	outputs.dir snippetsDir
+}
+
+asciidoctor {
+	dependsOn test
+	inputs.dir snippetsDir
+}
+
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
 }
 
 

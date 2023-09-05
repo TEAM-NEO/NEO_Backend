@@ -44,7 +44,7 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
      * @return {@code ResponseEntity<NEOFinalErrorResponse>} 요청 응답 결과
      */
     @Override
-    public ResponseEntity<NEOUserInformationDTO> doCreateNewStarInformationOrder(final NEOAdditionalStarInfoRequest createStarInfoRequest, final NEOUserApiOrder userOrder) {
+    public NEOUserInformationDTO doCreateNewStarInformationOrder(final NEOAdditionalStarInfoRequest createStarInfoRequest, final NEOUserApiOrder userOrder) {
         // 추가 유효성 검사 및 스타 분류 집합 획득
         Set<NEOStarDetailClassification> starClassificationSet = validateAndGetStarClassification(createStarInfoRequest, userOrder);
 
@@ -64,11 +64,7 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
         NEOStarInfoDocument savedStarWikiDoc = starCustomInfoRepository.save(starCustomInfo);
 
         // 최종 응답 생성 (생성된 사용자 정보)
-        NEOUserInformationDTO createdUserInformation = NEOUserInformationDTO.from(savedStar, savedStarWikiDoc, true, true);
-
-        return ResponseEntity
-                .created(URI.create("/api/v1/users/" + savedStar.getUserID()))
-                .body(createdUserInformation);
+        return NEOUserInformationDTO.from(savedStar, savedStarWikiDoc, true, true);
     }
 
     private NEOStarEntity saveStarWithInformationAndClassificationType(NEOStarEntity wantSaveStar, NEOUserApiOrder userOrder){

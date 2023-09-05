@@ -9,12 +9,14 @@ import com.neo.needeachother.users.service.NEOUserInformationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +48,13 @@ public class NEOUserInformationController {
     public ResponseEntity<NEOUserInformationDTO> createNewStarInformationOrder(@RequestBody @Validated final NEOAdditionalStarInfoRequest createStarInfoRequest, BindingResult bindingResult) {
         NEOUserApiOrder userOrder = NEOUserApiOrder.CREATE_STAR_INFO;
         checkRequestValidationPassed(bindingResult, userOrder);
-        return userInformationService.doCreateNewStarInformationOrder(createStarInfoRequest, userOrder);
+
+        NEOUserInformationDTO createdUserInformation = userInformationService.doCreateNewStarInformationOrder(createStarInfoRequest, userOrder);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .location(URI.create("/api/v1/users/" + createdUserInformation.getUserID()))
+                .body(createdUserInformation);
     }
 
     /**
