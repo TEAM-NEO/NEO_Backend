@@ -71,16 +71,21 @@ public class NEOUserInformationController {
     public ResponseEntity<NEOUserInformationDTO> createNewFanInformationOrder(@RequestBody @Validated final NEOAdditionalFanInfoRequest createFanInfoRequest, BindingResult bindingResult) {
         NEOUserApiOrder userOrder = NEOUserApiOrder.CREATE_FAN_INFO;
         checkRequestValidationPassed(bindingResult, userOrder);
-        return userInformationService.doCreateNewFanInformationOrder(createFanInfoRequest, userOrder);
+        NEOUserInformationDTO createdUserInformation = userInformationService.doCreateNewFanInformationOrder(createFanInfoRequest, userOrder);
+
+        return ResponseEntity
+                .created(URI.create("/api/v1/users/" + createdUserInformation.getUserID()))
+                .body(createdUserInformation);
     }
 
     /**
      * GET /api/v1/users/stars/{user_id} : 기존 스타 회원 정보 획득 API<br>
      * NEO의 스타 회원의 정보를 획득할 수 있습니다.<br>
      * query parameter인 {@code privacy}와 {@code detail}을 통해 얻고자하는 정보를 제어할 수 있습니다.<br>
-     * @param userID 사용자 아이디, 스타 아이디가 아니라면 반려당합니다.
+     *
+     * @param userID    사용자 아이디, 스타 아이디가 아니라면 반려당합니다.
      * @param isPrivacy 비밀개인정보 노출 여부, {@code true}라면 성명, 전화번호등 실제 개인 정보를 포함합니다.
-     * @param isDetail 상세 정보(위키) 노출 여부, {@code true}라면, 스타가 커스텀으로 올린 위키 정보를 포함합니다.
+     * @param isDetail  상세 정보(위키) 노출 여부, {@code true}라면, 스타가 커스텀으로 올린 위키 정보를 포함합니다.
      * @return {@code ResponseEntity<NEOUserInformationDTO>}
      */
     @GetMapping("/stars/{user_id}")
@@ -89,14 +94,18 @@ public class NEOUserInformationController {
             @RequestParam(value = "privacy", required = false, defaultValue = "false") boolean isPrivacy,
             @RequestParam(value = "detail", required = false, defaultValue = "false") boolean isDetail) {
         NEOUserApiOrder userOrder = NEOUserApiOrder.GET_STAR_INFO;
-        return userInformationService.doGetStarInformationOrder(userID, isPrivacy, isDetail, userOrder);
+        NEOUserInformationDTO foundStarInformation = userInformationService.doGetStarInformationOrder(userID, isPrivacy, isDetail, userOrder);
+
+        return ResponseEntity.ok()
+                .body(foundStarInformation);
     }
 
     /**
      * GET /api/v1/users/fans/{user_id} : 기존 팬 회원 정보 획득 API<br>
      * NEO의 팬 회원의 정보를 획득할 수 있습니다.<br>
      * query parameter인 {@code privacy}와 {@code detail}을 통해 얻고자하는 정보를 제어할 수 있습니다.<br>
-     * @param userID 사용자 아이디, 스타 아이디가 아니라면 반려당합니다.
+     *
+     * @param userID    사용자 아이디, 스타 아이디가 아니라면 반려당합니다.
      * @param isPrivacy 비밀개인정보 노출 여부, {@code true}라면 성명, 전화번호등 실제 개인 정보를 포함합니다.
      * @return {@code ResponseEntity<NEOUserInformationDTO>}
      */
@@ -105,7 +114,10 @@ public class NEOUserInformationController {
             @PathVariable("user_id") String userID,
             @RequestParam(value = "privacy", required = false, defaultValue = "false") boolean isPrivacy) {
         NEOUserApiOrder userOrder = NEOUserApiOrder.GET_FAN_INFO;
-        return userInformationService.doGetFanInformationOrder(userID, isPrivacy, userOrder);
+        NEOUserInformationDTO foundFanInformation = userInformationService.doGetFanInformationOrder(userID, isPrivacy, userOrder);
+
+        return ResponseEntity.ok()
+                .body(foundFanInformation);
     }
 
     /**
@@ -120,16 +132,19 @@ public class NEOUserInformationController {
     @PatchMapping(value = {"/stars/{user_id}", "/fans/{user_id}"})
     @NEOChangeUserInfoOrderDocs
     public ResponseEntity<NEOUserInformationDTO> changePartialUserInformationOrder(@PathVariable("user_id") final String userID,
-                                                               @RequestBody final NEOChangeableInfoDTO changePartialStarInfoRequest) {
-        return userInformationService.doChangePartialInformationOrder(userID, NEOUserApiOrder.CHANGE_USER_INFO, changePartialStarInfoRequest);
+                                                                                   @RequestBody final NEOChangeableInfoDTO changePartialStarInfoRequest) {
+
+        return ResponseEntity.ok()
+                .body(userInformationService.doChangePartialInformationOrder(userID, NEOUserApiOrder.CHANGE_USER_INFO, changePartialStarInfoRequest));
     }
 
 
     @DeleteMapping(value = {"/stars/{user_id}", "/fans/{user_id}"})
     @NEODeleteUserInfoOrderDocs
-    public ResponseEntity<?> deleteUserInformationOrder(@PathVariable("user_id") String userID) {
+    public ResponseEntity deleteUserInformationOrder(@PathVariable("user_id") String userID) {
         NEOUserApiOrder userOrder = NEOUserApiOrder.DELETE_USER_ORDER;
-        return userInformationService.doDeleteUserInformationOrder(userID, userOrder);
+        userInformationService.doDeleteUserInformationOrder(userID, userOrder);
+        return ResponseEntity.ok().build();
     }
 
     /**

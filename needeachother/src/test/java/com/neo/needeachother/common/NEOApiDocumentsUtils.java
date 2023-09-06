@@ -1,4 +1,4 @@
-package com.neo.needeachother;
+package com.neo.needeachother.common;
 
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
