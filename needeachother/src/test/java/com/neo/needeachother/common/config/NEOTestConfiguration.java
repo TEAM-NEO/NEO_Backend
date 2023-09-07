@@ -10,7 +10,14 @@ import com.neo.needeachother.users.filter.NEOInfoDtoJsonFilter;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcBuilderCustomizer;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
+import org.springframework.restdocs.snippet.Attributes;
 import org.springframework.web.filter.CharacterEncodingFilter;
+
+import static com.neo.needeachother.common.docsutil.NEOApiDocumentsUtils.getDocumentRequest;
+import static com.neo.needeachother.common.docsutil.NEOApiDocumentsUtils.getDocumentResponse;
+
 
 @TestConfiguration
 public class NEOTestConfiguration {
@@ -32,9 +39,24 @@ public class NEOTestConfiguration {
     }
 
     @Bean
+    public RestDocumentationResultHandler write(){
+        return MockMvcRestDocumentation.document(
+                "{method-name}",
+                getDocumentRequest(),
+                getDocumentResponse()
+        );
+    }
+
+    @Bean
     MockMvcBuilderCustomizer utf8Config() {
         return builder ->
                 builder.addFilters(new CharacterEncodingFilter("UTF-8", true));
+    }
+
+    public static Attributes.Attribute field(
+            final String key,
+            final String value){
+        return new Attributes.Attribute(key,value);
     }
 
 }

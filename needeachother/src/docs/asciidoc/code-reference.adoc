@@ -1,0 +1,10 @@
+[[code-reference]]
+== ⚙️ *[black]#NEO 코드 열람#*
+
+[[code-reference-gender]]
+=== *[black]#NEO 성별 코드#*
+include::{snippets}/equal-code-enums/custom-equalenum-response-fields-genderCode.adoc[]
+
+[[code-reference-star-classification]]
+=== *[black]#NEO 스타 유형 코드#*
+include::{snippets}/equal-code-enums/custom-equalenum-response-fields-starClassificationCode.adoc[]

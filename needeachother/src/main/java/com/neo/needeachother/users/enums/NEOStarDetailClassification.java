@@ -2,6 +2,8 @@ package com.neo.needeachother.users.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.neo.needeachother.common.enums.NEODocumentAbleEnum;
+import com.neo.needeachother.common.enums.NEOEqualCodeEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Getter
 @RequiredArgsConstructor
-public enum NEOStarDetailClassification {
+public enum NEOStarDetailClassification implements NEOEqualCodeEnum {
 
     /* 연예인 */
     ACTOR("AC", NEOStarClassification.CELEBRITY, "배우", null, null),
@@ -127,4 +129,18 @@ public enum NEOStarDetailClassification {
                 .orElseThrow();
     }
 
+    @Override
+    public String getName() {
+        return this.name();
+    }
+
+    @Override
+    public String getDescription() {
+        return this.korStarClassification;
+    }
+
+    @Override
+    public String getEqualCode() {
+        return getClassificationStringList(this).toString();
+    }
 }

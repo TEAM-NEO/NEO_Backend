@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @JsonFilter("NEOInfoDtoJsonFilter")
 @NoArgsConstructor
 @AllArgsConstructor

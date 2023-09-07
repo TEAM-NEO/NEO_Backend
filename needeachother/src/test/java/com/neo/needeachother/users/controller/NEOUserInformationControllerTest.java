@@ -13,27 +13,35 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.junit.jupiter.api.Assertions;
 
+import static com.neo.needeachother.common.config.NEOTestConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+// import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @Import(value = {NEOTestConfiguration.class})
 @WebMvcTest(controllers = NEOUserInformationController.class)
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = "docsutil.api.com")
 class NEOUserInformationControllerTest {
 
     @Autowired
@@ -45,6 +53,10 @@ class NEOUserInformationControllerTest {
 
     @MockBean
     private NEOUserInformationService userInformationService;
+
+    @Autowired
+    protected RestDocumentationResultHandler restDocs;
+
 
     @Test
     @DisplayName("🔧 POST /api/v1/users/stars : 신규 스타 회원 추가 정보 생성 테스트")
@@ -58,7 +70,7 @@ class NEOUserInformationControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(
-                post("/api/v1/users/stars")
+                RestDocumentationRequestBuilders.post("/api/v1/users/stars")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -68,7 +80,45 @@ class NEOUserInformationControllerTest {
         result.andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/api/v1/users/" + NEOStarTestObjectMother.STAR_CASE_1.getUserID()))
                 .andExpect(content().string(objectMapper.writeValueAsString(finalResponse)))
-                .andDo(print());
+                .andDo(print())
+                /* write docsutil */
+                .andDo(restDocs.document(
+                                requestFields(
+                                        fieldWithPath("user_id").type(JsonFieldType.STRING).description("사용자 아이디").attributes(field("constraints", "4글자 이상, 알파벳 대소문자, 숫자, 언더바 포함가능")),
+                                        fieldWithPath("user_pw").type(JsonFieldType.STRING).description("사용자 비밀번호").attributes(field("constraints", "4글자 이상")),
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일").attributes(field("constraints", "email의 형식 준수")),
+                                        fieldWithPath("user_name").type(JsonFieldType.STRING).description("사용자 본명"),
+                                        fieldWithPath("phone_number").type(JsonFieldType.STRING).description("핸드폰 번호").attributes(field("constraints", "'-'를 포함한 핸드폰 번호 (ex. 010-1111-1111)")),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("네오 닉네임"),
+                                        fieldWithPath("star_nickname").type(JsonFieldType.STRING).description("스타 활동명"),
+                                        fieldWithPath("gender").type(JsonFieldType.STRING).description("성별").attributes(field("constraints", "gender 코드 참조")),
+                                        fieldWithPath("star_classification_list").type(JsonFieldType.ARRAY).description("스타 유형").attributes(field("constraints", "starClassification 코드 참조")),
+                                        fieldWithPath("submitted_url").type(JsonFieldType.ARRAY).description("대표 url").optional(),
+                                        fieldWithPath("introduction").type(JsonFieldType.STRING).description("한 줄 소개글").optional(),
+                                        fieldWithPath("custom_wiki_list").type(JsonFieldType.ARRAY).description("스타 자기소개 위키").optional(),
+                                        fieldWithPath("custom_wiki_list[].custom_title").type(JsonFieldType.STRING).description("위키 제목").optional(),
+                                        fieldWithPath("custom_wiki_list[].custom_context").type(JsonFieldType.STRING).description("위키 내용").optional()
+                                ),
+                                responseFields(
+                                        fieldWithPath("user_type").type(JsonFieldType.STRING).description("사용자 유형"),
+                                        fieldWithPath("has_wiki").type(JsonFieldType.BOOLEAN).description("위키 포함 여부"),
+                                        fieldWithPath("is_private").type(JsonFieldType.BOOLEAN).description("개인정보 포함 여부"),
+                                        fieldWithPath("user_id").type(JsonFieldType.STRING).description("사용자 아이디"),
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일"),
+                                        fieldWithPath("user_name").type(JsonFieldType.STRING).description("사용자 본명"),
+                                        fieldWithPath("phone_number").type(JsonFieldType.STRING).description("핸드폰 번호"),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("네오 닉네임"),
+                                        fieldWithPath("star_nickname").type(JsonFieldType.STRING).description("스타 활동명"),
+                                        fieldWithPath("gender").type(JsonFieldType.STRING).description("성별"),
+                                        fieldWithPath("star_classification_list").type(JsonFieldType.ARRAY).description("스타 유형"),
+                                        fieldWithPath("submitted_url").type(JsonFieldType.ARRAY).description("대표 url"),
+                                        fieldWithPath("introduction").type(JsonFieldType.STRING).description("한 줄 소개글"),
+                                        fieldWithPath("custom_wiki_list").type(JsonFieldType.ARRAY).description("스타 자기소개 위키"),
+                                        fieldWithPath("custom_wiki_list[].custom_title").type(JsonFieldType.STRING).description("위키 제목"),
+                                        fieldWithPath("custom_wiki_list[].custom_context").type(JsonFieldType.STRING).description("위키 내용")
+                                )
+                        )
+                );
     }
 
     @Test
@@ -83,7 +133,7 @@ class NEOUserInformationControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(
-                post("/api/v1/users/fans")
+                RestDocumentationRequestBuilders.post("/api/v1/users/fans")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -93,7 +143,32 @@ class NEOUserInformationControllerTest {
         result.andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/api/v1/users/" + NEOFanTestObjectMother.FAN_CASE_1.getUserID()))
                 .andExpect(content().string(objectMapper.writeValueAsString(finalResponse)))
-                .andDo(print());
+                .andDo(print())
+                /* write docsutil */
+                .andDo(restDocs.document(
+                                requestFields(
+                                        fieldWithPath("user_id").type(JsonFieldType.STRING).description("사용자 아이디").attributes(field("constraints", "4글자 이상, 알파벳 대소문자, 숫자, 언더바 포함가능")),
+                                        fieldWithPath("user_pw").type(JsonFieldType.STRING).description("사용자 비밀번호").attributes(field("constraints", "4글자 이상")),
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일").attributes(field("constraints", "email의 형식 준수")),
+                                        fieldWithPath("user_name").type(JsonFieldType.STRING).description("사용자 본명"),
+                                        fieldWithPath("phone_number").type(JsonFieldType.STRING).description("핸드폰 번호").attributes(field("constraints", "'-'를 포함한 핸드폰 번호 (ex. 010-1111-1111)")),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("네오 닉네임"),
+                                        fieldWithPath("gender").type(JsonFieldType.STRING).description("성별").attributes(field("constraints", "gender 코드 참조")),
+                                        fieldWithPath("favorite_star_id").type(JsonFieldType.STRING).description("최애 스타 아이디")
+                                ),
+                                responseFields(
+                                        fieldWithPath("user_type").type(JsonFieldType.STRING).description("사용자 유형"),
+                                        fieldWithPath("has_wiki").type(JsonFieldType.BOOLEAN).description("위키 포함 여부"),
+                                        fieldWithPath("is_private").type(JsonFieldType.BOOLEAN).description("개인정보 포함 여부"),
+                                        fieldWithPath("user_id").type(JsonFieldType.STRING).description("사용자 아이디"),
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일"),
+                                        fieldWithPath("user_name").type(JsonFieldType.STRING).description("사용자 본명"),
+                                        fieldWithPath("phone_number").type(JsonFieldType.STRING).description("핸드폰 번호"),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("네오 닉네임"),
+                                        fieldWithPath("gender").type(JsonFieldType.STRING).description("성별")
+                                )
+                        )
+                );
     }
 
     @Test
@@ -108,7 +183,7 @@ class NEOUserInformationControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(
-                get("/api/v1/users/stars/" + userID)
+                RestDocumentationRequestBuilders.get("/api/v1/users/stars/{user_id}", userID)
                         .param("privacy", String.valueOf(true))
                         .param("detail", String.valueOf(true))
                         .accept(MediaType.APPLICATION_JSON)
@@ -118,7 +193,36 @@ class NEOUserInformationControllerTest {
         result.andExpect(status().isOk())
                 .andExpect(content().string(objectMapper.writeValueAsString(finalResponse)))
                 .andExpect(jsonPath("$.user_pw").doesNotExist())
-                .andDo(print());
+                .andDo(print())
+                /* write docsutil */
+                .andDo(restDocs.document(
+                                pathParameters(
+                                        parameterWithName("user_id").description("스타 아이디")
+                                ),
+                                queryParameters(
+                                        parameterWithName("privacy").description("개인정보 포함 여부"),
+                                        parameterWithName("detail").description("상세내용(위키) 포함 여부")
+                                ),
+                                responseFields(
+                                        fieldWithPath("user_type").type(JsonFieldType.STRING).description("사용자 유형"),
+                                        fieldWithPath("has_wiki").type(JsonFieldType.BOOLEAN).description("위키 포함 여부"),
+                                        fieldWithPath("is_private").type(JsonFieldType.BOOLEAN).description("개인정보 포함 여부"),
+                                        fieldWithPath("user_id").type(JsonFieldType.STRING).description("사용자 아이디"),
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일"),
+                                        fieldWithPath("user_name").type(JsonFieldType.STRING).description("사용자 본명"),
+                                        fieldWithPath("phone_number").type(JsonFieldType.STRING).description("핸드폰 번호"),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("네오 닉네임"),
+                                        fieldWithPath("star_nickname").type(JsonFieldType.STRING).description("스타 활동명"),
+                                        fieldWithPath("gender").type(JsonFieldType.STRING).description("성별"),
+                                        fieldWithPath("star_classification_list").type(JsonFieldType.ARRAY).description("스타 유형"),
+                                        fieldWithPath("submitted_url").type(JsonFieldType.ARRAY).description("대표 url"),
+                                        fieldWithPath("introduction").type(JsonFieldType.STRING).description("한 줄 소개글"),
+                                        fieldWithPath("custom_wiki_list").type(JsonFieldType.ARRAY).description("스타 자기소개 위키"),
+                                        fieldWithPath("custom_wiki_list[].custom_title").type(JsonFieldType.STRING).description("위키 제목"),
+                                        fieldWithPath("custom_wiki_list[].custom_context").type(JsonFieldType.STRING).description("위키 내용")
+                                )
+                        )
+                );
     }
 
     @Test
@@ -133,7 +237,7 @@ class NEOUserInformationControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(
-                get("/api/v1/users/stars/" + userID)
+                RestDocumentationRequestBuilders.get("/api/v1/users/stars/{user_id}", userID)
                         .param("privacy", String.valueOf(false))
                         .param("detail", String.valueOf(true))
                         .accept(MediaType.APPLICATION_JSON)
@@ -148,7 +252,33 @@ class NEOUserInformationControllerTest {
                         jsonPath("$.user_name").doesNotExist(),
                         jsonPath("$.phone_number").doesNotExist()
                 )
-                .andDo(print());
+                .andDo(print())
+                /* write docsutil */
+                .andDo(restDocs.document(
+                                pathParameters(
+                                        parameterWithName("user_id").description("스타 아이디")
+                                ),
+                                queryParameters(
+                                        parameterWithName("privacy").description("개인정보 포함 여부"),
+                                        parameterWithName("detail").description("상세내용(위키) 포함 여부")
+                                ),
+                                responseFields(
+                                        fieldWithPath("user_type").type(JsonFieldType.STRING).description("사용자 유형"),
+                                        fieldWithPath("has_wiki").type(JsonFieldType.BOOLEAN).description("위키 포함 여부"),
+                                        fieldWithPath("is_private").type(JsonFieldType.BOOLEAN).description("개인정보 포함 여부"),
+                                        fieldWithPath("user_id").type(JsonFieldType.STRING).description("사용자 아이디"),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("네오 닉네임"),
+                                        fieldWithPath("star_nickname").type(JsonFieldType.STRING).description("스타 활동명"),
+                                        fieldWithPath("gender").type(JsonFieldType.STRING).description("성별"),
+                                        fieldWithPath("star_classification_list").type(JsonFieldType.ARRAY).description("스타 유형"),
+                                        fieldWithPath("submitted_url").type(JsonFieldType.ARRAY).description("대표 url"),
+                                        fieldWithPath("introduction").type(JsonFieldType.STRING).description("한 줄 소개글"),
+                                        fieldWithPath("custom_wiki_list").type(JsonFieldType.ARRAY).description("스타 자기소개 위키"),
+                                        fieldWithPath("custom_wiki_list[].custom_title").type(JsonFieldType.STRING).description("위키 제목"),
+                                        fieldWithPath("custom_wiki_list[].custom_context").type(JsonFieldType.STRING).description("위키 내용")
+                                )
+                        )
+                );
     }
 
     @Test
@@ -163,7 +293,7 @@ class NEOUserInformationControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(
-                get("/api/v1/users/stars/" + userID)
+                RestDocumentationRequestBuilders.get("/api/v1/users/stars/{user_id}", userID)
                         .param("privacy", String.valueOf(true))
                         .param("detail", String.valueOf(false))
                         .accept(MediaType.APPLICATION_JSON)
@@ -175,7 +305,33 @@ class NEOUserInformationControllerTest {
                 .andExpectAll(
                         jsonPath("$.user_pw").doesNotExist(),
                         jsonPath("$.custom_wiki_list").doesNotExist())
-                .andDo(print());
+                .andDo(print())
+                /* write docsutil */
+                .andDo(restDocs.document(
+                                pathParameters(
+                                        parameterWithName("user_id").description("스타 아이디")
+                                ),
+                                queryParameters(
+                                        parameterWithName("privacy").description("개인정보 포함 여부"),
+                                        parameterWithName("detail").description("상세내용(위키) 포함 여부")
+                                ),
+                                responseFields(
+                                        fieldWithPath("user_type").type(JsonFieldType.STRING).description("사용자 유형"),
+                                        fieldWithPath("has_wiki").type(JsonFieldType.BOOLEAN).description("위키 포함 여부"),
+                                        fieldWithPath("is_private").type(JsonFieldType.BOOLEAN).description("개인정보 포함 여부"),
+                                        fieldWithPath("user_id").type(JsonFieldType.STRING).description("사용자 아이디"),
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일"),
+                                        fieldWithPath("user_name").type(JsonFieldType.STRING).description("사용자 본명"),
+                                        fieldWithPath("phone_number").type(JsonFieldType.STRING).description("핸드폰 번호"),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("네오 닉네임"),
+                                        fieldWithPath("star_nickname").type(JsonFieldType.STRING).description("스타 활동명"),
+                                        fieldWithPath("gender").type(JsonFieldType.STRING).description("성별"),
+                                        fieldWithPath("star_classification_list").type(JsonFieldType.ARRAY).description("스타 유형"),
+                                        fieldWithPath("submitted_url").type(JsonFieldType.ARRAY).description("대표 url"),
+                                        fieldWithPath("introduction").type(JsonFieldType.STRING).description("한 줄 소개글")
+                                )
+                        )
+                );
 
     }
 
@@ -191,16 +347,14 @@ class NEOUserInformationControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(
-                get("/api/v1/users/stars/" + userID)
+                RestDocumentationRequestBuilders.get("/api/v1/users/stars/{user_id}", userID)
                         .param("privacy", String.valueOf(false))
                         .param("detail", String.valueOf(false))
                         .accept(MediaType.APPLICATION_JSON)
         );
 
         ResultActions withoutParamResult = mockMvc.perform(
-                get("/api/v1/users/stars/" + userID)
-                        .param("privacy", String.valueOf(false))
-                        .param("detail", String.valueOf(false))
+                RestDocumentationRequestBuilders.get("/api/v1/users/stars/{user_id}", userID)
                         .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -215,7 +369,30 @@ class NEOUserInformationControllerTest {
                         jsonPath("$.phone_number").doesNotExist(),
                         jsonPath("$.custom_wiki_list").doesNotExist()
                 )
-                .andDo(print()).andReturn();
+                .andDo(print())
+                /* write docsutil */
+                .andDo(restDocs.document(
+                                pathParameters(
+                                        parameterWithName("user_id").description("스타 아이디")
+                                ),
+                                queryParameters(
+                                        parameterWithName("privacy").description("개인정보 포함 여부"),
+                                        parameterWithName("detail").description("상세내용(위키) 포함 여부")
+                                ),
+                                responseFields(
+                                        fieldWithPath("user_type").type(JsonFieldType.STRING).description("사용자 유형"),
+                                        fieldWithPath("has_wiki").type(JsonFieldType.BOOLEAN).description("위키 포함 여부"),
+                                        fieldWithPath("is_private").type(JsonFieldType.BOOLEAN).description("개인정보 포함 여부"),
+                                        fieldWithPath("user_id").type(JsonFieldType.STRING).description("사용자 아이디"),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("네오 닉네임"),
+                                        fieldWithPath("star_nickname").type(JsonFieldType.STRING).description("스타 활동명"),
+                                        fieldWithPath("gender").type(JsonFieldType.STRING).description("성별"),
+                                        fieldWithPath("star_classification_list").type(JsonFieldType.ARRAY).description("스타 유형"),
+                                        fieldWithPath("submitted_url").type(JsonFieldType.ARRAY).description("대표 url"),
+                                        fieldWithPath("introduction").type(JsonFieldType.STRING).description("한 줄 소개글")
+                                )
+                        )
+                ).andReturn();
 
         Assertions.assertEquals(finalResult.getResponse().getContentAsString(), finalResultWithoutRequestParam.getResponse().getContentAsString());
     }
@@ -232,7 +409,7 @@ class NEOUserInformationControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(
-                get("/api/v1/users/fans/" + userID)
+                RestDocumentationRequestBuilders.get("/api/v1/users/fans/{user_id}", userID)
                         .param("privacy", String.valueOf(true))
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -248,7 +425,28 @@ class NEOUserInformationControllerTest {
                         jsonPath("$.submitted_url").doesNotExist(),
                         jsonPath("$.introduction").doesNotExist()
                 )
-                .andDo(print());
+                .andDo(print())
+                /* write docsutil */
+                .andDo(restDocs.document(
+                                pathParameters(
+                                        parameterWithName("user_id").description("스타 아이디")
+                                ),
+                                queryParameters(
+                                        parameterWithName("privacy").description("개인정보 포함 여부")
+                                ),
+                                responseFields(
+                                        fieldWithPath("user_type").type(JsonFieldType.STRING).description("사용자 유형"),
+                                        fieldWithPath("has_wiki").type(JsonFieldType.BOOLEAN).description("위키 포함 여부"),
+                                        fieldWithPath("is_private").type(JsonFieldType.BOOLEAN).description("개인정보 포함 여부"),
+                                        fieldWithPath("user_id").type(JsonFieldType.STRING).description("사용자 아이디"),
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일"),
+                                        fieldWithPath("user_name").type(JsonFieldType.STRING).description("사용자 본명"),
+                                        fieldWithPath("phone_number").type(JsonFieldType.STRING).description("핸드폰 번호"),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("네오 닉네임"),
+                                        fieldWithPath("gender").type(JsonFieldType.STRING).description("성별")
+                                )
+                        )
+                );
     }
 
     @Test
@@ -263,13 +461,13 @@ class NEOUserInformationControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(
-                get("/api/v1/users/fans/" + userID)
+                RestDocumentationRequestBuilders.get("/api/v1/users/fans/{user_id}", userID)
                         .param("privacy", String.valueOf(false))
                         .accept(MediaType.APPLICATION_JSON)
         );
 
         ResultActions withoutParamResult = mockMvc.perform(
-                get("/api/v1/users/fans/" + userID)
+                RestDocumentationRequestBuilders.get("/api/v1/users/fans/{user_id}", userID)
                         .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -288,7 +486,25 @@ class NEOUserInformationControllerTest {
                         jsonPath("$.user_name").doesNotExist(),
                         jsonPath("$.phone_number").doesNotExist()
                 )
-                .andDo(print()).andReturn();
+                .andDo(print())
+                /* write docsutil */
+                .andDo(restDocs.document(
+                                pathParameters(
+                                        parameterWithName("user_id").description("스타 아이디")
+                                ),
+                                queryParameters(
+                                        parameterWithName("privacy").description("개인정보 포함 여부")
+                                ),
+                                responseFields(
+                                        fieldWithPath("user_type").type(JsonFieldType.STRING).description("사용자 유형"),
+                                        fieldWithPath("has_wiki").type(JsonFieldType.BOOLEAN).description("위키 포함 여부"),
+                                        fieldWithPath("is_private").type(JsonFieldType.BOOLEAN).description("개인정보 포함 여부"),
+                                        fieldWithPath("user_id").type(JsonFieldType.STRING).description("사용자 아이디"),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("네오 닉네임"),
+                                        fieldWithPath("gender").type(JsonFieldType.STRING).description("성별")
+                                )
+                        )
+                ).andReturn();
 
         Assertions.assertEquals(finalResult.getResponse().getContentAsString(), finalResultWithoutRequestParam.getResponse().getContentAsString());
     }
@@ -306,7 +522,7 @@ class NEOUserInformationControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(
-                patch("/api/v1/users/stars/" + userID)
+                RestDocumentationRequestBuilders.patch("/api/v1/users/stars/{user_id}", userID)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -319,7 +535,32 @@ class NEOUserInformationControllerTest {
                         jsonPath("$.user_pw").doesNotExist(),
                         jsonPath("$.star_nickname").value("박보영뽀블리")
                 )
-                .andDo(print());
+                .andDo(print())
+                /* write docsutil */
+                .andDo(restDocs.document(
+                                pathParameters(
+                                        parameterWithName("user_id").description("스타 아이디")
+                                ),
+                                responseFields(
+                                        fieldWithPath("user_type").type(JsonFieldType.STRING).description("사용자 유형"),
+                                        fieldWithPath("has_wiki").type(JsonFieldType.BOOLEAN).description("위키 포함 여부"),
+                                        fieldWithPath("is_private").type(JsonFieldType.BOOLEAN).description("개인정보 포함 여부"),
+                                        fieldWithPath("user_id").type(JsonFieldType.STRING).description("사용자 아이디"),
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일"),
+                                        fieldWithPath("user_name").type(JsonFieldType.STRING).description("사용자 본명"),
+                                        fieldWithPath("phone_number").type(JsonFieldType.STRING).description("핸드폰 번호"),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("네오 닉네임"),
+                                        fieldWithPath("star_nickname").type(JsonFieldType.STRING).description("스타 활동명"),
+                                        fieldWithPath("gender").type(JsonFieldType.STRING).description("성별"),
+                                        fieldWithPath("star_classification_list").type(JsonFieldType.ARRAY).description("스타 유형"),
+                                        fieldWithPath("submitted_url").type(JsonFieldType.ARRAY).description("대표 url"),
+                                        fieldWithPath("introduction").type(JsonFieldType.STRING).description("한 줄 소개글"),
+                                        fieldWithPath("custom_wiki_list").type(JsonFieldType.ARRAY).description("스타 자기소개 위키"),
+                                        fieldWithPath("custom_wiki_list[].custom_title").type(JsonFieldType.STRING).description("위키 제목"),
+                                        fieldWithPath("custom_wiki_list[].custom_context").type(JsonFieldType.STRING).description("위키 내용")
+                                )
+                        )
+                );
     }
 
     @Test
@@ -335,7 +576,7 @@ class NEOUserInformationControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(
-                patch("/api/v1/users/fans/" + userID)
+                RestDocumentationRequestBuilders.patch("/api/v1/users/fans/{user_id}", userID)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -353,39 +594,71 @@ class NEOUserInformationControllerTest {
                         jsonPath("$.introduction").doesNotExist(),
                         jsonPath("$.nickname").value("박보영최고야")
                 )
-                .andDo(print());
+                .andDo(print())
+                /* write docsutil */
+                .andDo(restDocs.document(
+                                pathParameters(
+                                        parameterWithName("user_id").description("스타 아이디")
+                                ),
+                                responseFields(
+                                        fieldWithPath("user_type").type(JsonFieldType.STRING).description("사용자 유형"),
+                                        fieldWithPath("has_wiki").type(JsonFieldType.BOOLEAN).description("위키 포함 여부"),
+                                        fieldWithPath("is_private").type(JsonFieldType.BOOLEAN).description("개인정보 포함 여부"),
+                                        fieldWithPath("user_id").type(JsonFieldType.STRING).description("사용자 아이디"),
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일"),
+                                        fieldWithPath("user_name").type(JsonFieldType.STRING).description("사용자 본명"),
+                                        fieldWithPath("phone_number").type(JsonFieldType.STRING).description("핸드폰 번호"),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("네오 닉네임"),
+                                        fieldWithPath("gender").type(JsonFieldType.STRING).description("성별")
+                                )
+                        )
+                );
 
     }
 
     @Test
-    @DisplayName("🔧 DELETE /api/v1/users/stars : 스타 정보 삭제 테스트")
-    void deleteStarInformationOrder() throws Exception{
+    @DisplayName("🔧 DELETE /api/v1/users/stars/{user_id} : 스타 정보 삭제 테스트")
+    void deleteStarInformationOrder() throws Exception {
         // given
         String userID = NEOStarTestObjectMother.STAR_CASE_1.getUserID();
 
         // when
         ResultActions result = mockMvc.perform(
-                delete("/api/v1/users/stars/" + userID)
+                RestDocumentationRequestBuilders.delete("/api/v1/users/stars/{user_id}", userID)
         );
 
         // then
         result.andExpect(status().isOk())
-                .andDo(print());
+                .andDo(print())
+                /* write docsutil */
+                .andDo(restDocs.document(
+                                pathParameters(
+                                        parameterWithName("user_id").description("스타 아이디")
+                                )
+                        )
+                );
     }
 
     @Test
-    @DisplayName("🔧 DELETE /api/v1/users/fans : 팬 정보 삭제 테스트")
+    @DisplayName("🔧 DELETE /api/v1/users/fans/{user_id} : 팬 정보 삭제 테스트")
     void deleteFanInformationOrder() throws Exception {
         // given
         String userID = NEOFanTestObjectMother.FAN_CASE_1.getUserID();
 
         // when
         ResultActions result = mockMvc.perform(
-                delete("/api/v1/users/fans/" + userID)
+                RestDocumentationRequestBuilders.delete("/api/v1/users/fans/{user_id}", userID)
         );
 
         // then
         result.andExpect(status().isOk())
-                .andDo(print());
+                .andDo(print())
+                /* write docsutil */
+                .andDo(restDocs.document(
+                                pathParameters(
+                                        parameterWithName("user_id").description("스타 아이디")
+                                )
+                        )
+                );
     }
 }

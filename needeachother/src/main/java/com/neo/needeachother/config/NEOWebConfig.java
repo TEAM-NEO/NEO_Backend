@@ -29,7 +29,7 @@ public class NEOWebConfig implements WebMvcConfigurer {
 
         bean.setFilter(new NEOUserDomainBadRequestFilter());
         bean.setOrder(1);
-        bean.addUrlPatterns("/*");
+        bean.addUrlPatterns("/api/v1/users/*");
 
         return bean;
     }

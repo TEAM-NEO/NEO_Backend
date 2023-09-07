@@ -1,10 +1,9 @@
-package com.neo.needeachother.common;
+package com.neo.needeachother.common.docsutil;
 
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
 
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-
 
 public interface NEOApiDocumentsUtils {
     static OperationRequestPreprocessor getDocumentRequest() {

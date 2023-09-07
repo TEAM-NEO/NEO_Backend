@@ -1,0 +1,120 @@
+[[user-domain-api]]
+== 🪄 *[black]#회원 관련 API#*
+
+[[create-star-info]]
+=== `*[green]#_POST_#*` *[black]#스타 추가 정보 생성#*
+
+----
+NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.
+----
+
+.*[black]#Example Request#*
+include::{snippets}/create-new-star-information-order/http-request.adoc[]
+include::{snippets}/create-new-star-information-order/request-fields.adoc[]
+
+TIP: gender와 star_classification_list는, 아래의 표에서 '동일코드'에 해당되는 값을 삽입하면 올바르게 동작합니다. +
+
+
+include::{snippets}/equal-code-enums/custom-equalenum-response-fields-genderCode.adoc[]
+include::{snippets}/equal-code-enums/custom-equalenum-response-fields-starClassificationCode.adoc[]
+
+.*[black]#Example Response#*
+include::{snippets}/create-new-star-information-order/http-response.adoc[]
+include::{snippets}/create-new-star-information-order/response-fields.adoc[]
+
+[[create-fan-info]]
+=== `*[green]#_POST_#*` *[black]#팬 추가 정보 생성#*
+
+----
+NEO 팬 회원가입 이후, 팬의 추가 정보를 생성합니다.
+----
+
+.*[black]#Example Request#*
+include::{snippets}/create-new-fan-information-order/http-request.adoc[]
+include::{snippets}/create-new-fan-information-order/request-fields.adoc[]
+
+.*[black]#Example Response#*
+include::{snippets}/create-new-fan-information-order/http-response.adoc[]
+include::{snippets}/create-new-fan-information-order/response-fields.adoc[]
+
+[[get-star-info]]
+=== `*[blue]#_GET_#*` *[black]#NEO 스타 등록정보 획득#*
+
+----
+NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.
+----
+
+.*[black]#Example Request#*
+include::{snippets}/get-star-information-order/http-request.adoc[]
+
+.*[black]#Example Response#*
+include::{snippets}/get-star-information-order/http-response.adoc[]
+include::{snippets}/get-star-information-order/response-fields.adoc[]
+
+[[get-fan-info]]
+=== `*[blue]#_GET_#*` *[black]#NEO 팬 등록정보 획득#*
+
+----
+NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.
+----
+
+.*[black]#Example Request#*
+include::{snippets}/get-fan-information-order/http-request.adoc[]
+
+.*[black]#Example Response#*
+include::{snippets}/get-fan-information-order/http-response.adoc[]
+include::{snippets}/get-fan-information-order/response-fields.adoc[]
+
+[[change-star-info]]
+=== `*[magenta]#_PATCH_#*` *[black]#스타 정보 변경#*
+
+----
+NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.
+----
+
+.*[black]#Example Request#*
+include::{snippets}/change-partial-star-information-order/http-request.adoc[]
+
+.*[black]#Example Response#*
+include::{snippets}/change-partial-star-information-order/http-response.adoc[]
+include::{snippets}/change-partial-star-information-order/response-fields.adoc[]
+
+[[change-fan-info]]
+=== `*[magenta]#_PATCH_#*` *[black]#팬 정보 변경#*
+
+----
+NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.
+----
+
+.*[black]#Example Request#*
+include::{snippets}/change-partial-fan-information-order/http-request.adoc[]
+
+.*[black]#Example Response#*
+include::{snippets}/change-partial-fan-information-order/http-response.adoc[]
+include::{snippets}/change-partial-fan-information-order/response-fields.adoc[]
+
+[[delete-star-info]]
+=== `*[red]#_DELETE_#*` *[black]#스타 정보 삭제#*
+
+----
+NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.
+----
+
+.*[black]#Example Request#*
+include::{snippets}/delete-star-information-order/http-request.adoc[]
+
+.*[black]#Example Response#*
+include::{snippets}/delete-star-information-order/http-response.adoc[]
+
+[[delete-fan-info]]
+=== `*[red]#_DELETE_#*` *[black]#팬 정보 삭제#*
+
+----
+NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.
+----
+
+.*[black]#Example Request#*
+include::{snippets}/delete-fan-information-order/http-request.adoc[]
+
+.*[black]#Example Response#*
+include::{snippets}/delete-fan-information-order/http-response.adoc[]

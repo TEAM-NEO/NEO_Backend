@@ -59,16 +59,17 @@ public enum NEOFanTestObjectMother {
     }
 
     public NEOUserInformationDTO getUserInfoResponseFixtureWithoutPrivacy(){
-        return userInfoDTOBuilder.isPrivate(false).build();
+        return getUserInfoResponseFixture().toBuilder().isPrivate(false).build();
     }
 
     public NEOUserInformationDTO getChangeInfoResponseFixture(NEOChangeableInfoDTO changeableInfoDTO) {
-        Optional.ofNullable(changeableInfoDTO.getStarNickName()).ifPresent(userInfoDTOBuilder::starNickName);
-        Optional.ofNullable(changeableInfoDTO.getNeoNickName()).ifPresent(userInfoDTOBuilder::neoNickName);
-        Optional.ofNullable(changeableInfoDTO.getIntroduction()).ifPresent(userInfoDTOBuilder::introduction);
-        Optional.ofNullable(changeableInfoDTO.getStarClassificationSet()).ifPresent(userInfoDTOBuilder::starClassificationSet);
-        Optional.ofNullable(changeableInfoDTO.getCustomWikiList()).ifPresent(userInfoDTOBuilder::customWikiList);
-        Optional.ofNullable(changeableInfoDTO.getSubmittedUrl()).ifPresent(userInfoDTOBuilder::submittedUrl);
-        return userInfoDTOBuilder.build();
+        NEOUserInformationDTO.NEOUserInformationDTOBuilder clonedBuilder = getUserInfoResponseFixture().toBuilder();
+        Optional.ofNullable(changeableInfoDTO.getStarNickName()).ifPresent(clonedBuilder::starNickName);
+        Optional.ofNullable(changeableInfoDTO.getNeoNickName()).ifPresent(clonedBuilder::neoNickName);
+        Optional.ofNullable(changeableInfoDTO.getIntroduction()).ifPresent(clonedBuilder::introduction);
+        Optional.ofNullable(changeableInfoDTO.getStarClassificationSet()).ifPresent(clonedBuilder::starClassificationSet);
+        Optional.ofNullable(changeableInfoDTO.getCustomWikiList()).ifPresent(clonedBuilder::customWikiList);
+        Optional.ofNullable(changeableInfoDTO.getSubmittedUrl()).ifPresent(clonedBuilder::submittedUrl);
+        return clonedBuilder.build();
     }
 }
