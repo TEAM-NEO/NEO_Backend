@@ -28,6 +28,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.junit.jupiter.api.Assertions;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.neo.needeachother.common.config.NEOTestConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -541,6 +544,16 @@ class NEOUserInformationControllerTest {
                                 pathParameters(
                                         parameterWithName("user_id").description("스타 아이디")
                                 ),
+                                requestFields(
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("네오 닉네임").optional(),
+                                        fieldWithPath("star_nickname").type(JsonFieldType.STRING).description("스타 활동명").optional(),
+                                        fieldWithPath("star_classification_list").type(JsonFieldType.ARRAY).description("스타 유형").attributes(field("constraints", "starClassification 코드 참조")).optional(),
+                                        fieldWithPath("submitted_url").type(JsonFieldType.ARRAY).description("대표 url").optional(),
+                                        fieldWithPath("introduction").type(JsonFieldType.STRING).description("한 줄 소개글").optional(),
+                                        fieldWithPath("custom_wiki_list").type(JsonFieldType.ARRAY).description("스타 자기소개 위키").optional(),
+                                        fieldWithPath("custom_wiki_list[].custom_title").type(JsonFieldType.STRING).description("위키 제목").optional(),
+                                        fieldWithPath("custom_wiki_list[].custom_context").type(JsonFieldType.STRING).description("위키 내용").optional()
+                                ),
                                 responseFields(
                                         fieldWithPath("user_type").type(JsonFieldType.STRING).description("사용자 유형"),
                                         fieldWithPath("has_wiki").type(JsonFieldType.BOOLEAN).description("위키 포함 여부"),
@@ -568,8 +581,11 @@ class NEOUserInformationControllerTest {
     void changePartialFanInformationOrder() throws Exception {
         // given
         String userID = NEOFanTestObjectMother.FAN_CASE_1.getUserID();
-        NEOChangeableInfoDTO request = new NEOChangeableInfoDTO(null, "박보영최고야", null, null, null, null);
-        NEOUserInformationDTO finalResponse = NEOFanTestObjectMother.FAN_CASE_1.getChangeInfoResponseFixture(request);
+        Map<String, String> request = new HashMap<>();
+        request.put("nickname", "박보영최고야");
+
+        NEOChangeableInfoDTO requestDeserializedDto = objectMapper.convertValue(request, NEOChangeableInfoDTO.class);
+        NEOUserInformationDTO finalResponse = NEOFanTestObjectMother.FAN_CASE_1.getChangeInfoResponseFixture(requestDeserializedDto);
 
         given(userInformationService.doChangePartialInformationOrder(eq(userID), any(), any()))
                 .willReturn(finalResponse);
@@ -599,6 +615,9 @@ class NEOUserInformationControllerTest {
                 .andDo(restDocs.document(
                                 pathParameters(
                                         parameterWithName("user_id").description("스타 아이디")
+                                ),
+                                requestFields(
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("네오 닉네임").optional()
                                 ),
                                 responseFields(
                                         fieldWithPath("user_type").type(JsonFieldType.STRING).description("사용자 유형"),

@@ -33,6 +33,10 @@ NEO 팬 회원가입 이후, 팬의 추가 정보를 생성합니다.
 include::{snippets}/create-new-fan-information-order/http-request.adoc[]
 include::{snippets}/create-new-fan-information-order/request-fields.adoc[]
 
+TIP: gender는, 아래의 표에서 '동일코드'에 해당되는 값을 삽입하면 올바르게 동작합니다. +
+
+include::{snippets}/equal-code-enums/custom-equalenum-response-fields-genderCode.adoc[]
+
 .*[black]#Example Response#*
 include::{snippets}/create-new-fan-information-order/http-response.adoc[]
 include::{snippets}/create-new-fan-information-order/response-fields.adoc[]
@@ -41,39 +45,52 @@ include::{snippets}/create-new-fan-information-order/response-fields.adoc[]
 === `*[blue]#_GET_#*` *[black]#NEO 스타 등록정보 획득#*
 
 ----
-NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.
+NEO의 스타 유저의 정보를 획득합니다.
 ----
 
 .*[black]#Example Request#*
 include::{snippets}/get-star-information-order/http-request.adoc[]
 
+include::{snippets}/get-star-information-order/path-parameters.adoc[]
+.*[black]#query Params#*
+include::{snippets}/get-star-information-order/query-parameters.adoc[]
+
+
 .*[black]#Example Response#*
 include::{snippets}/get-star-information-order/http-response.adoc[]
 include::{snippets}/get-star-information-order/response-fields.adoc[]
+
 
 [[get-fan-info]]
 === `*[blue]#_GET_#*` *[black]#NEO 팬 등록정보 획득#*
 
 ----
-NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.
+NEO의 팬 유저의 정보를 획득합니다.
 ----
 
 .*[black]#Example Request#*
 include::{snippets}/get-fan-information-order/http-request.adoc[]
 
+include::{snippets}/get-fan-information-order/path-parameters.adoc[]
+.*[black]#query params#*
+include::{snippets}/get-fan-information-order/query-parameters.adoc[]
+
 .*[black]#Example Response#*
 include::{snippets}/get-fan-information-order/http-response.adoc[]
 include::{snippets}/get-fan-information-order/response-fields.adoc[]
+
 
 [[change-star-info]]
 === `*[magenta]#_PATCH_#*` *[black]#스타 정보 변경#*
 
 ----
-NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.
+NEO의 스타 회원의 정보를 변경합니다.
 ----
 
 .*[black]#Example Request#*
 include::{snippets}/change-partial-star-information-order/http-request.adoc[]
+include::{snippets}/change-partial-star-information-order/path-parameters.adoc[]
+include::{snippets}/change-partial-star-information-order/request-fields.adoc[]
 
 .*[black]#Example Response#*
 include::{snippets}/change-partial-star-information-order/http-response.adoc[]
@@ -83,11 +100,14 @@ include::{snippets}/change-partial-star-information-order/response-fields.adoc[]
 === `*[magenta]#_PATCH_#*` *[black]#팬 정보 변경#*
 
 ----
-NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.
+NEO의 팬 회원의 정보를 변경합니다.
 ----
 
 .*[black]#Example Request#*
 include::{snippets}/change-partial-fan-information-order/http-request.adoc[]
+
+include::{snippets}/change-partial-fan-information-order/path-parameters.adoc[]
+include::{snippets}/change-partial-fan-information-order/request-fields.adoc[]
 
 .*[black]#Example Response#*
 include::{snippets}/change-partial-fan-information-order/http-response.adoc[]
@@ -97,11 +117,13 @@ include::{snippets}/change-partial-fan-information-order/response-fields.adoc[]
 === `*[red]#_DELETE_#*` *[black]#스타 정보 삭제#*
 
 ----
-NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.
+NEO의 스타 회원 정보를 삭제합니다. 회원 탈퇴의 경우 사용합니다.
 ----
 
 .*[black]#Example Request#*
 include::{snippets}/delete-star-information-order/http-request.adoc[]
+
+include::{snippets}/delete-star-information-order/path-parameters.adoc[]
 
 .*[black]#Example Response#*
 include::{snippets}/delete-star-information-order/http-response.adoc[]
@@ -110,11 +132,13 @@ include::{snippets}/delete-star-information-order/http-response.adoc[]
 === `*[red]#_DELETE_#*` *[black]#팬 정보 삭제#*
 
 ----
-NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.
+NEO의 팬 회원 정보를 삭제합니다. 회원 탈퇴의 경우 사용합니다.
 ----
 
 .*[black]#Example Request#*
 include::{snippets}/delete-fan-information-order/http-request.adoc[]
+
+include::{snippets}/delete-fan-information-order/path-parameters.adoc[]
 
 .*[black]#Example Response#*
 include::{snippets}/delete-fan-information-order/http-response.adoc[]

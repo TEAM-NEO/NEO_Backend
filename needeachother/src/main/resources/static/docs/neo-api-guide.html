@@ -520,7 +520,7 @@ Host: docs.api.com
   "nickname" : "박보영네오",
   "star_nickname" : "박보영",
   "gender" : "여성",
-  "star_classification_list" : [ "배우", "코미디언" ],
+  "star_classification_list" : [ "코미디언", "배우" ],
   "submitted_url" : [ "www.youtube.com/@free_minkya" ],
   "introduction" : "안녕하세요, 박보영입니다.",
   "custom_wiki_list" : [ {
@@ -770,7 +770,7 @@ Content-Length: 560
   "nickname" : "박보영네오",
   "star_nickname" : "박보영",
   "gender" : "여성",
-  "star_classification_list" : [ "배우", "코미디언" ],
+  "star_classification_list" : [ "코미디언", "배우" ],
   "submitted_url" : [ "www.youtube.com/@free_minkya" ],
   "introduction" : "안녕하세요, 박보영입니다.",
   "custom_wiki_list" : [ {
@@ -995,6 +995,47 @@ Host: docs.api.com
 </tr>
 </tbody>
 </table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+gender는, 아래의 표에서 '동일코드&#8217;에 해당되는 값을 삽입하면 올바르게 동작합니다.<br>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>genderCode</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">코드</th>
+<th class="tableblock halign-left valign-top">동일 코드</th>
+<th class="tableblock halign-left valign-top">코드 설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>MALE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[MALE, M, 남성]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">남성</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FEMALE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[FEMALE, F, 여성]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">여성</p></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="title"><strong><span class="black">Example Response</span></strong></div>
 <div class="content">
@@ -1091,7 +1132,7 @@ Content-Length: 253
 <h3 id="get-star-info"><a class="link" href="#get-star-info"><code><strong><span class="blue"><em>GET</em></span></strong></code> <strong><span class="black">NEO 스타 등록정보 획득</span></strong></a></h3>
 <div class="listingblock">
 <div class="content">
-<pre>NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.</pre>
+<pre>NEO의 스타 유저의 정보를 획득합니다.</pre>
 </div>
 </div>
 <div class="listingblock">
@@ -1102,6 +1143,48 @@ Accept: application/json
 Host: docs.api.com</code></pre>
 </div>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/v1/users/stars/{user_id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>user_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스타 아이디</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. <strong><span class="black">query Params</span></strong></caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>privacy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">개인정보 포함 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>detail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상세내용(위키) 포함 여부</p></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="title"><strong><span class="black">Example Response</span></strong></div>
 <div class="content">
@@ -1120,7 +1203,7 @@ Content-Length: 560
   "nickname" : "박보영네오",
   "star_nickname" : "박보영",
   "gender" : "여성",
-  "star_classification_list" : [ "배우", "코미디언" ],
+  "star_classification_list" : [ "코미디언", "배우" ],
   "submitted_url" : [ "www.youtube.com/@free_minkya" ],
   "introduction" : "안녕하세요, 박보영입니다.",
   "custom_wiki_list" : [ {
@@ -1247,7 +1330,7 @@ Content-Length: 560
 <h3 id="get-fan-info"><a class="link" href="#get-fan-info"><code><strong><span class="blue"><em>GET</em></span></strong></code> <strong><span class="black">NEO 팬 등록정보 획득</span></strong></a></h3>
 <div class="listingblock">
 <div class="content">
-<pre>NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.</pre>
+<pre>NEO의 팬 유저의 정보를 획득합니다.</pre>
 </div>
 </div>
 <div class="listingblock">
@@ -1258,6 +1341,44 @@ Accept: application/json
 Host: docs.api.com</code></pre>
 </div>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. /api/v1/users/fans/{user_id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>user_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스타 아이디</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. <strong><span class="black">query params</span></strong></caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>privacy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">개인정보 포함 여부</p></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="title"><strong><span class="black">Example Response</span></strong></div>
 <div class="content">
@@ -1353,7 +1474,7 @@ Content-Length: 253
 <h3 id="change-star-info"><a class="link" href="#change-star-info"><code><strong><span class="magenta"><em>PATCH</em></span></strong></code> <strong><span class="black">스타 정보 변경</span></strong></a></h3>
 <div class="listingblock">
 <div class="content">
-<pre>NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.</pre>
+<pre>NEO의 스타 회원의 정보를 변경합니다.</pre>
 </div>
 </div>
 <div class="listingblock">
@@ -1375,6 +1496,25 @@ Host: docs.api.com
 }</code></pre>
 </div>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. /api/v1/users/stars/{user_id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>user_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스타 아이디</p></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="title"><strong><span class="black">Example Response</span></strong></div>
 <div class="content">
@@ -1393,7 +1533,7 @@ Content-Length: 569
   "nickname" : "박보영네오",
   "star_nickname" : "박보영뽀블리",
   "gender" : "여성",
-  "star_classification_list" : [ "배우", "코미디언" ],
+  "star_classification_list" : [ "코미디언", "배우" ],
   "submitted_url" : [ "www.youtube.com/@free_minkya" ],
   "introduction" : "안녕하세요, 박보영입니다.",
   "custom_wiki_list" : [ {
@@ -1520,7 +1660,7 @@ Content-Length: 569
 <h3 id="change-fan-info"><a class="link" href="#change-fan-info"><code><strong><span class="magenta"><em>PATCH</em></span></strong></code> <strong><span class="black">팬 정보 변경</span></strong></a></h3>
 <div class="listingblock">
 <div class="content">
-<pre>NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.</pre>
+<pre>NEO의 팬 회원의 정보를 변경합니다.</pre>
 </div>
 </div>
 <div class="listingblock">
@@ -1529,19 +1669,33 @@ Content-Length: 569
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/users/fans/neofan1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Content-Length: 182
+Content-Length: 39
 Host: docs.api.com
 
 {
-  "star_nickname" : null,
-  "nickname" : "박보영최고야",
-  "star_classification_list" : null,
-  "submitted_url" : null,
-  "introduction" : null,
-  "custom_wiki_list" : null
+  "nickname" : "박보영최고야"
 }</code></pre>
 </div>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. /api/v1/users/fans/{user_id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>user_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스타 아이디</p></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="title"><strong><span class="black">Example Response</span></strong></div>
 <div class="content">
@@ -1637,7 +1791,7 @@ Content-Length: 253
 <h3 id="delete-star-info"><a class="link" href="#delete-star-info"><code><strong><span class="red"><em>DELETE</em></span></strong></code> <strong><span class="black">스타 정보 삭제</span></strong></a></h3>
 <div class="listingblock">
 <div class="content">
-<pre>NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.</pre>
+<pre>NEO의 스타 회원 정보를 삭제합니다. 회원 탈퇴의 경우 사용합니다.</pre>
 </div>
 </div>
 <div class="listingblock">
@@ -1647,6 +1801,25 @@ Content-Length: 253
 Host: docs.api.com</code></pre>
 </div>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. /api/v1/users/stars/{user_id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>user_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스타 아이디</p></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="title"><strong><span class="black">Example Response</span></strong></div>
 <div class="content">
@@ -1658,7 +1831,7 @@ Host: docs.api.com</code></pre>
 <h3 id="delete-fan-info"><a class="link" href="#delete-fan-info"><code><strong><span class="red"><em>DELETE</em></span></strong></code> <strong><span class="black">팬 정보 삭제</span></strong></a></h3>
 <div class="listingblock">
 <div class="content">
-<pre>NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.</pre>
+<pre>NEO의 팬 회원 정보를 삭제합니다. 회원 탈퇴의 경우 사용합니다.</pre>
 </div>
 </div>
 <div class="listingblock">
@@ -1668,6 +1841,25 @@ Host: docs.api.com</code></pre>
 Host: docs.api.com</code></pre>
 </div>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 8. /api/v1/users/fans/{user_id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>user_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스타 아이디</p></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="title"><strong><span class="black">Example Response</span></strong></div>
 <div class="content">
