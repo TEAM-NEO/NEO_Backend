@@ -5,17 +5,24 @@ import com.neo.needeachother.common.enums.NEOErrorCode;
 import com.neo.needeachother.users.enums.NEOGenderType;
 import com.neo.needeachother.users.enums.NEOStarDetailClassification;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
-import lombok.*;
-
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author 이승훈<br>
- * @since 23.08.21<br>
- * 스타 유저의 정보를 저장하는 DTO입니다.
+ * @since 23.08.21<br> 스타 유저의 정보를 저장하는 DTO입니다.
  */
 @Setter
 @Getter
@@ -58,7 +65,7 @@ public class NEOAdditionalStarInfoRequest {
     /* OAuth2.0으로부터 받아온 사용자의 전화번호, OAuth 도입 이후 request에서 제거 예정 */
     @NotBlank(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
     @Pattern(regexp = "^(010|011|016|017|018|019)-?(?:\\d{3,4})-?\\d{4}$",
-            message = NEOErrorCode.ValidationMessage.INVALID_FORMAT_PHONE_NUMBER)
+        message = NEOErrorCode.ValidationMessage.INVALID_FORMAT_PHONE_NUMBER)
     @Schema(description = "핸드폰 번호", example = "010-0000-0000")
     @JsonProperty(value = "phone_number", required = true)
     private String phoneNumber;
@@ -83,9 +90,9 @@ public class NEOAdditionalStarInfoRequest {
     /* 스타 구분, 중복 선택 가능 */
     @NotEmpty(message = NEOErrorCode.ValidationMessage.BLANK_VALUE)
     @Schema(description = """
-            어떤 분야의 스타인지 구별할 수 있는 구분자입니다.\s
-            여러 분야에서 일할 수 있으므로, 문자열 리스트의 형태로 값을 전달하면 됩니다.
-            문자열은 한국어 직업군, 대문자 영어 직업군, 분류 코드 모두 수용 가능합니다.""", example = "[\"YOUTUBER\", \"가수\", \"SN\"]")
+        어떤 분야의 스타인지 구별할 수 있는 구분자입니다.\s
+        여러 분야에서 일할 수 있으므로, 문자열 리스트의 형태로 값을 전달하면 됩니다.
+        문자열은 한국어 직업군, 대문자 영어 직업군, 분류 코드 모두 수용 가능합니다.""", example = "[\"YOUTUBER\", \"가수\", \"SN\"]")
     @JsonProperty(value = "star_classification_list", required = true)
     private HashSet<NEOStarDetailClassification> starClassificationSet = new HashSet<>();
 
@@ -101,7 +108,7 @@ public class NEOAdditionalStarInfoRequest {
 
     /* 커스텀 정보 입력 */
     @Schema(description = "추가적으로 스타가 직접 입력하고 싶은 커스텀 정보를 입력합니다." +
-            "정보 제목과 정보 내용을 포함하고 있는 리스트 쌍을 제출합니다.", example = "[{\"custom_title\" : \"MBTI\", \"custom_context\" : \"ISFJ\"}]")
+        "정보 제목과 정보 내용을 포함하고 있는 리스트 쌍을 제출합니다.", example = "[{\"custom_title\" : \"MBTI\", \"custom_context\" : \"ISFJ\"}]")
     @JsonProperty("custom_wiki_list")
     private List<NEOStarWikiInformationDTO> customWikiList;
 
