@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
  */
 @Getter
 @RequiredArgsConstructor
-public enum NEOErrorCode {
+public enum NEOErrorCode implements NEODocumentAbleEnum, NEONumberCodeEnum {
 
     /* BAD REQUEST (잘못된 요청, 형식) */
     INVALID_JSON_FORMAT_REQUEST(-98, "잘못된 JSON 포맷의 요청이 왔습니다.", HttpStatus.BAD_REQUEST),
@@ -40,6 +40,21 @@ public enum NEOErrorCode {
     private final int errorCode;
     private final String errorDescription;
     private final HttpStatus httpStatus;
+
+    @Override
+    public String getName() {
+        return this.name();
+    }
+
+    @Override
+    public String getDescription() {
+        return this.errorDescription;
+    }
+
+    @Override
+    public String getNumberStringCode() {
+        return String.valueOf(this.errorCode);
+    }
 
     /**
      * @author 이승훈<br>

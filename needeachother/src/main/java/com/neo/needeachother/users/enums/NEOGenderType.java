@@ -2,6 +2,8 @@ package com.neo.needeachother.users.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.neo.needeachother.common.enums.NEODocumentAbleEnum;
+import com.neo.needeachother.common.enums.NEOEqualCodeEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,12 +22,12 @@ import java.util.stream.Stream;
 @Getter
 @Slf4j
 @RequiredArgsConstructor
-public enum NEOGenderType {
+public enum NEOGenderType implements NEOEqualCodeEnum {
     MALE("M", "남성"),
     FEMALE("F", "여성"),
 
     /* 미정의 에러 타입 */
-    NONE(null, null);
+    NONE("NONE", "미정의");
 
     private final String genderCode;
     private final String korGenderCode;
@@ -81,5 +83,20 @@ public enum NEOGenderType {
      */
     public static List<String> convertGenderStringList(NEOGenderType genderType) {
         return List.of(genderType.name(), genderType.genderCode, genderType.korGenderCode);
+    }
+
+    @Override
+    public String getName() {
+        return this.name();
+    }
+
+    @Override
+    public String getDescription() {
+        return this.korGenderCode;
+    }
+
+    @Override
+    public String getEqualCode() {
+        return convertGenderStringList(this).toString();
     }
 }

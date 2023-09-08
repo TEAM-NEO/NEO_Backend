@@ -11,10 +11,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum NEOUserType {
-    FAN(TypeCode.FAN),
-    STAR(TypeCode.STAR);
+    FAN(TypeCode.FAN, "팬"),
+    STAR(TypeCode.STAR, "스타");
 
     private final String typeCode;
+    private final String description;
 
     /* @DiscriminatorValue에 사용 */
     public static final class TypeCode{

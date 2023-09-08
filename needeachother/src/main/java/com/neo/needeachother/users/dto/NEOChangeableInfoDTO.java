@@ -46,7 +46,7 @@ public class NEOChangeableInfoDTO {
     @Schema(description = "추가적으로 스타가 직접 입력하고 싶은 커스텀 정보를 입력합니다." +
             "정보 제목과 정보 내용을 포함하고 있는 리스트 쌍을 제출합니다.\n" +
             "팬은 수정되거나 추가되지 않습니다.", example = "[{\"customTitle\" : \"MBTI\", \"customContext\" : \"ISFJ\"}]", nullable = true)
-    @JsonProperty(value = "custom_introduction_list")
-    private List<NEOStarWikiInformationDTO> customIntroductionList;
+    @JsonProperty(value = "custom_wiki_list")
+    private List<NEOStarWikiInformationDTO> customWikiList;
 
 }
