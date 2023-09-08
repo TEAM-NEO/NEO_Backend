@@ -50,7 +50,7 @@ public class NEOInfoDtoJsonFilter extends SimpleBeanPropertyFilter {
         HashSet<String> privateFieldSet = new HashSet<>(List.of("email", "user_name", "phone_number"));
 
         // 비밀번호는 노출 X, 스타만 가지고 있는 필드라면 노출 X
-        if (fieldName.equals("user_pw") || onlyStarHasFieldSet.contains(fieldName)){
+        if (fieldName.equals("private") || fieldName.equals("user_pw") || onlyStarHasFieldSet.contains(fieldName)){
             return false;
         }
 
@@ -62,7 +62,7 @@ public class NEOInfoDtoJsonFilter extends SimpleBeanPropertyFilter {
         HashSet<String> privateFieldSet = new HashSet<>(List.of("email", "user_name", "phone_number"));
 
         // 비밀번호는 노출 X, 공개 정보만 원할 시 개인 정보 노출 X
-        if (fieldName.equals("user_pw") || (!response.isPrivate() && privateFieldSet.contains(fieldName))){
+        if (fieldName.equals("private") || fieldName.equals("user_pw") || (!response.isPrivate() && privateFieldSet.contains(fieldName))){
             return false;
         }
 
