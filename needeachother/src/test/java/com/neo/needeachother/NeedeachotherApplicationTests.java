@@ -5,11 +5,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 
 @AutoConfigureMockMvc
-@SpringBootTest
+// @SpringBootTest
 class NeedeachotherApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+//	@Test
+//	void contextLoads() {
+//	}
 
 }

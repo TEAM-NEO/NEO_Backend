@@ -520,7 +520,7 @@ Host: docs.api.com
   "nickname" : "박보영네오",
   "star_nickname" : "박보영",
   "gender" : "여성",
-  "star_classification_list" : [ "코미디언", "배우" ],
+  "star_classification_list" : [ "배우", "코미디언" ],
   "submitted_url" : [ "www.youtube.com/@free_minkya" ],
   "introduction" : "안녕하세요, 박보영입니다.",
   "custom_wiki_list" : [ {
@@ -770,7 +770,7 @@ Content-Length: 560
   "nickname" : "박보영네오",
   "star_nickname" : "박보영",
   "gender" : "여성",
-  "star_classification_list" : [ "코미디언", "배우" ],
+  "star_classification_list" : [ "배우", "코미디언" ],
   "submitted_url" : [ "www.youtube.com/@free_minkya" ],
   "introduction" : "안녕하세요, 박보영입니다.",
   "custom_wiki_list" : [ {
@@ -1203,7 +1203,7 @@ Content-Length: 560
   "nickname" : "박보영네오",
   "star_nickname" : "박보영",
   "gender" : "여성",
-  "star_classification_list" : [ "코미디언", "배우" ],
+  "star_classification_list" : [ "배우", "코미디언" ],
   "submitted_url" : [ "www.youtube.com/@free_minkya" ],
   "introduction" : "안녕하세요, 박보영입니다.",
   "custom_wiki_list" : [ {
@@ -1515,6 +1515,80 @@ Host: docs.api.com
 </tr>
 </tbody>
 </table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">필드명</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">타입</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">필수여부</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">제약조건</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">설명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nickname</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">네오 닉네임</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>star_nickname</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스타 활동명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>star_classification_list</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">starClassification 코드 참조</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스타 유형</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>submitted_url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">대표 url</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>introduction</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">한 줄 소개글</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>custom_wiki_list</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스타 자기소개 위키</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>custom_wiki_list[].custom_title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">위키 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>custom_wiki_list[].custom_context</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">위키 내용</p></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="title"><strong><span class="black">Example Response</span></strong></div>
 <div class="content">
@@ -1533,7 +1607,7 @@ Content-Length: 569
   "nickname" : "박보영네오",
   "star_nickname" : "박보영뽀블리",
   "gender" : "여성",
-  "star_classification_list" : [ "코미디언", "배우" ],
+  "star_classification_list" : [ "배우", "코미디언" ],
   "submitted_url" : [ "www.youtube.com/@free_minkya" ],
   "introduction" : "안녕하세요, 박보영입니다.",
   "custom_wiki_list" : [ {
@@ -1693,6 +1767,31 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>user_id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">스타 아이디</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">필드명</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">타입</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">필수여부</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">제약조건</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">설명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nickname</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">네오 닉네임</p></td>
 </tr>
 </tbody>
 </table>
