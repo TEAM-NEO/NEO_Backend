@@ -46,7 +46,7 @@ public class QNEOStarTypeEntity extends EntityPathBase<NEOStarTypeEntity> {
 
     public QNEOStarTypeEntity(Class<? extends NEOStarTypeEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.neoStar = inits.isInitialized("neoStar") ? new QNEOStarEntity(forProperty("neoStar")) : null;
+        this.neoStar = inits.isInitialized("neoStar") ? new QNEOStarEntity(forProperty("neoStar"), inits.get("neoStar")) : null;
     }
 
 }

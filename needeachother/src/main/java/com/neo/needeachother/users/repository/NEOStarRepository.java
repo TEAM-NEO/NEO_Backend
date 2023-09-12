@@ -6,8 +6,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface NEOStarRepository extends JpaRepository<NEOStarEntity, Long> {
-
-    Optional<NEOStarEntity> findByUserID(String userID);
-
-    boolean existsByUserID(String userID);
 }

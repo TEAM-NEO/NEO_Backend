@@ -26,7 +26,7 @@ public class NEOUserRelationEntity {
     private NEOUserEntity follower;
 
     @ManyToOne
-    @JoinColumn(name = "followee_id")
+    @JoinColumn(name = "star_id")
     private NEOStarEntity followee;
 
     /**
