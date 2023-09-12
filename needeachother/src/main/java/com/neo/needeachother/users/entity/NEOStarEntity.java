@@ -22,12 +22,17 @@ import java.util.stream.Collectors;
 @Getter
 @ToString
 @SuperBuilder
+@Table(name = "star_info")
 @NoArgsConstructor
 @AllArgsConstructor
-@DiscriminatorValue(value = NEOUserType.TypeCode.STAR) // 해당 구분자로 SingleTable 전략 사용.
-public class NEOStarEntity extends NEOUserEntity {
+public class NEOStarEntity {
 
-    public static final NEOUserType USER_TYPE = NEOUserType.STAR;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne(mappedBy = "starInformation", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST}, optional = false)
+    private NEOUserEntity userInformation;
 
     /* 실제 스타가 사용하고 있는 스타 활동명 */
     @Setter
@@ -44,15 +49,25 @@ public class NEOStarEntity extends NEOUserEntity {
     @OneToMany(mappedBy = "followee", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<NEOUserRelationEntity> followerList = new ArrayList<>();
 
-    @Override
-    public NEOUserType getUserType() {
-        return USER_TYPE;
-    }
 
     public void addStarType(NEOStarTypeEntity starTypeEntity){
         this.starTypeList.add(starTypeEntity);
         starTypeEntity.setNeoStar(this);
     }
+
+    public NEOStarEntity setUserInformation(NEOUserEntity userEntity){
+        if (userEntity == null){
+            if (this.userInformation != null){
+                this.userInformation.setStarInformation(null);
+            }
+        }
+        else {
+            userEntity.setStarInformation(this);
+        }
+        this.userInformation = userEntity;
+        return this;
+    }
+
 
     /**
      * {@code NEOAdditionalStarInfoRequest}를 통해 새로운 스타 엔티티를 생성하는 정적 팩토리 메소드입니다. <br>
@@ -63,20 +78,11 @@ public class NEOStarEntity extends NEOUserEntity {
      * @return {@code NEOStarEntity} 새로운 스타 엔티티
      */
     public static NEOStarEntity fromRequest(NEOAdditionalStarInfoRequest request) {
+
         return NEOStarEntity.builder()
-                .userID(request.getUserID())
-                .userName(request.getUserName())
-                .userPW(request.getUserPW())
-                .email(request.getEmail())
-                .phoneNumber(request.getPhoneNumber())
-                .providerType(null)
-                .neoNickName(request.getNeoNickName())
                 .starNickName(request.getStarNickName())
-                .gender(request.getGender())
-                .subscribedStarList(new ArrayList<>())
-                .starTypeList(new ArrayList<>())
-                .followerList(new ArrayList<>())
-                .build();
+                .build()
+                .setUserInformation(NEOUserEntity.fromStarRequest(request));
     }
 
     /**
