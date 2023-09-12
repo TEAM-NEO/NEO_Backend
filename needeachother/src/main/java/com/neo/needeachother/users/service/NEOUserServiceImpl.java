@@ -13,7 +13,6 @@ import com.neo.needeachother.users.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,12 +25,9 @@ import java.util.stream.Collectors;
 public class NEOUserServiceImpl implements NEOUserInformationService {
 
     private final NEOStarRepository starRepository;
-    private final NEOFanRepository fanRepository;
     private final NEOUserRepository userRepository;
     private final NEOStarTypeRepository starTypeRepository;
     private final NEOStarCustomInfoRepository starCustomInfoRepository;
-    private final NEOUserRelationRepository userRelationRepository;
-
 
     /**
      * 새로운 스타 정보를 생성합니다.
@@ -53,6 +49,7 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
         starClassificationSet.stream()
                 .map(classification -> NEOStarTypeEntity.builder().starType(classification).build())
                 .forEach(createdStar::addStarType);
+
 
         // 스타 분류 연관관계와 함께 저장
         NEOStarEntity savedStar = saveStarWithInformationAndClassificationType(createdStar, userOrder);
@@ -91,25 +88,25 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
         }
 
         // 요청으로부터 엔티티 생성
-        NEOFanEntity createdFan = NEOFanEntity.fromRequest(createFanInfoRequest);
+        NEOUserEntity createdFan = NEOUserEntity.fromFanRequest(createFanInfoRequest);
 
         // 팔로우 관계를 맺을 스타 탐색 및 예외
-        NEOStarEntity favoriteStarOfFan = starRepository.findByUserID(createFanInfoRequest.getFavoriteStarID())
+        NEOStarEntity favoriteStarOfFan = userRepository.findByNeoID(createFanInfoRequest.getFavoriteStarID())
                 .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.NOT_EXIST_STAR_ID,
                         "에러 대상 : " + createFanInfoRequest.getFavoriteStarID(),
-                        userOrder));
+                        userOrder)).getStarInformation();
 
         // 엔티티 저장 및 연관관계 설정 및 저장
         createdFan.subscribeNeoStar(favoriteStarOfFan);
-        NEOFanEntity savedFan = saveFanWithInformationAndFavoriteStar(createdFan, userOrder);
+        NEOUserEntity savedFan = saveFanWithInformationAndFavoriteStar(createdFan, userOrder);
 
         // 최종 응답 생성 (생성된 사용자 정보)
         return NEOUserInformationDTO.from(savedFan, true);
     }
 
-    private NEOFanEntity saveFanWithInformationAndFavoriteStar(NEOFanEntity wantSaveFan, NEOUserApiOrder userOrder){
+    private NEOUserEntity saveFanWithInformationAndFavoriteStar(NEOUserEntity wantSaveFan, NEOUserApiOrder userOrder){
         try {
-            return fanRepository.save(wantSaveFan);
+            return userRepository.save(wantSaveFan);
         } catch (DataIntegrityViolationException ex){
             if (ex.getCause().toString().contains("UNIQUE_ID_EMAIL_NAME_IDX")){
                 throw new NEOUserExpectedException(NEOErrorCode.ALREADY_EXIST_USER, userOrder);
@@ -122,11 +119,13 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
     public NEOUserInformationDTO doGetStarInformationOrder(String userID, boolean isPrivacy, boolean isDetail, NEOUserApiOrder userOrder) {
 
         // 스타 엔티티 획득
-        NEOStarEntity foundStar = starRepository.findByUserID(userID)
+        NEOStarEntity foundStar = Optional.ofNullable(userRepository.findByNeoID(userID)
+                .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.NOT_EXIST_USER, "not exist this user : " + userID, userOrder))
+                .getStarInformation())
                 .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.NOT_EXIST_USER, "not exist this star : " + userID, userOrder));
 
         // 스타 위키 획득
-        NEOStarInfoDocument starCustomInfo = starCustomInfoRepository.findByUserID(foundStar.getUserID())
+        NEOStarInfoDocument starCustomInfo = starCustomInfoRepository.findByUserID(foundStar.getUserInformation().getNeoID())
                 .orElseGet(() -> createEmptyStarInfoDocument(userID));
 
         // 스타 정보 객체로 렌더링
@@ -137,7 +136,7 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
     public NEOUserInformationDTO doGetFanInformationOrder(String userID, boolean isPrivacy, NEOUserApiOrder userOrder) {
 
         // 팬 엔티티 획득
-        NEOFanEntity foundFan = fanRepository.findByUserID(userID)
+        NEOUserEntity foundFan = userRepository.findByNeoID(userID)
                 .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.NOT_EXIST_USER, "not exist this fan : " + userID, userOrder));
 
         // 팬 정보 객체로 렌더링
@@ -148,17 +147,17 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
     public NEOUserInformationDTO doChangePartialInformationOrder(String userID, NEOUserApiOrder userOrder, NEOChangeableInfoDTO changeInfoDto) {
 
         // 요청과 매핑되는 유저 찾기
-        NEOUserEntity foundUser = userRepository.findByUserID(userID)
+        NEOUserEntity foundUser = userRepository.findByNeoID(userID)
                 .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.NOT_EXIST_USER, "에러 대상 : " + userID, userOrder));
 
         // 사용자 유형별 다른 처리
         switch(foundUser.getUserType()){
             case STAR:
                 NEOStarInfoDocument starDoc = starCustomInfoRepository.findByUserID(userID)
-                        .orElseGet(() -> NEOStarInfoDocument.builder().userID(foundUser.getUserID()).build());
-                return modifyStarDataFromDto((NEOStarEntity) foundUser, starDoc, userOrder, changeInfoDto);
+                        .orElseGet(() -> NEOStarInfoDocument.builder().userID(foundUser.getNeoID()).build());
+                return modifyStarDataFromDto(foundUser, starDoc, userOrder, changeInfoDto);
             case FAN:
-                return modifyFanDataFromDto((NEOFanEntity) foundUser, userOrder, changeInfoDto);
+                return modifyFanDataFromDto(foundUser, userOrder, changeInfoDto);
             default:
                 throw new NEOUnexpectedException("찾아낸 유저가 star / fan 엔티티 어느쪽에도 속하지 않습니다.");
         }
@@ -167,7 +166,7 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
 
     @Override
     public void doDeleteUserInformationOrder(final String userID, final NEOUserApiOrder userOrder) {
-        NEOUserEntity foundUser = userRepository.findByUserID(userID)
+        NEOUserEntity foundUser = userRepository.findByNeoID(userID)
                 .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.NOT_EXIST_USER, "에러 대상 : " + userID, userOrder));
 
         userRepository.delete(foundUser);
@@ -235,10 +234,12 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
         starTypeRepository.saveAll(newCreatedClassificationList);
     }
 
-    private NEOUserInformationDTO modifyStarDataFromDto(NEOStarEntity star, NEOStarInfoDocument starDoc, NEOUserApiOrder userOrder, NEOChangeableInfoDTO changeInfoDto) {
+    private NEOUserInformationDTO modifyStarDataFromDto(NEOUserEntity starUser, NEOStarInfoDocument starDoc, NEOUserApiOrder userOrder, NEOChangeableInfoDTO changeInfoDto) {
+        NEOStarEntity starDetail = starUser.getStarInformation();
+
         // 변경사항 검토 후 값 교체
-        Optional.ofNullable(changeInfoDto.getNeoNickName()).ifPresent(star::setNeoNickName);
-        Optional.ofNullable(changeInfoDto.getStarNickName()).ifPresent(star::setStarNickName);
+        Optional.ofNullable(changeInfoDto.getNeoNickName()).ifPresent(starUser::setNeoNickName);
+        Optional.ofNullable(changeInfoDto.getStarNickName()).ifPresent(starDetail::setStarNickName);
         Optional.ofNullable(changeInfoDto.getIntroduction()).ifPresent(starDoc::setIntroduction);
         Optional.ofNullable(changeInfoDto.getSubmittedUrl()).ifPresent(starDoc::setSubmittedUrl);
 
@@ -247,22 +248,23 @@ public class NEOUserServiceImpl implements NEOUserInformationService {
                         .map(NEOStarInfoDocument.NEOCustomStarInformationDocument::fromDTO)
                         .toList()));
 
+        starDetail.setUserInformation(starUser);
         // 스타 분류 변경 및 저장
-        modifyStarClassificationFromDto(star, changeInfoDto);
+        modifyStarClassificationFromDto(starDetail, changeInfoDto);
 
         // 변경 내용 반영
-        NEOStarEntity savedStar = starRepository.save(star);
+        NEOStarEntity savedStar = starRepository.save(starDetail);
         NEOStarInfoDocument savedStarDoc = starCustomInfoRepository.save(starDoc);
 
         return NEOUserInformationDTO.from(savedStar, savedStarDoc, true, true);
     }
 
-    private NEOUserInformationDTO modifyFanDataFromDto(NEOFanEntity fan, NEOUserApiOrder userOrder, NEOChangeableInfoDTO changeInfoDto) {
+    private NEOUserInformationDTO modifyFanDataFromDto(NEOUserEntity fan, NEOUserApiOrder userOrder, NEOChangeableInfoDTO changeInfoDto) {
         String changedNeoNickName = Optional.ofNullable(changeInfoDto.getNeoNickName())
                 .orElseThrow(() -> new NEOUserExpectedException(NEOErrorCode.BLANK_VALUE, "팬 정보 변경은, 닉네임 변경만 가능합니다. neo_nick_name 값이 null입니다.", userOrder));
 
         fan.setNeoNickName(changedNeoNickName);
-        NEOFanEntity savedFan = fanRepository.save(fan);
+        NEOUserEntity savedFan = userRepository.save(fan);
 
 
         return NEOUserInformationDTO.from(savedFan, true);

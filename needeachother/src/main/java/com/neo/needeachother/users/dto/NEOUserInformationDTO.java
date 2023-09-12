@@ -3,8 +3,8 @@ package com.neo.needeachother.users.dto;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neo.needeachother.users.document.NEOStarInfoDocument;
-import com.neo.needeachother.users.entity.NEOFanEntity;
 import com.neo.needeachother.users.entity.NEOStarEntity;
+import com.neo.needeachother.users.entity.NEOUserEntity;
 import com.neo.needeachother.users.enums.NEOGenderType;
 import com.neo.needeachother.users.enums.NEOStarDetailClassification;
 import com.neo.needeachother.users.enums.NEOUserType;
@@ -68,13 +68,13 @@ public class NEOUserInformationDTO {
     @JsonProperty("custom_wiki_list")
     private List<NEOStarWikiInformationDTO> customWikiList;
 
-    public static NEOUserInformationDTO from(NEOFanEntity fanEntity, boolean isPrivate) {
+    public static NEOUserInformationDTO from(NEOUserEntity fanEntity, boolean isPrivate) {
         if (isPrivate) {
             return NEOUserInformationDTO.builder()
                     .userType(fanEntity.getUserType())
                     .hasWiki(false)
                     .isPrivate(isPrivate)
-                    .userID(fanEntity.getUserID())
+                    .userID(fanEntity.getNeoID())
                     .userName(fanEntity.getUserName())
                     .email(fanEntity.getEmail())
                     .phoneNumber(fanEntity.getPhoneNumber())
@@ -87,7 +87,7 @@ public class NEOUserInformationDTO {
                 .userType(fanEntity.getUserType())
                 .hasWiki(false)
                 .isPrivate(isPrivate)
-                .userID(fanEntity.getUserID())
+                .userID(fanEntity.getNeoID())
                 .neoNickName(fanEntity.getNeoNickName())
                 .gender(fanEntity.getGender())
                 .build();
@@ -106,16 +106,16 @@ public class NEOUserInformationDTO {
 
         if (isPrivate) {
             return NEOUserInformationDTO.builder()
-                    .userType(starEntity.getUserType())
+                    .userType(starEntity.getUserInformation().getUserType())
                     .hasWiki(hasWiki)
                     .isPrivate(isPrivate)
-                    .userID(starEntity.getUserID())
-                    .userName(starEntity.getUserName())
-                    .email(starEntity.getEmail())
-                    .phoneNumber(starEntity.getPhoneNumber())
-                    .neoNickName(starEntity.getNeoNickName())
+                    .userID(starEntity.getUserInformation().getNeoID())
+                    .userName(starEntity.getUserInformation().getUserName())
+                    .email(starEntity.getUserInformation().getEmail())
+                    .phoneNumber(starEntity.getUserInformation().getPhoneNumber())
+                    .neoNickName(starEntity.getUserInformation().getNeoNickName())
                     .starNickName(starEntity.getStarNickName())
-                    .gender(starEntity.getGender())
+                    .gender(starEntity.getUserInformation().getGender())
                     .starClassificationSet(starEntity.getStarClassificationSet())
                     .submittedUrl(starInfoDocument.getSubmittedUrl())
                     .introduction(starInfoDocument.getIntroduction())
@@ -124,13 +124,13 @@ public class NEOUserInformationDTO {
         }
 
         return NEOUserInformationDTO.builder()
-                .userType(starEntity.getUserType())
+                .userType(starEntity.getUserInformation().getUserType())
                 .hasWiki(hasWiki)
                 .isPrivate(isPrivate)
-                .userID(starEntity.getUserID())
-                .neoNickName(starEntity.getNeoNickName())
+                .userID(starEntity.getUserInformation().getNeoID())
+                .neoNickName(starEntity.getUserInformation().getNeoNickName())
                 .starNickName(starEntity.getStarNickName())
-                .gender(starEntity.getGender())
+                .gender(starEntity.getUserInformation().getGender())
                 .starClassificationSet(starEntity.getStarClassificationSet())
                 .submittedUrl(starInfoDocument.getSubmittedUrl())
                 .introduction(starInfoDocument.getIntroduction())

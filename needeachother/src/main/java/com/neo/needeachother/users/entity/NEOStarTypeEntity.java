@@ -25,7 +25,7 @@ public class NEOStarTypeEntity {
 
     /* 스타 FK */
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "star_id")
     private NEOStarEntity neoStar;
 
     /* 스타 유형 */

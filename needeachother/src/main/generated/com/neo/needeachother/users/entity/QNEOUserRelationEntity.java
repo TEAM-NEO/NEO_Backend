@@ -46,8 +46,8 @@ public class QNEOUserRelationEntity extends EntityPathBase<NEOUserRelationEntity
 
     public QNEOUserRelationEntity(Class<? extends NEOUserRelationEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.followee = inits.isInitialized("followee") ? new QNEOStarEntity(forProperty("followee")) : null;
-        this.follower = inits.isInitialized("follower") ? new QNEOUserEntity(forProperty("follower")) : null;
+        this.followee = inits.isInitialized("followee") ? new QNEOStarEntity(forProperty("followee"), inits.get("followee")) : null;
+        this.follower = inits.isInitialized("follower") ? new QNEOUserEntity(forProperty("follower"), inits.get("follower")) : null;
     }
 
 }
