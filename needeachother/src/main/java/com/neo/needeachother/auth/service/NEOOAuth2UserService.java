@@ -1,9 +1,14 @@
 package com.neo.needeachother.auth.service;
 
+import com.neo.needeachother.auth.dto.NEOCustomOAuth2User;
 import com.neo.needeachother.auth.dto.NEOOAuth2AttributesDTO;
 import com.neo.needeachother.auth.enums.NEOOAuth2ProviderType;
+import com.neo.needeachother.common.exception.NEOUnexpectedException;
+import com.neo.needeachother.users.entity.NEOUserEntity;
+import com.neo.needeachother.users.repository.NEOUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -11,7 +16,9 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Slf4j
@@ -19,8 +26,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class NEOOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-    private static final String NAVER = "naver";
-    private static final String KAKAO = "kakao";
+    private final NEOUserRepository userRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -49,17 +55,46 @@ public class NEOOAuth2UserService implements OAuth2UserService<OAuth2UserRequest
         // socialType 에 따라 유저 정보를 통해 OAuthAttributes 객체 생성
         NEOOAuth2AttributesDTO extractAttributes = NEOOAuth2AttributesDTO.of(providerType, userNameAttributeName, attributes);
 
-        User createdUser = getUser(extractAttributes, providerType); // getUser() 메소드로 User 객체 생성 후 반환
+        NEOUserEntity createdUser = getUser(extractAttributes, providerType); // getUser() 메소드로 User 객체 생성 후 반환
 
         // DefaultOAuth2User를 구현한 CustomOAuth2User 객체를 생성해서 반환
-        return new CustomOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority(createdUser.getRole().getKey())),
+        return new NEOCustomOAuth2User(
+                Collections.singleton(new SimpleGrantedAuthority(createdUser.getUserType().getKey())),
                 attributes,
                 extractAttributes.getNameAttributeKey(),
                 createdUser.getEmail(),
-                createdUser.getRole()
+                createdUser.getUserType(),
+                Optional.ofNullable(createdUser.getUserName()).orElse(createdUser.getEmail()),
+                createdUser.getPhoneNumber(),
+                createdUser.getGender()
         );
     }
 
+    /**
+     * SocialType과 attributes에 들어있는 소셜 로그인의 식별값 id를 통해 회원을 찾아 반환하는 메소드
+     * 만약 찾은 회원이 있다면, 그대로 반환하고 없다면 saveUser()를 호출하여 회원을 저장한다.
+     */
+    private NEOUserEntity getUser(NEOOAuth2AttributesDTO attributes, NEOOAuth2ProviderType providerType) {
+        NEOUserEntity foundUser;
+
+        try {
+            foundUser = userRepository.findByProviderTypeAndSocialID(providerType,
+                            attributes.getOauth2UserInfo().getId())
+                    .orElseGet(() -> saveUser(attributes, providerType));
+        } catch (Exception e){
+            throw new NEOUnexpectedException("OAuth 진행 과정 중, DB 에러가 발생했습니다. 서버 관린자에게 문의하세요.");
+        }
+
+        return foundUser;
+    }
+
+    /**
+     * {@code NEOOAuth2AttributesDTO}의 {@code toEntity()} 메소드를 통해 빌더로 User 객체 생성 후 반환
+     * providerType, socialId, email, role, gender, phoneNumber, name 중 프로바이더가 제공하는 값만 있는 상태로 DB에 저장합니다.
+     */
+    private NEOUserEntity saveUser(NEOOAuth2AttributesDTO attributes, NEOOAuth2ProviderType socialType) {
+        NEOUserEntity createdUser = attributes.toEntity(socialType, attributes.getOauth2UserInfo());
+        return userRepository.save(createdUser);
+    }
 
 }

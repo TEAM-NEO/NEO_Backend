@@ -34,7 +34,12 @@ public enum NEOErrorCode implements NEODocumentAbleEnum, NEONumberCodeEnum {
     NOT_EXIST_USER(-201, "해당 유저가 존재하지 않습니다.", HttpStatus.NOT_FOUND),
 
     /* CONFLICT (데이터에는 문제가 없지만, 내부적 문제 ex.unique value but duplicated)*/
-    ALREADY_EXIST_USER(-300, "이미 존재하는 회원입니다.", HttpStatus.CONFLICT)
+    ALREADY_EXIST_USER(-300, "이미 존재하는 회원입니다.", HttpStatus.CONFLICT),
+
+    /* UNAUTHORIZED */
+    EXPIRED_ACCESS_TOKEN(-400, "만료된 토큰입니다. 재발급된 토큰을 헤더에서 확인하세요.", HttpStatus.UNAUTHORIZED),
+    EXPIRED_REFRESH_TOKEN(-401, "재발급 토큰이 만료되었습니다. 다시 로그인 하세요.", HttpStatus.UNAUTHORIZED),
+    INVALID_ACCESS_TOKEN(-402, "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED)
     ;
 
     private final int errorCode;

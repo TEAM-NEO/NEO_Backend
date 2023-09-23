@@ -39,7 +39,9 @@ public class QNEOUserEntity extends EntityPathBase<NEOUserEntity> {
 
     public final StringPath phoneNumber = createString("phoneNumber");
 
-    public final StringPath providerType = createString("providerType");
+    public final EnumPath<com.neo.needeachother.auth.enums.NEOOAuth2ProviderType> providerType = createEnum("providerType", com.neo.needeachother.auth.enums.NEOOAuth2ProviderType.class);
+
+    public final StringPath socialID = createString("socialID");
 
     public final QNEOStarEntity starInformation;
 

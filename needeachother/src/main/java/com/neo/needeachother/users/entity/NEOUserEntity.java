@@ -1,5 +1,6 @@
 package com.neo.needeachother.users.entity;
 
+import com.neo.needeachother.auth.enums.NEOOAuth2ProviderType;
 import com.neo.needeachother.common.entity.NEOTimeDefaultEntity;
 import com.neo.needeachother.users.converter.NEOGenderTypeConverter;
 import com.neo.needeachother.users.converter.NEOUserTypeConverter;
@@ -41,6 +42,9 @@ public class NEOUserEntity extends NEOTimeDefaultEntity {
     @Column(name = "neo_id")
     private String neoID;
 
+    @Column(name = "social_id")
+    private String socialID;
+
     @Column(name = "user_name")
     private String userName;
 
@@ -55,7 +59,8 @@ public class NEOUserEntity extends NEOTimeDefaultEntity {
     private String phoneNumber;
 
     @Column(name = "provider_type")
-    private String providerType;
+    @Enumerated(value = EnumType.STRING)
+    private NEOOAuth2ProviderType providerType;
 
     @Setter
     @Column(name = "neo_nick_name", unique = true)

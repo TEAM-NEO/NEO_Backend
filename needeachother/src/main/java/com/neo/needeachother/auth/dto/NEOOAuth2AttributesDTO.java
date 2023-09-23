@@ -1,6 +1,7 @@
 package com.neo.needeachother.auth.dto;
 
 import com.neo.needeachother.auth.enums.NEOOAuth2ProviderType;
+import com.neo.needeachother.users.entity.NEOUserEntity;
 import com.neo.needeachother.users.enums.NEOUserType;
 import lombok.Builder;
 import lombok.Getter;
@@ -71,12 +72,15 @@ public class NEOOAuth2AttributesDTO {
      * email에는 UUID로 중복 없는 랜덤 값 생성
      * role은 GUEST로 설정
      */
-    public User toEntity(NEOOAuth2ProviderType socialType, NEOOAuth2UserInfoDTO oauth2UserInfo) {
-        return User.builder()
-                .socialType(socialType)
-                .socialId(oauth2UserInfo.getId())
-                .email(UUID.randomUUID() + "@socialUser.com")
-                .role(NEOUserType.GUEST)
+    public NEOUserEntity toEntity(NEOOAuth2ProviderType providerType, NEOOAuth2UserInfoDTO oauth2UserInfo) {
+        return NEOUserEntity.builder()
+                .providerType(providerType)
+                .gender(oauth2UserInfo.getGender())
+                .phoneNumber(oauth2UserInfo.getMobile())
+                .socialID(oauth2UserInfo.getId())
+                .email(oauth2UserInfo.getEmail())
+                .userType(NEOUserType.GUEST)
+                .userName(oauth2UserInfo.getName())
                 .build();
     }
 
