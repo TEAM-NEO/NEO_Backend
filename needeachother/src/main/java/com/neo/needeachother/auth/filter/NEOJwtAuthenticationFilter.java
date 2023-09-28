@@ -1,8 +1,7 @@
 package com.neo.needeachother.auth.filter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neo.needeachother.auth.dto.NEORefreshToken;
+import com.neo.needeachother.auth.exception.NEOAuthExpectedException;
 import com.neo.needeachother.auth.repository.NEORefreshTokenRepository;
 import com.neo.needeachother.auth.service.NEOTokenService;
 import com.neo.needeachother.auth.util.NEOPasswordUtil;
@@ -12,6 +11,7 @@ import com.neo.needeachother.common.response.NEOErrorResponse;
 import com.neo.needeachother.common.response.NEOFinalErrorResponse;
 import com.neo.needeachother.common.util.NEOServletResponseWriter;
 import com.neo.needeachother.users.entity.NEOUserEntity;
+import com.neo.needeachother.users.enums.NEOUserApiOrder;
 import com.neo.needeachother.users.repository.NEOUserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -44,6 +44,8 @@ public class NEOJwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String[] NO_CHECK_URLS = {"/login", "/oauth2/authorization/naver", "/oauth2/authorization/google", "/oauth2/authorization/kakao",
             "/docs/neo-api-guide.html", "/api/v1/oauth2/naver", "/api/v1/oauth2/kakao", "/api/v1/oauth2/google", "/favicon.ico"};
 
+    private static final String RE_ISSUE_ACCESS_TOKEN_URL = "/api/v1/token/reissue";
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 요청 헤더에서 "Access Token"을 얻고 유효성 및 만료 기간 검사를 진행합니다.
@@ -60,9 +62,9 @@ public class NEOJwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // "Access Token"이 유효하지만 만료된 경우
-        if (tokenService.isTokenExpired(accessToken)) {
-            checkRefreshTokenAndReIssueAccessToken(request, response, accessTokenEmail);
+        // "Access Token"이 유효하지만 만료된 상황에서 재발급 요청이 들어온 경우
+        if (tokenService.isTokenExpired(accessToken) && RE_ISSUE_ACCESS_TOKEN_URL.equals(request.getRequestURI())) {
+            checkRefreshToken(request, response, accessTokenEmail);
             return;
         }
 
@@ -71,7 +73,7 @@ public class NEOJwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
         log.info("request url : " + request.getRequestURI());
 
         // JWT 토큰을 헤더에 포함하지 않아도 되는 "URL"인지 검춣합니다.
@@ -101,48 +103,47 @@ public class NEOJwtAuthenticationFilter extends OncePerRequestFilter {
      * "Refresh Token"을 체크한 후, 존재하지 않는다면 재로그인을 유도합니다.<br>
      * 존재한다면 현재 요청을 거절한 후, 헤더에 새롭게 생성한 "Access Token"을 담아 에러 응답을 보냅니다. <br>
      *
-     * @param request  HTTP Request
-     * @param response {@code HttpStatus.UNAUTHORIZED}의 sc를 가진 응답
-     * @param accessTokenEmail    Refresh Token의 key인 email
+     * @param request          HTTP Request
+     * @param response         {@code HttpStatus.UNAUTHORIZED}의 sc를 가진 응답
+     * @param accessTokenEmail Refresh Token의 key인 email
      * @throws IOException DTO -> JSON 변환 과정 발생 예외
      */
-    public void checkRefreshTokenAndReIssueAccessToken(HttpServletRequest request, HttpServletResponse response, String accessTokenEmail) throws IOException {
+    public void checkRefreshToken(HttpServletRequest request, HttpServletResponse response, String accessTokenEmail) throws IOException {
         // 요청으로부터 토큰을 획득하고 레디스에 존재하는지 확인.
-        String refreshTokenEmail = tokenService.extractRefreshToken(request)
-                .flatMap(refreshTokenRepository::findByUUIDToken)
-                .map(NEORefreshToken::getEmail)
-                .orElse(null);
+        try {
+            String extractedRefreshToken = tokenService.extractRefreshToken(request)
+                    .orElseThrow(() -> new NEOAuthExpectedException(NEOErrorCode.NOT_CONTAIN_REFRESH_TOKEN,
+                            "오류 대상 : Authorization-refresh 헤더",
+                            NEOUserApiOrder.fromHttpMethodAndRequestURI(request.getMethod(), request.getRequestURI())));
 
-        // 레디스의 리프레시 토큰이 만료 혹은 "Access Token"의 이메일과 일치하지 않는 경우 재로그인
-        if (!accessTokenEmail.equals(refreshTokenEmail)) {
+            tokenService.getRefreshTokenByEmail(accessTokenEmail)
+                    .map(NEORefreshToken::getRefreshToken)
+                    .filter(savedRefreshToken -> savedRefreshToken.equals(extractedRefreshToken))
+                    .orElseThrow(() -> new NEOAuthExpectedException(NEOErrorCode.NOT_EXIST_VALID_REFRESH_TOKEN,
+                            "유효한 리프레시 토큰 서버에 존재하지 않음.",
+                            NEOUserApiOrder.fromHttpMethodAndRequestURI(request.getMethod(), request.getRequestURI())));
+
+        } catch (NEOAuthExpectedException e) {
             NEOFinalErrorResponse noRefreshTokenErrorResponse = NEOFinalErrorResponse.builder()
                     .requestedMethodAndURI(request.getMethod() + " " + request.getRequestURI())
                     .responseCode(NEOResponseCode.FAIL)
-                    .msg("토큰 만료로 인한 재로그인이 필요합니다.")
-                    .errors(List.of(NEOErrorResponse.fromErrorCodeWithDetail(NEOErrorCode.EXPIRED_REFRESH_TOKEN,
-                            "오류 대상 : " + tokenService.getRefreshHeader() + " header")))
+                    .msg("Auth 관련 문제로 인해 주어진 요청수행에 실패했습니다.")
+                    .errors(e.getErrorResponseList())
                     .build();
-            servletResponseWriter.writeResponseWithErrorAndStatusCode(response, noRefreshTokenErrorResponse, NEOErrorCode.EXPIRED_REFRESH_TOKEN.getHttpStatus().value());
-            return;
-        }
 
-        // 리프레시 토큰이 유효하고 만료되지 않은 경우 "Access Token"을 재발급합니다.
-        String reIssuedAccessToken = tokenService.createAccessToken(refreshTokenEmail);
-        NEOFinalErrorResponse reIssuedAccessTokenErrorResponse = NEOFinalErrorResponse.builder()
-                .requestedMethodAndURI(request.getMethod() + " " + request.getRequestURI())
-                .responseCode(NEOResponseCode.FAIL)
-                .msg("NEO에 접근 가능한 Access Token을 재발급합니다.")
-                .errors(List.of(NEOErrorResponse.fromErrorCodeWithDetail(NEOErrorCode.EXPIRED_ACCESS_TOKEN,
-                        "오류 대상 : " + tokenService.getAccessHeader() + " header")))
-                .build();
-        setHttpErrorResponseWithNewToken(reIssuedAccessTokenErrorResponse, reIssuedAccessToken, response);
+            servletResponseWriter.writeResponseWithErrorAndStatusCode(response,
+                    noRefreshTokenErrorResponse,
+                    NEOErrorCode.NOT_EXIST_VALID_REFRESH_TOKEN.getHttpStatus().value());
+
+        }
     }
 
     /**
      * "Access Token"이 유효한 경우, 해당 요청을 받아들입니다. <br>
      * {@code Authentication} 객체를 생성한 뒤 다음 필터로 진행시킵니다. <br>
-     * @param request 사용자 HTTP 요청
-     * @param response HTTP 응답
+     *
+     * @param request     사용자 HTTP 요청
+     * @param response    HTTP 응답
      * @param filterChain NEO 필터 체인
      * @throws ServletException
      * @throws IOException
@@ -159,20 +160,6 @@ public class NEOJwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * 새로운 "Access Token"을 발급하는 경우에 사용됩니다. <br>
-     * NEOFinalErrorResponse를 Body에 담은 응답을 내보냅니다.<br>
-     * status code는 NEOFinalErrorResponse의 List<NEOErrorResponse>의 가장 첫 번째 원소의 값으로 결정됩니다.<br>
-     * 헤더에 {@code reIssuedAccessToken}이 포함됩니다.
-     * @param errorResponse 새로운 Access Token 발급으로 요청 거절 응답
-     * @param reIssuedAccessToken 새로 발급된 Access Token
-     * @param response 실제 HTTP 응답으로 errorResponse가 포함
-     * @throws IOException
-     */
-    private void setHttpErrorResponseWithNewToken(NEOFinalErrorResponse errorResponse, String reIssuedAccessToken, HttpServletResponse response) throws IOException {
-        tokenService.sendAccessToken(response, reIssuedAccessToken);
-        servletResponseWriter.writeResponseWithErrorAndStatusCode(response, errorResponse, errorResponse.getErrors().get(0).getNeoErrorCode().getHttpStatus().value());
-    }
 
     public void saveAuthentication(NEOUserEntity neoUser) {
         String password = neoUser.getUserPW();

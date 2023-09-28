@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public enum NEOUserApiOrder {
 
+    /* USER DOMAIN */
     CREATE_STAR_INFO("POST", "api/v1/users/stars", "새로운 스타 정보 생성에 성공했습니다.",
             "새로운 스타 정보 생성에 실패했습니다.", Pattern.compile("^/api/v1/users/stars$"), NEOAdditionalStarInfoRequest.class),
     CREATE_FAN_INFO("POST", "api/v1/users/fans","새로운 팬 정보 생성에 성공했습니다.",
@@ -31,6 +32,10 @@ public enum NEOUserApiOrder {
             "사용자 정보 변경에 실패했습니다.", Pattern.compile("^/api/v1/users/(stars|fans)/[a-zA-Z_0-9]+$"), NEOChangeableInfoDTO.class),
     DELETE_USER_ORDER("DELETE", "api/v1/users/{user_id}","사용자 정보 삭제에 성공했습니다.",
             "사용자 정보 삭제에 실패했습니다.", Pattern.compile("^/api/v1/users/(stars|fans)/[a-zA-Z_0-9]+$"), null),
+
+    /* AUTH DOMAIN */
+    REISSUE_ACCESS_TOKEN_ORDER("POST", "api/v1/token/reissue", "새로운 액세스 토큰 발급에 성공했습니다.",
+            "새로운 액세스 토큰 발급에 실패했습니다.", Pattern.compile("^api/v1/token/reissue$"), null),
 
     NONE(null, null, null, null, null, null);
 

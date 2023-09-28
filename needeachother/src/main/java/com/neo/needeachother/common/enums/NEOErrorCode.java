@@ -38,8 +38,11 @@ public enum NEOErrorCode implements NEODocumentAbleEnum, NEONumberCodeEnum {
 
     /* UNAUTHORIZED */
     EXPIRED_ACCESS_TOKEN(-400, "만료된 토큰입니다. 재발급된 토큰을 헤더에서 확인하세요.", HttpStatus.UNAUTHORIZED),
-    EXPIRED_REFRESH_TOKEN(-401, "재발급 토큰이 만료되었습니다. 다시 로그인 하세요.", HttpStatus.UNAUTHORIZED),
-    INVALID_ACCESS_TOKEN(-402, "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED)
+    NOT_EXIST_VALID_REFRESH_TOKEN(-401, "만료 등의 사유로 유효한 리프레쉬 토큰이 없습니다. 다시 로그인 하세요.", HttpStatus.UNAUTHORIZED),
+    INVALID_ACCESS_TOKEN(-402, "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
+    NOT_CONTAIN_ACCESS_TOKEN(-403, "Access Token이 필요합니다.", HttpStatus.UNAUTHORIZED),
+    NOT_CONTAIN_REFRESH_TOKEN(-404, "Refresh Token이 필요합니다.", HttpStatus.UNAUTHORIZED),
+    FAIL_IN_OAUTH(-405, "OAuth2 인증과정에 실패했습니다.", HttpStatus.UNAUTHORIZED)
     ;
 
     private final int errorCode;

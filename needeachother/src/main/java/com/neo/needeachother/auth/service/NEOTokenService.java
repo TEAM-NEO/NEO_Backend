@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.neo.needeachother.auth.dto.NEORefreshToken;
+import com.neo.needeachother.auth.repository.NEORefreshTokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
@@ -35,6 +36,8 @@ public class NEOTokenService {
     @Value("${jwt.refresh.header}")
     private String refreshHeader;
 
+    private final NEORefreshTokenRepository refreshTokenRepository;
+
     /**
      * JWT의 Subject와 Claim으로 email 사용 -> 클레임의 name을 "email"으로 설정
      * JWT의 헤더에 들어오는 값 : 'Authorization(Key) = Bearer {토큰} (Value)' 형식
@@ -59,6 +62,18 @@ public class NEOTokenService {
 
     public NEORefreshToken createRefreshToken(String email) {
         return new NEORefreshToken(UUID.randomUUID().toString(), email);
+    }
+
+    public void saveRefreshToken(NEORefreshToken refreshToken){
+        refreshTokenRepository.save(refreshToken);
+    }
+
+    public Optional<NEORefreshToken> getRefreshTokenByEmail(String email){
+        return refreshTokenRepository.findRefreshTokenByEmail(email);
+    }
+
+    public void deleteRefreshTokenByEmail(String email){
+        refreshTokenRepository.deleteRefreshToken(email);
     }
 
     /**

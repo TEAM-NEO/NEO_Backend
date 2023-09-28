@@ -27,24 +27,29 @@ public class NEORefreshTokenRepository {
      */
     public void save(final NEORefreshToken refreshToken) {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(refreshToken.getRefreshToken(), refreshToken.getEmail());
+        valueOperations.set(refreshToken.getEmail(), refreshToken.getRefreshToken());
         redisTemplate.expire(refreshToken.getEmail(), refreshTokenExpirationPeriod, TimeUnit.MILLISECONDS);
     }
 
     /**
      * 헤더에 담긴, UUID로 만들어진 RefreshToken을 기반으로 레디스에 존재하는지 찾아냅니다.<br>
      * 존재한다면, {@code NEORefreshToken}으로 생성해 반환합니다. <br>
-     * @param refreshTokenUUID 헤더에 포함되는 UUID로 만들어진 RefreshToken
+     * @param email 이메일
      * @return Optional<NEORefreshToken>
      */
-    public Optional<NEORefreshToken> findByUUIDToken(final String refreshTokenUUID) {
+    public Optional<NEORefreshToken> findRefreshTokenByEmail(final String email) {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        String email = valueOperations.get(refreshTokenUUID);
+        String refreshTokenString = valueOperations.get(email);
 
-        if (Objects.isNull(email)) {
+        if (Objects.isNull(refreshTokenString)) {
             return Optional.empty();
         }
 
-        return Optional.of(new NEORefreshToken(refreshTokenUUID, email));
+        return Optional.of(new NEORefreshToken(email, refreshTokenString));
+    }
+
+    public void deleteRefreshToken(final String email){
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        valueOperations.getAndDelete(email);
     }
 }
