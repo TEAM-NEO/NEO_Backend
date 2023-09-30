@@ -1,33 +1,51 @@
 package com.neo.needeachother.users.controller;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.neo.needeachother.auth.dto.NEORefreshToken;
+import com.neo.needeachother.auth.filter.NEOJwtAuthenticationFilter;
+import com.neo.needeachother.auth.repository.NEORefreshTokenRepository;
+import com.neo.needeachother.auth.service.NEOTokenService;
 import com.neo.needeachother.common.config.NEOTestConfiguration;
+import com.neo.needeachother.common.util.NEOServletResponseWriter;
 import com.neo.needeachother.users.dto.NEOAdditionalFanInfoRequest;
 import com.neo.needeachother.users.dto.NEOAdditionalStarInfoRequest;
 import com.neo.needeachother.users.dto.NEOChangeableInfoDTO;
 import com.neo.needeachother.users.dto.NEOUserInformationDTO;
+import com.neo.needeachother.users.filter.NEOUserDomainBadRequestFilter;
 import com.neo.needeachother.users.mother.NEOFanTestObjectMother;
 import com.neo.needeachother.users.mother.NEOStarTestObjectMother;
+import com.neo.needeachother.users.repository.NEOUserRepository;
 import com.neo.needeachother.users.service.NEOUserInformationService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.junit.jupiter.api.Assertions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,20 +53,20 @@ import static com.neo.needeachother.common.config.NEOTestConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 // import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @Import(value = {NEOTestConfiguration.class})
 @WebMvcTest(controllers = NEOUserInformationController.class)
-@AutoConfigureRestDocs(uriScheme = "https", uriHost = "docsutil.api.com")
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = "docs.api.com")
 class NEOUserInformationControllerTest {
 
-    @Autowired
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private MockMvc mockMvc;
 
     @Autowired
@@ -60,6 +78,27 @@ class NEOUserInformationControllerTest {
     @Autowired
     protected RestDocumentationResultHandler restDocs;
 
+    @SpyBean
+    private NEOTokenService tokenService;
+
+    @MockBean
+    private NEORefreshTokenRepository refreshTokenRepository;
+
+    @MockBean
+    private NEOUserRepository userRepository;
+
+    @MockBean
+    private NEOServletResponseWriter servletResponseWriter;
+
+    @BeforeEach
+    public void initMockMvc(WebApplicationContext wac, RestDocumentationContextProvider restDocumentationContextProvider){
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(wac)
+                .apply(documentationConfiguration(restDocumentationContextProvider))
+                .addFilter(new NEOUserDomainBadRequestFilter())
+                .addFilter(new NEOJwtAuthenticationFilter(tokenService, userRepository, servletResponseWriter))
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                .build();
+    }
 
     @Test
     @DisplayName("🔧 POST /api/v1/users/stars : 신규 스타 회원 추가 정보 생성 테스트")
@@ -68,6 +107,8 @@ class NEOUserInformationControllerTest {
         NEOAdditionalStarInfoRequest request = NEOStarTestObjectMother.STAR_CASE_1.getCreateRequestFixture();
         NEOUserInformationDTO finalResponse = NEOStarTestObjectMother.STAR_CASE_1.getCreateResponseFixture();
 
+        String accessToken = tokenService.createAccessToken(NEOStarTestObjectMother.STAR_CASE_1.getUserEmail());
+
         given(userInformationService.doCreateNewStarInformationOrder(any(), any()))
                 .willReturn(finalResponse);
 
@@ -75,6 +116,8 @@ class NEOUserInformationControllerTest {
         ResultActions result = mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/api/v1/users/stars")
                         .content(objectMapper.writeValueAsString(request))
+                        .header("Authorization", "Bearer " + accessToken)
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -131,6 +174,8 @@ class NEOUserInformationControllerTest {
         NEOAdditionalFanInfoRequest request = NEOFanTestObjectMother.FAN_CASE_1.getCreateRequestFixture();
         NEOUserInformationDTO finalResponse = NEOFanTestObjectMother.FAN_CASE_1.getCreateResponseFixture();
 
+        String accessToken = tokenService.createAccessToken(NEOFanTestObjectMother.FAN_CASE_1.getUserEmail());
+
         given(userInformationService.doCreateNewFanInformationOrder(any(), any()))
                 .willReturn(finalResponse);
 
@@ -138,6 +183,8 @@ class NEOUserInformationControllerTest {
         ResultActions result = mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/api/v1/users/fans")
                         .content(objectMapper.writeValueAsString(request))
+                        .header("Authorization", "Bearer " + accessToken)
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -181,12 +228,14 @@ class NEOUserInformationControllerTest {
         String userID = NEOStarTestObjectMother.STAR_CASE_1.getUserID();
         NEOUserInformationDTO finalResponse = NEOStarTestObjectMother.STAR_CASE_1.getUserInfoResponseFixture();
 
+        String accessToken = tokenService.createAccessToken(NEOStarTestObjectMother.STAR_CASE_1.getUserEmail());
         given(userInformationService.doGetStarInformationOrder(eq(userID), eq(true), eq(true), any()))
                 .willReturn(finalResponse);
 
         // when
         ResultActions result = mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/users/stars/{user_id}", userID)
+                        .header("Authorization", "Bearer " + accessToken)
                         .param("privacy", String.valueOf(true))
                         .param("detail", String.valueOf(true))
                         .accept(MediaType.APPLICATION_JSON)
@@ -235,12 +284,14 @@ class NEOUserInformationControllerTest {
         String userID = NEOStarTestObjectMother.STAR_CASE_1.getUserID();
         NEOUserInformationDTO finalResponse = NEOStarTestObjectMother.STAR_CASE_1.getUserInfoResponseFixtureWithoutPrivacy();
 
+        String accessToken = tokenService.createAccessToken(NEOStarTestObjectMother.STAR_CASE_1.getUserEmail());
         given(userInformationService.doGetStarInformationOrder(eq(userID), eq(false), eq(true), any()))
                 .willReturn(finalResponse);
 
         // when
         ResultActions result = mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/users/stars/{user_id}", userID)
+                        .header("Authorization", "Bearer " + accessToken)
                         .param("privacy", String.valueOf(false))
                         .param("detail", String.valueOf(true))
                         .accept(MediaType.APPLICATION_JSON)
@@ -291,12 +342,15 @@ class NEOUserInformationControllerTest {
         String userID = NEOStarTestObjectMother.STAR_CASE_1.getUserID();
         NEOUserInformationDTO finalResponse = NEOStarTestObjectMother.STAR_CASE_1.getUserInfoResponseFixtureWithoutWiki();
 
+        String accessToken = tokenService.createAccessToken(NEOStarTestObjectMother.STAR_CASE_1.getUserEmail());
+
         given(userInformationService.doGetStarInformationOrder(eq(userID), eq(true), eq(false), any()))
                 .willReturn(finalResponse);
 
         // when
         ResultActions result = mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/users/stars/{user_id}", userID)
+                        .header("Authorization", "Bearer " + accessToken)
                         .param("privacy", String.valueOf(true))
                         .param("detail", String.valueOf(false))
                         .accept(MediaType.APPLICATION_JSON)
@@ -345,12 +399,15 @@ class NEOUserInformationControllerTest {
         String userID = NEOStarTestObjectMother.STAR_CASE_1.getUserID();
         NEOUserInformationDTO finalResponse = NEOStarTestObjectMother.STAR_CASE_1.getUserInfoResponseFixtureWithoutPrivacyAndWiki();
 
+        String accessToken = tokenService.createAccessToken(NEOStarTestObjectMother.STAR_CASE_1.getUserEmail());
+
         given(userInformationService.doGetStarInformationOrder(eq(userID), eq(false), eq(false), any()))
                 .willReturn(finalResponse);
 
         // when
         ResultActions result = mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/users/stars/{user_id}", userID)
+                        .header("Authorization", "Bearer " + accessToken)
                         .param("privacy", String.valueOf(false))
                         .param("detail", String.valueOf(false))
                         .accept(MediaType.APPLICATION_JSON)
@@ -358,6 +415,7 @@ class NEOUserInformationControllerTest {
 
         ResultActions withoutParamResult = mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/users/stars/{user_id}", userID)
+                        .header("Authorization", "Bearer " + accessToken)
                         .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -407,12 +465,15 @@ class NEOUserInformationControllerTest {
         String userID = NEOFanTestObjectMother.FAN_CASE_1.getUserID();
         NEOUserInformationDTO finalResponse = NEOFanTestObjectMother.FAN_CASE_1.getUserInfoResponseFixture();
 
+        String accessToken = tokenService.createAccessToken(NEOFanTestObjectMother.FAN_CASE_1.getUserEmail());
+
         given(userInformationService.doGetFanInformationOrder(eq(userID), eq(true), any()))
                 .willReturn(finalResponse);
 
         // when
         ResultActions result = mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/users/fans/{user_id}", userID)
+                        .header("Authorization", "Bearer " + accessToken)
                         .param("privacy", String.valueOf(true))
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -459,18 +520,22 @@ class NEOUserInformationControllerTest {
         String userID = NEOFanTestObjectMother.FAN_CASE_1.getUserID();
         NEOUserInformationDTO finalResponse = NEOFanTestObjectMother.FAN_CASE_1.getUserInfoResponseFixtureWithoutPrivacy();
 
+        String accessToken = tokenService.createAccessToken(NEOFanTestObjectMother.FAN_CASE_1.getUserEmail());
+
         given(userInformationService.doGetFanInformationOrder(eq(userID), eq(false), any()))
                 .willReturn(finalResponse);
 
         // when
         ResultActions result = mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/users/fans/{user_id}", userID)
+                        .header("Authorization", "Bearer " + accessToken)
                         .param("privacy", String.valueOf(false))
                         .accept(MediaType.APPLICATION_JSON)
         );
 
         ResultActions withoutParamResult = mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/users/fans/{user_id}", userID)
+                        .header("Authorization", "Bearer " + accessToken)
                         .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -520,12 +585,15 @@ class NEOUserInformationControllerTest {
         NEOChangeableInfoDTO request = new NEOChangeableInfoDTO("박보영뽀블리", null, null, null, null, null);
         NEOUserInformationDTO finalResponse = NEOStarTestObjectMother.STAR_CASE_1.getChangeInfoResponseFixture(request);
 
+        String accessToken = tokenService.createAccessToken(NEOStarTestObjectMother.STAR_CASE_1.getUserEmail());
+
         given(userInformationService.doChangePartialInformationOrder(eq(userID), any(), any()))
                 .willReturn(finalResponse);
 
         // when
         ResultActions result = mockMvc.perform(
                 RestDocumentationRequestBuilders.patch("/api/v1/users/stars/{user_id}", userID)
+                        .header("Authorization", "Bearer " + accessToken)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -587,12 +655,15 @@ class NEOUserInformationControllerTest {
         NEOChangeableInfoDTO requestDeserializedDto = objectMapper.convertValue(request, NEOChangeableInfoDTO.class);
         NEOUserInformationDTO finalResponse = NEOFanTestObjectMother.FAN_CASE_1.getChangeInfoResponseFixture(requestDeserializedDto);
 
+        String accessToken = tokenService.createAccessToken(NEOStarTestObjectMother.STAR_CASE_1.getUserEmail());
+
         given(userInformationService.doChangePartialInformationOrder(eq(userID), any(), any()))
                 .willReturn(finalResponse);
 
         // when
         ResultActions result = mockMvc.perform(
                 RestDocumentationRequestBuilders.patch("/api/v1/users/fans/{user_id}", userID)
+                        .header("Authorization", "Bearer " + accessToken)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -641,9 +712,12 @@ class NEOUserInformationControllerTest {
         // given
         String userID = NEOStarTestObjectMother.STAR_CASE_1.getUserID();
 
+        String accessToken = tokenService.createAccessToken(NEOStarTestObjectMother.STAR_CASE_1.getUserEmail());
+
         // when
         ResultActions result = mockMvc.perform(
                 RestDocumentationRequestBuilders.delete("/api/v1/users/stars/{user_id}", userID)
+                        .header("Authorization", "Bearer " + accessToken)
         );
 
         // then
@@ -664,9 +738,12 @@ class NEOUserInformationControllerTest {
         // given
         String userID = NEOFanTestObjectMother.FAN_CASE_1.getUserID();
 
+        String accessToken = tokenService.createAccessToken(NEOFanTestObjectMother.FAN_CASE_1.getUserEmail());
+
         // when
         ResultActions result = mockMvc.perform(
                 RestDocumentationRequestBuilders.delete("/api/v1/users/fans/{user_id}", userID)
+                        .header("Authorization", "Bearer " + accessToken)
         );
 
         // then

@@ -7,6 +7,7 @@ import com.neo.needeachother.auth.repository.NEORefreshTokenRepository;
 import com.neo.needeachother.auth.service.NEOOAuth2UserService;
 import com.neo.needeachother.auth.service.NEOTokenService;
 import com.neo.needeachother.common.util.NEOServletResponseWriter;
+import com.neo.needeachother.users.filter.NEOUserDomainBadRequestFilter;
 import com.neo.needeachother.users.repository.NEOUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -55,12 +56,13 @@ public class NEOSecurityConfig {
                         .requestMatchers("/docs/**").permitAll()
                         // 나머지 URL
                         .anyRequest().authenticated())
+                .addFilterAfter(jwtAuthenticationProcessingFilter(), NEOUserDomainBadRequestFilter.class)
                 .addFilterAfter(jwtAuthenticationProcessingFilter(), LogoutFilter.class);
 
         return http.build();
     }
 
     public NEOJwtAuthenticationFilter jwtAuthenticationProcessingFilter() {
-        return new NEOJwtAuthenticationFilter(tokenService, refreshTokenRepository, userRepository, servletResponseWriter);
+        return new NEOJwtAuthenticationFilter(tokenService, userRepository, servletResponseWriter);
     }
 }

@@ -22,6 +22,7 @@ public enum NEOStarTestObjectMother {
             List.of(NEOStarWikiInformationDTO.builder().customTitle("MBTI").customContext("ISTJ").build()));
 
     private final String userID;
+    private final String userEmail;
 
     /* mapping object */
     private final NEOAdditionalStarInfoRequest createRequestFixture;
@@ -33,6 +34,7 @@ public enum NEOStarTestObjectMother {
                             List<String> submittedUrl, String introduction, List<NEOStarWikiInformationDTO> customWikiList) {
 
         this.userID = userID;
+        this.userEmail = email;
         this.createRequestBuilder = NEOAdditionalStarInfoRequest.builder()
                 .userID(userID)
                 .userPW(userPW)

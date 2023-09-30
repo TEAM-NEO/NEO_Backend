@@ -37,7 +37,6 @@ import java.util.List;
 public class NEOJwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final NEOTokenService tokenService;
-    private final NEORefreshTokenRepository refreshTokenRepository;
     private final NEOUserRepository userRepository;
     private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
     private final NEOServletResponseWriter servletResponseWriter;

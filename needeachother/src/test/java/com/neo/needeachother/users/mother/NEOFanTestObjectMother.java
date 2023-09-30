@@ -15,6 +15,7 @@ public enum NEOFanTestObjectMother {
             "네오박보영팬", NEOGenderType.MALE, NEOStarTestObjectMother.STAR_CASE_1.getUserID());
 
     private final String userID;
+    private final String userEmail;
 
     /* mapping object */
     private final NEOAdditionalFanInfoRequest createRequestFixture;
@@ -25,6 +26,7 @@ public enum NEOFanTestObjectMother {
                            String neoNickName, NEOGenderType gender, String favoriteStarID) {
 
         this.userID = userID;
+        this.userEmail = email;
         this.createRequestBuilder = NEOAdditionalFanInfoRequest.builder()
                 .userID(userID)
                 .userPW(userPW)
