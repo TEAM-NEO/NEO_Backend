@@ -69,10 +69,6 @@ public enum NEOStarTestObjectMother {
                 .customWikiList(customWikiList);
     }
 
-//    public List<NEOAdditionalStarInfoRequest> getCreateRequest10000Fixture(){
-//
-//    }
-
     public NEOUserInformationDTO getCreateResponseFixture() {
         return userInfoDTOBuilder.build();
     }

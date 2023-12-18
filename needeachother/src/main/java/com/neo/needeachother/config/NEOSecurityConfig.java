@@ -56,7 +56,6 @@ public class NEOSecurityConfig {
                         .requestMatchers("/docs/**").permitAll()
                         // 나머지 URL
                         .anyRequest().authenticated())
-                .addFilterAfter(jwtAuthenticationProcessingFilter(), NEOUserDomainBadRequestFilter.class)
                 .addFilterAfter(jwtAuthenticationProcessingFilter(), LogoutFilter.class);
 
         return http.build();

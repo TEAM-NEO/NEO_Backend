@@ -40,8 +40,7 @@ public class NEOJwtAuthenticationFilter extends OncePerRequestFilter {
     private final NEOUserRepository userRepository;
     private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
     private final NEOServletResponseWriter servletResponseWriter;
-    private static final String[] NO_CHECK_URLS = {"/login", "/oauth2/authorization/naver", "/oauth2/authorization/google", "/oauth2/authorization/kakao",
-            "/docs/neo-api-guide.html", "/api/v1/oauth2/naver", "/api/v1/oauth2/kakao", "/api/v1/oauth2/google", "/favicon.ico"};
+    private static final String[] NO_CHECK_URLS = {"/login", "/oauth2/authorization/", "/docs/neo-api-guide.html", "/api/v1/oauth2/", "/favicon.ico", "/test"};
 
     private static final String RE_ISSUE_ACCESS_TOKEN_URL = "/api/v1/token/reissue";
 
@@ -77,7 +76,7 @@ public class NEOJwtAuthenticationFilter extends OncePerRequestFilter {
 
         // JWT 토큰을 헤더에 포함하지 않아도 되는 "URL"인지 검춣합니다.
         return Arrays.stream(NO_CHECK_URLS)
-                .anyMatch(url -> request.getRequestURI().equals(url));
+                .anyMatch(url -> request.getRequestURI().startsWith(url));
     }
 
     /**
