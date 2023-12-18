@@ -13,12 +13,13 @@ import java.util.Arrays;
 @Getter
 @RequiredArgsConstructor
 public enum NEOUserType {
-    FAN(TypeCode.FAN, "팬"),
-    STAR(TypeCode.STAR, "스타"),
-    GUEST(TypeCode.GUEST, "임시");
+    FAN(TypeCode.FAN, "팬", "ROLE_FAN"),
+    STAR(TypeCode.STAR, "스타", "ROLE_STAR"),
+    GUEST(TypeCode.GUEST, "임시", "ROLE_GUEST");
 
     private final String typeCode;
     private final String description;
+    private final String key;
 
     public static final class TypeCode{
         public static final String FAN = "F";

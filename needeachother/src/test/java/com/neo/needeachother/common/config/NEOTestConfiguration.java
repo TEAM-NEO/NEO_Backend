@@ -53,6 +53,7 @@ public class NEOTestConfiguration {
                 builder.addFilters(new CharacterEncodingFilter("UTF-8", true));
     }
 
+
     public static Attributes.Attribute field(
             final String key,
             final String value){

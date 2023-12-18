@@ -2,3 +2,5 @@ spring:
   profiles:
     include:
       - db
+      - oauth
+      - jwt

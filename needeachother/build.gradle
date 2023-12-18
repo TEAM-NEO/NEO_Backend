@@ -38,7 +38,11 @@ dependencies {
 	implementation 'org.apache.directory.studio:org.apache.commons.io:2.4'
 
 	// security & oauth
-	// implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	// for jwt token
+	implementation 'com.auth0:java-jwt:4.2.1'
 
 	// related with RDB & NoSQL & Cache
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
@@ -72,7 +76,7 @@ dependencies {
 
 	// for test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	// testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.springframework.security:spring-security-test'
 
 	testCompileOnly 'org.projectlombok:lombok:1.18.26'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'

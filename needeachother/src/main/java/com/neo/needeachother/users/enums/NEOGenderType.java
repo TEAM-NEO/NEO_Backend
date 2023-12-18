@@ -23,14 +23,15 @@ import java.util.stream.Stream;
 @Slf4j
 @RequiredArgsConstructor
 public enum NEOGenderType implements NEOEqualCodeEnum {
-    MALE("M", "남성"),
-    FEMALE("F", "여성"),
+    MALE("M", "남성", "male"),
+    FEMALE("F", "여성", "female"),
 
     /* 미정의 에러 타입 */
-    NONE("NONE", "미정의");
+    NONE("NONE", "미정의", "none");
 
     private final String genderCode;
     private final String korGenderCode;
+    private final String lowerCaseName;
 
     /**
      * DTO <-> Entity Converter에서 사용되는 로직입니다. <br>
@@ -82,7 +83,7 @@ public enum NEOGenderType implements NEOEqualCodeEnum {
      * @return {@code List<String>} 해당 성별 타입과 매칭되는 문자열 리스트
      */
     public static List<String> convertGenderStringList(NEOGenderType genderType) {
-        return List.of(genderType.name(), genderType.genderCode, genderType.korGenderCode);
+        return List.of(genderType.name(), genderType.genderCode, genderType.korGenderCode, genderType.lowerCaseName);
     }
 
     @Override

@@ -41,9 +41,13 @@ jobs:
 
         # application.yml 파일 생성하기
         touch ./application-db.yml
+        touch ./application-jwt.yml
+        touch ./application-oauth.yml
 
         # Secrets에 저장한 값을 application.yml 파일에 쓰기
         echo "${{ secrets.SPRINGBOOT_MYSQL }}" >> ./application-db.yml
+        echo "${{ secrets.SPRINGBOOT_JWT }}" >> ./application-jwt.yml
+        echo "${{ secrets.SPRINGBOOT_OAUTH }}" >> ./application-oauth.yml
 
       shell: bash
 

@@ -2,10 +2,13 @@ package com.neo.needeachother.testonly.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.neo.needeachother.auth.filter.NEOJwtAuthenticationFilter;
 import com.neo.needeachother.common.config.NEOTestConfiguration;
 import com.neo.needeachother.common.docsutil.NEOCustomResponseFieldsSnippet;
 import com.neo.needeachother.testonly.dto.NEOEqualCodeEnumDocsDTO;
 import com.neo.needeachother.testonly.dto.NEOTestApiResponseDTO;
+import com.neo.needeachother.users.filter.NEOUserDomainBadRequestFilter;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.FieldDescriptor;
@@ -21,6 +25,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -28,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.neo.needeachother.common.config.NEOTestConfiguration.field;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
@@ -40,8 +48,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = "docs.api.com")
 class NEOEnumDocsControllerTest{
 
-    @Autowired
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private MockMvc mockMvc;
 
     @Autowired
@@ -49,6 +55,15 @@ class NEOEnumDocsControllerTest{
 
     @Autowired
     protected RestDocumentationResultHandler restDocs;
+
+    @BeforeEach
+    public void initMockMvc(WebApplicationContext wac, RestDocumentationContextProvider restDocumentationContextProvider){
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(wac)
+                .apply(documentationConfiguration(restDocumentationContextProvider))
+                .addFilter(new NEOUserDomainBadRequestFilter())
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                .build();
+    }
 
     @Test
     public void equalCodeEnums() throws Exception {
