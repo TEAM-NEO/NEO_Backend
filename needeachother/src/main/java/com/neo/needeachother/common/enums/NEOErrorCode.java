@@ -42,7 +42,11 @@ public enum NEOErrorCode implements NEODocumentAbleEnum, NEONumberCodeEnum {
     INVALID_ACCESS_TOKEN(-402, "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
     NOT_CONTAIN_ACCESS_TOKEN(-403, "Access Token이 필요합니다.", HttpStatus.UNAUTHORIZED),
     NOT_CONTAIN_REFRESH_TOKEN(-404, "Refresh Token이 필요합니다.", HttpStatus.UNAUTHORIZED),
-    FAIL_IN_OAUTH(-405, "OAuth2 인증과정에 실패했습니다.", HttpStatus.UNAUTHORIZED)
+    FAIL_IN_OAUTH(-405, "OAuth2 인증과정에 실패했습니다.", HttpStatus.UNAUTHORIZED),
+
+    /* STARPAGE */
+    NOT_ADMIN_THIS_STARPAGE(-501, "해당 스타페이지의 관리자가 아닙니다.", HttpStatus.NOT_FOUND),
+    AT_LEAST_ONE_STAR_TYPE(-502, "최소 한 개의 스타 타입을 유지해야 합니다.", HttpStatus.FORBIDDEN)
     ;
 
     private final int errorCode;
