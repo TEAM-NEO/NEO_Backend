@@ -1,5 +1,11 @@
 package com.neo.needeachother.starpage.domain;
 
-public class StarPageId {
+
+import jakarta.persistence.Embeddable;
+
+import java.io.Serializable;
+
+@Embeddable
+public class StarPageId implements Serializable {
     String value;
 }

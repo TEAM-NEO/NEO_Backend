@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -22,7 +23,7 @@ import java.util.stream.Stream;
 public class StarPage {
 
     @EmbeddedId
-    private StarPageId starPageId;
+    private StarPageId starPagesId;
 
     // 스타 페이지 정보
     @Embedded
@@ -122,19 +123,54 @@ public class StarPage {
     }
 
     // 도메인 : 레이아웃의 순서를 조정할 수 있다.
+    // TODO : dev this code
 
     // 도메인 : 레이아웃의 특정 레이아웃 라인을 제거할 수 있다.
-
-    // 도메인 : 레이아웃의 카테고리컬 레이아웃 라인을 추가할 수 있다.
-    public void addCategoricalLayoutLine(NEOMember member, CategoricalLayoutLine layoutLine) {
+    public void removeLayoutLine(NEOMember member, CategoricalLayoutLine layoutLineToRemove) {
         isChangeableBy(member);
-
+        this.layoutLines = this.getLayoutLinesRemoveOne(this.layoutLines, layoutLineToRemove);
     }
 
-    private List<StarPageLayoutLine> getLayoutLinesAddOne(
+    private List<StarPageLayoutLine> getLayoutLinesRemoveOne(
+            List<StarPageLayoutLine> currentLayoutLines, CategoricalLayoutLine categoricalLayoutLine){
+        List<StarPageLayoutLine> modifiedLayoutLines = new ArrayList<>(currentLayoutLines);
+        if(modifiedLayoutLines.stream()
+                .anyMatch(categoricalLayoutLine::equals)){
+            modifiedLayoutLines.remove(categoricalLayoutLine);
+        }
+        return Collections.unmodifiableList(modifiedLayoutLines);
+    }
+
+    // 도메인 : 레이아웃의 카테고리컬 레이아웃 라인을 끝에 추가할 수 있다.
+    public void appendCategoricalLayoutLine(NEOMember member, CategoricalLayoutLine layoutLineToAppend) {
+        isChangeableBy(member);
+        this.layoutLines = this.getLayoutLinesAppendOne(this.layoutLines, layoutLineToAppend);
+    }
+
+    private List<StarPageLayoutLine> getLayoutLinesAppendOne(
             List<StarPageLayoutLine> currentLayoutLine, CategoricalLayoutLine categoricalLayoutLine) {
-        // TODO : fill up this code
-        return currentLayoutLine;
+        if (currentLayoutLine.stream()
+                .anyMatch(categoricalLayoutLine::equals)) {
+            return currentLayoutLine;
+        }
+
+        List<StarPageLayoutLine> modifiedLayoutLines = new ArrayList<>(currentLayoutLine);
+        modifiedLayoutLines.add(categoricalLayoutLine);
+        return Collections.unmodifiableList(modifiedLayoutLines);
+    }
+
+    // 도메인 : 스타페이지는 고유 레이아웃을 추가할 수 있다.
+    private void addStarPageUniqueLayoutLines(List<StarPageUniqueLayoutLine> uniqueLayoutLines) {
+        this.layoutLines = this.getStarPageUniqueLayoutLinesAddList(this.layoutLines, uniqueLayoutLines);
+    }
+
+    private List<StarPageLayoutLine> getStarPageUniqueLayoutLinesAddList(
+            List<StarPageLayoutLine> currentLayoutLine, List<StarPageUniqueLayoutLine> uniqueLayoutLines) {
+        List<StarPageLayoutLine> modifiedLayoutLines = new ArrayList<>(currentLayoutLine);
+        uniqueLayoutLines.stream()
+                .filter(layoutLine -> !currentLayoutLine.contains(layoutLine))
+                .forEach(modifiedLayoutLines::add);
+        return Collections.unmodifiableList(modifiedLayoutLines);
     }
 
 

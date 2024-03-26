@@ -46,7 +46,8 @@ public enum NEOErrorCode implements NEODocumentAbleEnum, NEONumberCodeEnum {
 
     /* STARPAGE */
     NOT_ADMIN_THIS_STARPAGE(-501, "해당 스타페이지의 관리자가 아닙니다.", HttpStatus.NOT_FOUND),
-    AT_LEAST_ONE_STAR_TYPE(-502, "최소 한 개의 스타 타입을 유지해야 합니다.", HttpStatus.FORBIDDEN)
+    AT_LEAST_ONE_STAR_TYPE(-502, "최소 한 개의 스타 타입을 유지해야 합니다.", HttpStatus.FORBIDDEN),
+    ALREADY_EXIST_CATEGORICAL_LAYOUT(-503, "이미 존재하는 카테고리 레이아웃입니다.", HttpStatus.CONFLICT)
     ;
 
     private final int errorCode;
