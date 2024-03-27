@@ -10,11 +10,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StarPageInfo {
 
-    @OneToOne
-    private ProfileImage profileImage;
+    @Embedded
+    @AttributeOverride(name = "url", column = @Column(name = "profile_image_url"))
+    private Image profileImage;
 
-    @OneToOne
-    private TopRepresentativeImage topRepresentativeImage;
+    @Embedded
+    @AttributeOverride(name = "url", column = @Column(name = "top_representative_image_url"))
+    private Image topRepresentativeImage;
 
     @Embedded
     @AttributeOverrides({
@@ -27,13 +29,13 @@ public class StarPageInfo {
     @AttributeOverride(name = "value", column = @Column(name = "introduction"))
     private StarPageIntroduction introduction;
 
-    public static StarPageInfo of(ProfileImage profileImage, TopRepresentativeImage topRepresentativeImage,
+    public static StarPageInfo of(Image profileImage, Image topRepresentativeImage,
                                   StarPageHost host, StarPageIntroduction introduction) {
         return new StarPageInfo(profileImage, topRepresentativeImage, host, introduction);
     }
 
     public static StarPageInfo withDefaultImageOf(StarPageHost host, StarPageIntroduction introduction) {
-        return StarPageInfo.of(ProfileImage.ofDefaultProfileImage(), TopRepresentativeImage.ofDefaultTopRepresentativeImage(), host, introduction);
+        return StarPageInfo.of(Image.ofDefaultProfileImage(), Image.ofDefaultTopRepresentativeImage(), host, introduction);
     }
 
     public Image getCurrentProfileImage() {
@@ -52,12 +54,12 @@ public class StarPageInfo {
         return this.introduction;
     }
 
-    protected StarPageInfo changeTopRepresentativeImage(TopRepresentativeImage newTopRepresentativeImage) {
+    protected StarPageInfo changeTopRepresentativeImage(Image newTopRepresentativeImage) {
         return new StarPageInfo(this.profileImage, newTopRepresentativeImage, this.host, this.introduction);
     }
 
 
-    protected StarPageInfo changeProfileImage(ProfileImage newProfileImage) {
+    protected StarPageInfo changeProfileImage(Image newProfileImage) {
         return new StarPageInfo(newProfileImage, this.topRepresentativeImage, this.host, this.introduction);
     }
 

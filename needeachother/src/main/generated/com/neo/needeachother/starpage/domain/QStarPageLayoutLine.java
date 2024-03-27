@@ -26,6 +26,8 @@ public class QStarPageLayoutLine extends EntityPathBase<StarPageLayoutLine> {
 
     public final QLayoutTitle layoutTitle;
 
+    public final EnumPath<StarPageLayoutType> type = createEnum("type", StarPageLayoutType.class);
+
     public QStarPageLayoutLine(String variable) {
         this(StarPageLayoutLine.class, forVariable(variable), INITS);
     }

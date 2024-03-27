@@ -42,13 +42,13 @@ public class StarPage {
 
 
     // 도메인 : 스타페이지의 프로필 사진을 변경할 수 있다.
-    public void changeProfileImage(NEOMember member, ProfileImage newProfileImage) {
+    public void changeProfileImage(NEOMember member, Image newProfileImage) {
         isChangeableBy(member);
         this.information = this.information.changeProfileImage(newProfileImage);
     }
 
     // 도메인 : 스타페이지의 대문 사진을 변경할 수 있다.
-    public void changeTopRepresentativeImage(NEOMember member, TopRepresentativeImage newTopRepresentativeImage) {
+    public void changeTopRepresentativeImage(NEOMember member, Image newTopRepresentativeImage) {
         isChangeableBy(member);
         this.information = this.information.changeTopRepresentativeImage(newTopRepresentativeImage);
     }

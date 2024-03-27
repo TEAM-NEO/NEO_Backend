@@ -7,23 +7,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Entity
-@Table(name = "neo_starpage_image")
-@DiscriminatorColumn(name = "image_type")
+@Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class Image {
+public class Image {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String url;
 
-    @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "image_url"))
-    private SavedImageURL url;
-
-    protected Image(SavedImageURL url){
+    protected Image(String url){
         this.url = url;
+    }
+
+    public static Image ofDefaultProfileImage() {
+        return new Image("Default Profile Image Link");
+    }
+
+    public static Image ofDefaultTopRepresentativeImage() {
+        return new Image("Default Profile Image Link");
     }
 
 }

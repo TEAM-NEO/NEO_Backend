@@ -26,9 +26,9 @@ public class QStarPageInfo extends BeanPath<StarPageInfo> {
 
     public final QStarPageIntroduction introduction;
 
-    public final QProfileImage profileImage;
+    public final QImage profileImage;
 
-    public final QTopRepresentativeImage topRepresentativeImage;
+    public final QImage topRepresentativeImage;
 
     public QStarPageInfo(String variable) {
         this(StarPageInfo.class, forVariable(variable), INITS);
@@ -50,8 +50,8 @@ public class QStarPageInfo extends BeanPath<StarPageInfo> {
         super(type, metadata, inits);
         this.host = inits.isInitialized("host") ? new QStarPageHost(forProperty("host")) : null;
         this.introduction = inits.isInitialized("introduction") ? new QStarPageIntroduction(forProperty("introduction")) : null;
-        this.profileImage = inits.isInitialized("profileImage") ? new QProfileImage(forProperty("profileImage")) : null;
-        this.topRepresentativeImage = inits.isInitialized("topRepresentativeImage") ? new QTopRepresentativeImage(forProperty("topRepresentativeImage")) : null;
+        this.profileImage = inits.isInitialized("profileImage") ? new QImage(forProperty("profileImage")) : null;
+        this.topRepresentativeImage = inits.isInitialized("topRepresentativeImage") ? new QImage(forProperty("topRepresentativeImage")) : null;
     }
 
 }

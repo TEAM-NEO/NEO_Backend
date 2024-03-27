@@ -3,26 +3,29 @@ package com.neo.needeachother.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import java.util.Arrays;
+
 @Configuration
 public class NEORedisConfig {
 
-    private final String redisHost;
-    private final int redisPort;
+//    private final String redisHost;
+//    private final int redisPort;
 
-    public NEORedisConfig(@Value("${spring.data.redis.host}") final String redisHost,
-                       @Value("${spring.data.redis.port}") final int redisPort) {
-        this.redisHost = redisHost;
-        this.redisPort = redisPort;
+    private final String clusterNodes;
+
+    public NEORedisConfig(@Value("${spring.data.redis.cluster.nodes}") final String clusterNodes) {
+        this.clusterNodes = clusterNodes;
     }
 
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(redisHost, redisPort);
-    }
+//    @Bean
+//    public RedisConnectionFactory redisConnectionFactory() {
+//        return new LettuceConnectionFactory(redisHost, redisPort);
+//    }
 
     @Bean
     public RedisTemplate<?, ?> redisTemplate() {
@@ -30,4 +33,11 @@ public class NEORedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }
+
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory() {
+        RedisClusterConfiguration clusterConfig = new RedisClusterConfiguration(Arrays.asList(clusterNodes.split(",")));
+        return new LettuceConnectionFactory(clusterConfig);
+    }
+
 }

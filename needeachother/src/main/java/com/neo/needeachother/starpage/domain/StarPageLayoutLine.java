@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(name = "neo_starpage_layout")
-@DiscriminatorColumn(name = "layout_type")
+@DiscriminatorColumn(name = "unique_or_categorical")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class StarPageLayoutLine {

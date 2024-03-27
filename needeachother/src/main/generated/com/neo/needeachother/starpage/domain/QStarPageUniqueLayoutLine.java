@@ -30,7 +30,10 @@ public class QStarPageUniqueLayoutLine extends EntityPathBase<StarPageUniqueLayo
     // inherited
     public final QLayoutTitle layoutTitle;
 
-    public final EnumPath<StarPageLayoutType> type = createEnum("type", StarPageLayoutType.class);
+    public final BooleanPath removeAble = createBoolean("removeAble");
+
+    //inherited
+    public final EnumPath<StarPageLayoutType> type;
 
     public QStarPageUniqueLayoutLine(String variable) {
         this(StarPageUniqueLayoutLine.class, forVariable(variable), INITS);
@@ -53,6 +56,7 @@ public class QStarPageUniqueLayoutLine extends EntityPathBase<StarPageUniqueLayo
         this._super = new QStarPageLayoutLine(type, metadata, inits);
         this.layoutId = _super.layoutId;
         this.layoutTitle = _super.layoutTitle;
+        this.type = _super.type;
     }
 
 }

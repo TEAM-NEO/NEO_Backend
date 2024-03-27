@@ -32,7 +32,8 @@ public class QCategoricalLayoutLine extends EntityPathBase<CategoricalLayoutLine
     // inherited
     public final QLayoutTitle layoutTitle;
 
-    public final EnumPath<CategoricalLayoutType> layoutType = createEnum("layoutType", CategoricalLayoutType.class);
+    //inherited
+    public final EnumPath<StarPageLayoutType> type;
 
     public QCategoricalLayoutLine(String variable) {
         this(CategoricalLayoutLine.class, forVariable(variable), INITS);
@@ -56,6 +57,7 @@ public class QCategoricalLayoutLine extends EntityPathBase<CategoricalLayoutLine
         this.categoryId = inits.isInitialized("categoryId") ? new QCategoryId(forProperty("categoryId")) : null;
         this.layoutId = _super.layoutId;
         this.layoutTitle = _super.layoutTitle;
+        this.type = _super.type;
     }
 
 }
