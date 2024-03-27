@@ -3,18 +3,32 @@ package com.neo.needeachother.starpage.domain;
 import com.neo.needeachother.common.enums.NEODomainType;
 import com.neo.needeachother.common.enums.NEOErrorCode;
 import com.neo.needeachother.common.exception.NEOExpectedException;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.*;
 
 @Getter
+@Embeddable
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StarPageHost {
+
+    @Column(name = "host_nickname")
     private String starNickName;
+
+    @Column(name = "host_email")
     private String email;
+
+    @ElementCollection
+    @CollectionTable(name = "neo_starpage_star_type", joinColumns = @JoinColumn(name = "star_page_id"))
+    @Enumerated(value = EnumType.STRING)
     private Set<StarType> starTypes;
+
+    @ElementCollection
+    @CollectionTable(name = "neo_starpage_sns_line", joinColumns = @JoinColumn(name = "star_page_id"))
+    @OrderColumn(name = "sns_line_idx")
     private List<SNSLine> snsLines;
 
     public void isChangeable(String email) {
@@ -24,12 +38,12 @@ public class StarPageHost {
     }
 
     // 도메인 : 스타페에지 주인의 스타 활동명을 변경할 수 있다.
-    public StarPageHost changeStarNickName(String newStarNickName) {
+    protected StarPageHost changeStarNickName(String newStarNickName) {
         return new StarPageHost(newStarNickName, this.email, this.starTypes, this.snsLines);
     }
 
     // 도메인 : 새로운 스타 타입을 추가할 수 있으며 중복되지 않고 순서를 유지한다.
-    public StarPageHost appendNewStarType(StarType newStarType) {
+    protected StarPageHost appendNewStarType(StarType newStarType) {
         return new StarPageHost(this.starNickName, this.email,
                 this.getStarTypesAppendNewOne(this.starTypes, newStarType),
                 this.snsLines);
@@ -42,7 +56,7 @@ public class StarPageHost {
     }
 
     // 도메인 : 기존 스타 타입을 삭제할 수 있으며 최소 한 개의 타입을 유지한다.
-    public StarPageHost deleteStarType(StarType existedStarType) {
+    protected StarPageHost deleteStarType(StarType existedStarType) {
         return new StarPageHost(this.starNickName, this.email,
                 getStarTypesDeleteExistedOne(this.starTypes, existedStarType)
                 , this.snsLines);
@@ -60,20 +74,20 @@ public class StarPageHost {
     }
 
     // 도메인 : 새로운 SNS 정보를 추가할 수 있다.
-    public StarPageHost appendNewSNSLine(SNSLine newSNSLine) {
+    protected StarPageHost appendNewSNSLine(SNSLine newSNSLine) {
         return new StarPageHost(this.starNickName, this.email, this.starTypes,
                 this.getSNSLinesAppendNewOne(this.snsLines, newSNSLine));
     }
 
     private List<SNSLine> getSNSLinesAppendNewOne(List<SNSLine> existingSNSLines, SNSLine newSNSLine) {
         List<SNSLine> addedSNSLines = new ArrayList<>(existingSNSLines);
-        if(!addedSNSLines.contains(newSNSLine)){
+        if (!addedSNSLines.contains(newSNSLine)) {
             addedSNSLines.add(newSNSLine);
         }
         return Collections.unmodifiableList(addedSNSLines);
     }
 
-    public StarPageHost deleteSNSLine(SNSLine existedSNSLine) {
+    protected StarPageHost deleteSNSLine(SNSLine existedSNSLine) {
         return new StarPageHost(this.starNickName, this.email, this.starTypes,
                 getSNSLinesDeleteExistedOne(this.snsLines, existedSNSLine));
     }

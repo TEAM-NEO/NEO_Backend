@@ -6,23 +6,23 @@ import com.neo.needeachother.common.event.Events;
 import com.neo.needeachother.common.exception.NEOExpectedException;
 import com.neo.needeachother.common.exception.NEOUnexpectedException;
 import com.neo.needeachother.starpage.domain.event.StarPageCreatedEvent;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Entity
+@Table(name = "neo_starpage")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StarPage {
 
     @EmbeddedId
+    @AttributeOverride(name = "value", column = @Column(name = "star_page_id"))
     private StarPageId starPagesId;
 
     // 스타 페이지 정보
@@ -30,20 +30,25 @@ public class StarPage {
     private StarPageInfo information;
 
     // 스타 페이지 수정 가능 어드민
-    private List<NEOMember> admins;
+    @ElementCollection
+    @CollectionTable(name = "neo_starpage_admin", joinColumns = @JoinColumn(name = "star_page_id"))
+    private Set<NEOMember> admins = new HashSet<>();
 
     // 스타페이지를 구성하는 레이아웃 구성요소
-    private List<StarPageLayoutLine> layoutLines;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @JoinColumn(name = "star_page_id")
+    @OrderColumn(name = "layout_order")
+    private List<StarPageLayoutLine> layoutLines = new ArrayList<>();
 
 
     // 도메인 : 스타페이지의 프로필 사진을 변경할 수 있다.
-    public void changeProfileImage(NEOMember member, Image newProfileImage) {
+    public void changeProfileImage(NEOMember member, ProfileImage newProfileImage) {
         isChangeableBy(member);
         this.information = this.information.changeProfileImage(newProfileImage);
     }
 
     // 도메인 : 스타페이지의 대문 사진을 변경할 수 있다.
-    public void changeTopRepresentativeImage(NEOMember member, Image newTopRepresentativeImage) {
+    public void changeTopRepresentativeImage(NEOMember member, TopRepresentativeImage newTopRepresentativeImage) {
         isChangeableBy(member);
         this.information = this.information.changeTopRepresentativeImage(newTopRepresentativeImage);
     }
@@ -123,7 +128,41 @@ public class StarPage {
     }
 
     // 도메인 : 레이아웃의 순서를 조정할 수 있다.
-    // TODO : dev this code
+    public void changeOrderLayoutLine(NEOMember member, Map<Long, Integer> layoutLineIdToOrderMap) {
+        isChangeableBy(member);
+        if (!this.canChangeLayoutOrder(this.layoutLines, layoutLineIdToOrderMap)) {
+            throw new NEOExpectedException(NEODomainType.STARPAGE,
+                    NEOErrorCode.WRONG_LAYOUT_ELEMENTS,
+                    NEOErrorCode.WRONG_LAYOUT_ELEMENTS.getErrorDescription());
+        }
+        this.layoutLines = this.getLayoutLinesChangeOrder(this.layoutLines, layoutLineIdToOrderMap);
+    }
+
+    private boolean canChangeLayoutOrder(List<StarPageLayoutLine> currentLayoutLines,
+                                         Map<Long, Integer> layoutLineIdToOrderMap) {
+        return currentLayoutLines.stream()
+                .map(StarPageLayoutLine::getLayoutId)
+                .collect(Collectors.toSet())
+                .containsAll(layoutLineIdToOrderMap.keySet())
+                && currentLayoutLines.size() == layoutLineIdToOrderMap.size();
+    }
+
+    private List<StarPageLayoutLine> getLayoutLinesChangeOrder(List<StarPageLayoutLine> currentLayoutLines,
+                                                               Map<Long, Integer> layoutLineIdToOrderMap) {
+
+        StarPageLayoutLine[] modifiedStarPageLayoutLineArray = new StarPageLayoutLine[currentLayoutLines.size()];
+        currentLayoutLines.forEach(starPageLayoutLine -> {
+            Integer order = layoutLineIdToOrderMap.get(starPageLayoutLine.getLayoutId());
+            if (order >= modifiedStarPageLayoutLineArray.length || modifiedStarPageLayoutLineArray[order] != null) {
+                throw new NEOExpectedException(NEODomainType.STARPAGE,
+                        NEOErrorCode.WRONG_LAYOUT_ELEMENTS,
+                        NEOErrorCode.WRONG_LAYOUT_ELEMENTS.getErrorDescription());
+            }
+            modifiedStarPageLayoutLineArray[order] = starPageLayoutLine;
+        });
+
+        return Collections.unmodifiableList(Arrays.stream(modifiedStarPageLayoutLineArray).toList());
+    }
 
     // 도메인 : 레이아웃의 특정 레이아웃 라인을 제거할 수 있다.
     public void removeLayoutLine(NEOMember member, CategoricalLayoutLine layoutLineToRemove) {
@@ -132,10 +171,10 @@ public class StarPage {
     }
 
     private List<StarPageLayoutLine> getLayoutLinesRemoveOne(
-            List<StarPageLayoutLine> currentLayoutLines, CategoricalLayoutLine categoricalLayoutLine){
+            List<StarPageLayoutLine> currentLayoutLines, CategoricalLayoutLine categoricalLayoutLine) {
         List<StarPageLayoutLine> modifiedLayoutLines = new ArrayList<>(currentLayoutLines);
-        if(modifiedLayoutLines.stream()
-                .anyMatch(categoricalLayoutLine::equals)){
+        if (modifiedLayoutLines.stream()
+                .anyMatch(categoricalLayoutLine::equals)) {
             modifiedLayoutLines.remove(categoricalLayoutLine);
         }
         return Collections.unmodifiableList(modifiedLayoutLines);
@@ -175,13 +214,16 @@ public class StarPage {
 
 
     // 도메인 : 스타페이지를 새롭게 생성할 수 있다.
-    public static StarPage create(String starNickName, String email, Set<StarType> starTypeSet,
+    public static StarPage create(String starNickName, String email, Set<String> starTypeSet,
                                   List<SNSLine> snsLines, String starPageIntroduce) {
 
         StarPage createdStarPage = new StarPage(new StarPageId(),
                 StarPageInfo.withDefaultImageOf(
-                        StarPageHost.of(starNickName, email, starTypeSet, snsLines),
-                        StarPageIntroduction.of(starPageIntroduce)), List.of(new NEOMember(email)),
+                        StarPageHost.of(starNickName, email,
+                                starTypeSet.stream()
+                                        .map(StarType::valueOf)
+                                        .collect(Collectors.toSet()), snsLines),
+                        StarPageIntroduction.of(starPageIntroduce)), Set.of(new NEOMember(email)),
                 List.of(StarPageUniqueLayoutLine.representativeArticleLayoutLine(),
                         StarPageUniqueLayoutLine.scheduleLayoutLine()));
 

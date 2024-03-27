@@ -1,30 +1,29 @@
 package com.neo.needeachother.starpage.domain;
 
-import jakarta.persistence.Embedded;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
+@Getter
+@Entity
+@Table(name = "neo_starpage_image")
+@DiscriminatorColumn(name = "image_type")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Image {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public abstract class Image {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "image_url"))
     private SavedImageURL url;
 
-    public SavedImageURL getUrl() {
-        return url;
+    protected Image(SavedImageURL url){
+        this.url = url;
     }
 
-    public static Image of(String url) {
-        return new Image(SavedImageURL.of(url));
-    }
-
-    public static Image ofDefaultProfileImage() {
-        return new Image(SavedImageURL.of("Default Profile Image Link"));
-    }
-
-    public static Image ofDefaultTopRepresentativeImage() {
-        return new Image(SavedImageURL.of("Default Profile Image Link"));
-    }
 }

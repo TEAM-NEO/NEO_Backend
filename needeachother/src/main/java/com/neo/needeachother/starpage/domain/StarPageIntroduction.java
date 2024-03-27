@@ -1,10 +1,20 @@
 package com.neo.needeachother.starpage.domain;
 
-import lombok.RequiredArgsConstructor;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Lob;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
-@RequiredArgsConstructor
+@Embeddable
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StarPageIntroduction {
-    private final String value;
+
+    @Lob
+    @Column(name = "introduction")
+    private String value;
 
     public String getIntroduction(){
         return this.value;

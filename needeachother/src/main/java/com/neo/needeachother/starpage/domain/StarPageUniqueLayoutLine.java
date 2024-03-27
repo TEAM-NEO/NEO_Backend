@@ -1,17 +1,18 @@
 package com.neo.needeachother.starpage.domain;
 
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Entity
+@DiscriminatorValue("SUL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StarPageUniqueLayoutLine extends StarPageLayoutLine {
-    private StarPageUniqueLayoutType type;
 
-    public StarPageUniqueLayoutLine(LayoutTitle layoutTitle, StarPageUniqueLayoutType type) {
-        super(layoutTitle);
-        this.type = type;
+    public StarPageUniqueLayoutLine(StarPageLayoutType type) {
+        super(LayoutTitle.of(type.getLayoutTitle()), type);
     }
 
     @Override
@@ -20,14 +21,10 @@ public class StarPageUniqueLayoutLine extends StarPageLayoutLine {
     }
 
     public static StarPageUniqueLayoutLine representativeArticleLayoutLine() {
-        return new StarPageUniqueLayoutLine(
-                LayoutTitle.of(StarPageUniqueLayoutType.REPRESENTATIVE_ARTICLE.getLayoutTitle()),
-                StarPageUniqueLayoutType.REPRESENTATIVE_ARTICLE);
+        return new StarPageUniqueLayoutLine(StarPageLayoutType.REPRESENTATIVE_ARTICLE);
     }
 
     public static StarPageUniqueLayoutLine scheduleLayoutLine() {
-        return new StarPageUniqueLayoutLine(
-                LayoutTitle.of(StarPageUniqueLayoutType.SCHEDULE.getLayoutTitle()),
-                StarPageUniqueLayoutType.SCHEDULE);
+        return new StarPageUniqueLayoutLine(StarPageLayoutType.SCHEDULE);
     }
 }
