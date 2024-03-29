@@ -32,6 +32,7 @@ public enum NEOErrorCode implements NEODocumentAbleEnum, NEONumberCodeEnum {
     /* NOT FOUND (없는 데이터 요청) */
     NOT_EXIST_STAR_ID(-200, "스타 아이디가 존재하지 않습니다.", HttpStatus.NOT_FOUND),
     NOT_EXIST_USER(-201, "해당 유저가 존재하지 않습니다.", HttpStatus.NOT_FOUND),
+    NOT_EXIST_STARPAGE(-202, "스타페이지가 존재하지 않습니다", HttpStatus.NOT_FOUND),
 
     /* CONFLICT (데이터에는 문제가 없지만, 내부적 문제 ex.unique value but duplicated)*/
     ALREADY_EXIST_USER(-300, "이미 존재하는 회원입니다.", HttpStatus.CONFLICT),

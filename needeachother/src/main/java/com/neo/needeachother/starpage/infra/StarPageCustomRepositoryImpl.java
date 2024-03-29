@@ -1,6 +1,6 @@
 package com.neo.needeachother.starpage.infra;
 
-import com.neo.needeachother.starpage.domain.StarPageCustomRepository;
+import com.neo.needeachother.starpage.domain.repository.StarPageCustomRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 

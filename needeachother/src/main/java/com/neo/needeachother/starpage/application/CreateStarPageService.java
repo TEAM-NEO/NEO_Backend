@@ -2,7 +2,7 @@ package com.neo.needeachother.starpage.application;
 
 import com.neo.needeachother.starpage.domain.SNSLine;
 import com.neo.needeachother.starpage.domain.StarPage;
-import com.neo.needeachother.starpage.domain.StarPageRepository;
+import com.neo.needeachother.starpage.domain.repository.StarPageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

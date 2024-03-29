@@ -9,6 +9,7 @@ import com.neo.needeachother.starpage.domain.event.StarPageCreatedEvent;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.*;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Entity
+@Getter
 @Table(name = "neo_starpage")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -54,7 +56,8 @@ public class StarPage {
     }
 
     // 도메인 : 스타페이지에 관리자를 새로이 등록할 수 있다.
-    public void registerNewAdmin(NEOMember newAdmin) {
+    public void registerNewAdmin(String hostEmail, NEOMember newAdmin) {
+        information.getHost().isChangeable(hostEmail);
         this.admins.add(newAdmin);
     }
 
