@@ -11,5 +11,6 @@ public enum NEODomainType {
     USERS,
     CONTENTS,
     QUESTIONS,
-    COMMON;
+    COMMON,
+    STARPAGE;
 }

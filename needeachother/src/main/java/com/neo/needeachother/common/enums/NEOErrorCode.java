@@ -32,6 +32,7 @@ public enum NEOErrorCode implements NEODocumentAbleEnum, NEONumberCodeEnum {
     /* NOT FOUND (없는 데이터 요청) */
     NOT_EXIST_STAR_ID(-200, "스타 아이디가 존재하지 않습니다.", HttpStatus.NOT_FOUND),
     NOT_EXIST_USER(-201, "해당 유저가 존재하지 않습니다.", HttpStatus.NOT_FOUND),
+    NOT_EXIST_STARPAGE(-202, "스타페이지가 존재하지 않습니다", HttpStatus.NOT_FOUND),
 
     /* CONFLICT (데이터에는 문제가 없지만, 내부적 문제 ex.unique value but duplicated)*/
     ALREADY_EXIST_USER(-300, "이미 존재하는 회원입니다.", HttpStatus.CONFLICT),
@@ -42,7 +43,13 @@ public enum NEOErrorCode implements NEODocumentAbleEnum, NEONumberCodeEnum {
     INVALID_ACCESS_TOKEN(-402, "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
     NOT_CONTAIN_ACCESS_TOKEN(-403, "Access Token이 필요합니다.", HttpStatus.UNAUTHORIZED),
     NOT_CONTAIN_REFRESH_TOKEN(-404, "Refresh Token이 필요합니다.", HttpStatus.UNAUTHORIZED),
-    FAIL_IN_OAUTH(-405, "OAuth2 인증과정에 실패했습니다.", HttpStatus.UNAUTHORIZED)
+    FAIL_IN_OAUTH(-405, "OAuth2 인증과정에 실패했습니다.", HttpStatus.UNAUTHORIZED),
+
+    /* STARPAGE */
+    NOT_ADMIN_THIS_STARPAGE(-501, "해당 스타페이지의 관리자가 아닙니다.", HttpStatus.NOT_FOUND),
+    AT_LEAST_ONE_STAR_TYPE(-502, "최소 한 개의 스타 타입을 유지해야 합니다.", HttpStatus.FORBIDDEN),
+    ALREADY_EXIST_CATEGORICAL_LAYOUT(-503, "이미 존재하는 카테고리 레이아웃입니다.", HttpStatus.CONFLICT),
+    WRONG_LAYOUT_ELEMENTS(-504, "잘못된 레이아웃 요청입니다.", HttpStatus.BAD_REQUEST)
     ;
 
     private final int errorCode;
