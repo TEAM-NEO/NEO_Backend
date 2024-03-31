@@ -2,6 +2,7 @@ package com.neo.needeachother.starpage.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
+import com.neo.needeachother.category.domain.CategoryId;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;

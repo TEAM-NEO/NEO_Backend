@@ -1,5 +1,6 @@
 package com.neo.needeachother.starpage.domain;
 
+import com.neo.needeachother.category.domain.Category;
 import com.neo.needeachother.common.enums.NEODomainType;
 import com.neo.needeachother.common.enums.NEOErrorCode;
 import com.neo.needeachother.common.event.Events;
@@ -122,7 +123,7 @@ public class StarPage {
     }
 
     // 도메인 : 스타페이지 관리자만 스타페이지를 변경할 수 있다.
-    private void isChangeableBy(NEOMember member) {
+    public void isChangeableBy(NEOMember member) {
         if (!this.admins.contains(member)) {
             throw new NEOExpectedException(NEODomainType.STARPAGE,
                     NEOErrorCode.NOT_ADMIN_THIS_STARPAGE,
@@ -215,8 +216,12 @@ public class StarPage {
         return Collections.unmodifiableList(modifiedLayoutLines);
     }
 
+    // 도메인 : 스타페이지로 하여금 카테고리를 생성할 수 있다. (팩토리)
+    public Category createCategory(){
+        return null;
+    }
 
-    // 도메인 : 스타페이지를 새롭게 생성할 수 있다.
+    // 도메인 : 스타페이지를 새롭게 생성할 수 있다. (정적 팩토리)
     public static StarPage create(String starNickName, String email, Set<String> starTypeSet,
                                   List<SNSLine> snsLines, String starPageIntroduce) {
 
