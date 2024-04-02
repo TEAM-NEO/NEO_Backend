@@ -12,27 +12,14 @@ import static com.neo.needeachother.category.application.CategoryServiceHelper.*
 
 @Service
 @RequiredArgsConstructor
-public class ModifyCategoryStatusService {
+public class ModifyCategoryInformationService {
 
     private final CategoryRepository categoryRepository;
     private final ConfirmCategoryChangeableAdminService confirmCategoryChangeableAdminService;
 
     @Transactional
-    public void reOpenCategory(CategoryId id, String email){
-        Category foundCategory = findExistingCategory(categoryRepository, id);
-        foundCategory.reOpenCategory(confirmCategoryChangeableAdminService, email);
+    public void changeCategoryTitle(CategoryId categoryId, String email, String title){
+        Category foundCategory = findExistingCategory(categoryRepository, categoryId);
+        foundCategory.modifyCategoryTitle(confirmCategoryChangeableAdminService, email, title);
     }
-
-    @Transactional
-    public void deleteCategory(CategoryId id, String email){
-        Category foundCategory = findExistingCategory(categoryRepository, id);
-        foundCategory.deleteCategory(confirmCategoryChangeableAdminService, email);
-    }
-
-    @Transactional
-    public void exposureCategory(CategoryId id, String email){
-        Category foundCategory = findExistingCategory(categoryRepository, id);
-        foundCategory.exposureCategory(confirmCategoryChangeableAdminService, email);
-    }
-
 }

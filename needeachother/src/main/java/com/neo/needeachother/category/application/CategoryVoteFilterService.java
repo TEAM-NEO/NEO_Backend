@@ -12,27 +12,26 @@ import static com.neo.needeachother.category.application.CategoryServiceHelper.*
 
 @Service
 @RequiredArgsConstructor
-public class ModifyCategoryStatusService {
+public class CategoryVoteFilterService {
 
     private final CategoryRepository categoryRepository;
     private final ConfirmCategoryChangeableAdminService confirmCategoryChangeableAdminService;
 
     @Transactional
-    public void reOpenCategory(CategoryId id, String email){
-        Category foundCategory = findExistingCategory(categoryRepository, id);
-        foundCategory.reOpenCategory(confirmCategoryChangeableAdminService, email);
+    public void modifyFilteringRate(CategoryId categoryId, String email, int changingRate){
+        Category foundCategory = findExistingCategory(categoryRepository, categoryId);
+        foundCategory.modifyFilteringRate(confirmCategoryChangeableAdminService, email, changingRate);
     }
 
     @Transactional
-    public void deleteCategory(CategoryId id, String email){
-        Category foundCategory = findExistingCategory(categoryRepository, id);
-        foundCategory.deleteCategory(confirmCategoryChangeableAdminService, email);
+    public void useFilter(CategoryId categoryId, String email){
+        Category foundCategory = findExistingCategory(categoryRepository, categoryId);
+        foundCategory.turnOnCommentRatingFilter(confirmCategoryChangeableAdminService, email);
     }
 
     @Transactional
-    public void exposureCategory(CategoryId id, String email){
-        Category foundCategory = findExistingCategory(categoryRepository, id);
-        foundCategory.exposureCategory(confirmCategoryChangeableAdminService, email);
+    public void notUseFilter(CategoryId categoryId, String email){
+        Category foundCategory = findExistingCategory(categoryRepository, categoryId);
+        foundCategory.turnOffCommentRatingFilter(confirmCategoryChangeableAdminService, email);
     }
-
 }
