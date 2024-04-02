@@ -16,10 +16,10 @@ public class StarPageCustomRepositoryImpl implements StarPageCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     public void findStarPageTopViewById(StarPageId id){
-        queryFactory.select(starPage.information)
-                .from(starPage)
-                .where(starPage.starPagesId.eq(id))
-                .fetchOne();
+//        queryFactory.select(starPage.information)
+//                .from(starPage)
+//                .where(starPage.starPagesId.eq(id))
+//                .fetchOne();
 
     }
 
