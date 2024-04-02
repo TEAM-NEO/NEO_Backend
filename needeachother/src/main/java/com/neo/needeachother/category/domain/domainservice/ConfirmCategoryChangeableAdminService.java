@@ -1,4 +1,4 @@
-package com.neo.needeachother.category.domain;
+package com.neo.needeachother.category.domain.domainservice;
 
 import com.neo.needeachother.starpage.domain.NEOMember;
 import com.neo.needeachother.starpage.domain.StarPage;

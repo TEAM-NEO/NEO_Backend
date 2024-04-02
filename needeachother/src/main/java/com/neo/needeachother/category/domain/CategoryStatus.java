@@ -13,6 +13,7 @@ public enum CategoryStatus {
     EXPOSURE("E"),
     DELETED("D");
 
+    // 카테고리의 상태 요약 심볼(DB 저장 데이터)
     private final String categorySummarizedSymbol;
 
     public static CategoryStatus convertToCategoryStatus(String dbSymbol){

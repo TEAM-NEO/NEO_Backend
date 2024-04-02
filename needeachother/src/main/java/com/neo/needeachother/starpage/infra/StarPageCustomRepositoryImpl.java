@@ -6,6 +6,8 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
+import java.util.UUID;
+
 import static com.neo.needeachother.starpage.domain.QStarPage.*;
 
 @RequiredArgsConstructor
@@ -19,6 +21,11 @@ public class StarPageCustomRepositoryImpl implements StarPageCustomRepository {
                 .where(starPage.starPagesId.eq(id))
                 .fetchOne();
 
+    }
+
+    @Override
+    public StarPageId getNextId(){
+        return new StarPageId("SP_" + UUID.randomUUID().toString().toLowerCase());
     }
 
 }
