@@ -1,16 +1,19 @@
 package com.neo.needeachother.starpage.domain;
 
+import com.neo.needeachother.category.domain.*;
 import com.neo.needeachother.common.enums.NEODomainType;
 import com.neo.needeachother.common.enums.NEOErrorCode;
 import com.neo.needeachother.common.event.Events;
 import com.neo.needeachother.common.exception.NEOExpectedException;
 import com.neo.needeachother.common.exception.NEOUnexpectedException;
+import com.neo.needeachother.starpage.domain.domainservice.CreateCategoryFromStarPageService;
 import com.neo.needeachother.starpage.domain.event.StarPageCreatedEvent;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,7 +28,7 @@ public class StarPage {
 
     @EmbeddedId
     @AttributeOverride(name = "value", column = @Column(name = "star_page_id"))
-    private StarPageId starPagesId;
+    private StarPageId starPageId;
 
     // 스타 페이지 정보
     @Embedded
@@ -122,7 +125,7 @@ public class StarPage {
     }
 
     // 도메인 : 스타페이지 관리자만 스타페이지를 변경할 수 있다.
-    private void isChangeableBy(NEOMember member) {
+    public void isChangeableBy(NEOMember member) {
         if (!this.admins.contains(member)) {
             throw new NEOExpectedException(NEODomainType.STARPAGE,
                     NEOErrorCode.NOT_ADMIN_THIS_STARPAGE,
@@ -215,12 +218,47 @@ public class StarPage {
         return Collections.unmodifiableList(modifiedLayoutLines);
     }
 
+    // 도메인 : 스타페이지로 하여금 통합 카테고리를 생성할 수 있다. (팩토리)
+    public Category createCommonTypeCategory(CreateCategoryFromStarPageService createCategoryService,
+                                             String title, ContentRestriction contentRestriction) {
+        return createCategoryWithContentType(createCategoryService, title,
+                contentRestriction, ContentType.COMMON);
+    }
 
-    // 도메인 : 스타페이지를 새롭게 생성할 수 있다.
-    public static StarPage create(String starNickName, String email, Set<String> starTypeSet,
-                                  List<SNSLine> snsLines, String starPageIntroduce) {
+    // 도메인 : 스타페이지로 하여금 앨범 카테고리를 생성할 수 있다. (팩토리)
+    public Category createAlbumTypeCategory(CreateCategoryFromStarPageService createCategoryService,
+                                            String title, ContentRestriction contentRestriction) {
+        return createCategoryWithContentType(createCategoryService, title,
+                contentRestriction, ContentType.ALBUM);
+    }
 
-        StarPage createdStarPage = new StarPage(new StarPageId(),
+    // 도메인 : 스타페이지로 하여금 OX 카테고리를 생성할 수 있다. (팩토리)
+    public Category createOXTypeCategory(CreateCategoryFromStarPageService createCategoryService,
+                                         String title, ContentRestriction contentRestriction) {
+        return createCategoryWithContentType(createCategoryService, title,
+                contentRestriction, ContentType.OX);
+    }
+
+    // 도메인 : 스타페이지로 하여금 투표 카테고리를 생성할 수 있다. (팩토리)
+    public Category createVoteTypeCategory(CreateCategoryFromStarPageService createCategoryService,
+                                           String title, ContentRestriction contentRestriction) {
+        return createCategoryWithContentType(createCategoryService, title,
+                contentRestriction, ContentType.VOTE);
+    }
+
+    private Category createCategoryWithContentType(CreateCategoryFromStarPageService createCategoryService,
+                                                   String title, ContentRestriction contentRestriction,
+                                                   ContentType contentType) {
+        return new Category(createCategoryService.createCategoryId(contentType),
+                this.starPageId, CategoryStatus.OPEN, contentType,
+                CategoryInformation.of(title), contentRestriction);
+    }
+
+    // 도메인 : 스타페이지를 새롭게 생성할 수 있다. (정적 팩토리)
+    public static StarPage create(StarPageId starPageId, String starNickName, String email, Set<String> starTypeSet,
+                                  List<SNSLine> snsLines, String starPageIntroduce, ApplicationEventPublisher eventPublisher) {
+
+        StarPage createdStarPage = new StarPage(starPageId,
                 StarPageInfo.withDefaultImageOf(
                         StarPageHost.of(starNickName, email,
                                 starTypeSet.stream()
@@ -231,7 +269,8 @@ public class StarPage {
                         StarPageUniqueLayoutLine.scheduleLayoutLine()));
 
         // 스타페이지 생성 이벤트 발행
-        Events.raise(new StarPageCreatedEvent());
+        eventPublisher.publishEvent(new StarPageCreatedEvent(createdStarPage.getStarPageId()));
+        // Events.raise(new StarPageCreatedEvent());
         return createdStarPage;
     }
 

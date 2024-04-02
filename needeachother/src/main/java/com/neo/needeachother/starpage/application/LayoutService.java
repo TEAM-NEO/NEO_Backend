@@ -1,5 +1,6 @@
 package com.neo.needeachother.starpage.application;
 
+import com.neo.needeachother.category.domain.CategoryId;
 import com.neo.needeachother.starpage.domain.*;
 import com.neo.needeachother.starpage.domain.repository.StarPageRepository;
 import lombok.RequiredArgsConstructor;

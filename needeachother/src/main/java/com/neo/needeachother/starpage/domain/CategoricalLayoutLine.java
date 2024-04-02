@@ -1,5 +1,6 @@
 package com.neo.needeachother.starpage.domain;
 
+import com.neo.needeachother.category.domain.CategoryId;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
