@@ -24,7 +24,7 @@ https://codingleeseunghoon.notion.site/NEO-DDD-3de77b437e2e46ed9370fda0dadfe87b?
 
 
 #### 애그리거트 도식화
-
+<p align="center"><img src="starpage_agg_design.png" height="500px" width="1000px"></p>
 
 <br></br>
 
@@ -35,7 +35,7 @@ https://www.notion.so/codingleeseunghoon/NEO-DDD-54d40b03494a4ee68e5711f50e83c66
 
 
 #### 애그리거트 도식화
-
+<p align="center"><img src="category_agg_design.png" height="400px" width="650px"></p>
 
 <br></br>
 
