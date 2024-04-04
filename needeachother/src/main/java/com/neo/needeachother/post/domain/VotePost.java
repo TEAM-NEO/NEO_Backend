@@ -6,7 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "star_page_common_post")
-@DiscriminatorValue(value = ContentType.TypeCode.COMMON)
-public class CommonPost extends StarPagePost{
+@Table(name = "star_page_vote_post")
+@DiscriminatorValue(value = ContentType.TypeCode.VOTE)
+public class VotePost extends StarPagePost{
 }
