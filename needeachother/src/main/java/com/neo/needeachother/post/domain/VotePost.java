@@ -8,5 +8,6 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "star_page_vote_post")
 @DiscriminatorValue(value = ContentType.TypeCode.VOTE)
-public class VotePost extends StarPagePost{
+public class VotePost extends StarPagePost {
+
 }

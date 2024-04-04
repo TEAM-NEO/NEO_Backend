@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GoldBalanceRightAnswer {
+public class GoldBalanceChooser {
     private String email;
 
-    public static GoldBalanceRightAnswer of(String email){
-        return new GoldBalanceRightAnswer(email);
+    public static GoldBalanceChooser of(String email){
+        return new GoldBalanceChooser(email);
     }
 }

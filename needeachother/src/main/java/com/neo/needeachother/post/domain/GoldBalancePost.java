@@ -1,42 +1,77 @@
 package com.neo.needeachother.post.domain;
 
-
 import com.neo.needeachother.category.domain.ContentType;
 import jakarta.persistence.*;
+import lombok.Getter;
 
-import java.util.Set;
-
+@Getter
 @Entity
 @Table(name = "star_page_gold_balance_post")
 @DiscriminatorValue(value = ContentType.TypeCode.GOLD_BALANCE)
-public class GoldBalancePost extends StarPagePost{
+public class GoldBalancePost extends StarPagePost {
 
+    @Column(name = "question")
     private String question;
 
-    @ElementCollection
-    @CollectionTable(name = "gold_balance_post_left_answer", joinColumns = @JoinColumn(name = "post_id"))
-    private Set<GoldBalanceLeftAnswer> leftAnswers;
+    @Embedded
+    private GoldBalanceLeftDetail leftDetail;
 
-    @ElementCollection
-    @CollectionTable(name = "gold_balance_post_right_answer", joinColumns = @JoinColumn(name = "post_id"))
-    private Set<GoldBalanceRightAnswer> rightAnswers;
+    @Embedded
+    private GoldBalanceRightDetail rightDetail;
 
-    private boolean isNotVoted(){
-        return leftAnswers.isEmpty() && rightAnswers.isEmpty();
+    @Embedded
+    private LeftRightRate leftRightRate;
+
+
+    // 도메인 : 황밸 게시글은 좌측 답변을 선택할 수 있다.
+    public void chooseLeftAnswer(String email) {
+        alreadyChosenBy(email);
+        this.leftDetail.chooseLeftAnswer(email);
+        this.leftRightRate = calculateAnswerRate();
     }
 
-    public LeftRightRate calculateOXRate(){
-        if(isNotVoted()){
-            return new LeftRightRate(0, 0);
+    // 도메인 : 황밸 게시글은 우측 답변을 선택할 수 있다.
+    public void chooseRightAnswer(String email) {
+        alreadyChosenBy(email);
+        this.rightDetail.chooseRightAnswer(email);
+        this.leftRightRate = calculateAnswerRate();
+    }
+
+    // 도메인 : 황밸 게시글은 답변 비율을 계산할 수 있다.
+    // 고민.. 보통 chooseLeftAnswer & chooseRightAnswer을 통해 각 Set가 로딩되어 있는 상태라 그냥 Count를 써도 될 듯..?
+    private LeftRightRate calculateAnswerRate() {
+        if (isNobodyChosen()) {
+            return LeftRightRate.of(0, 0);
         }
 
-        int oCount = leftAnswers.size();
-        int xCount = rightAnswers.size();
-        int total = oCount + xCount;
+        int leftCount = this.leftDetail.getLeftAnswersCount();
+        int rightCount = this.rightDetail.getRightAnswersCount();
+        int total = leftCount + rightCount;
 
-        double oRate = (double) oCount / total;
-        double xRate = (double) xCount / total;
-        return new LeftRightRate(0, 0);
+        return convertIntegerRatioBy(getPercentageByCount(leftCount, total),
+                getPercentageByCount(rightCount, total));
+    }
+
+    private void alreadyChosenBy(String email) {
+        this.leftDetail.notChooseYet(email);
+        this.rightDetail.notChooseYet(email);
+    }
+
+    private boolean isNobodyChosen() {
+        return leftDetail.isNobodyChosen() && rightDetail.isNobodyChosen();
+    }
+
+
+    private double getPercentageByCount(int count, int total) {
+        return (double) count * 100 / total;
+    }
+
+    private LeftRightRate convertIntegerRatioBy(double leftRatio, double rightRatio) {
+        if (leftRatio > rightRatio) {
+            return LeftRightRate.of((int) Math.ceil(leftRatio), (int) Math.floor(rightRatio));
+        } else {
+            return LeftRightRate.of((int) Math.floor(leftRatio), (int) Math.ceil(rightRatio));
+        }
     }
 
 
