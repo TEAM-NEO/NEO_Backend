@@ -8,6 +8,7 @@ import com.neo.needeachother.starpage.domain.StarPageId;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
@@ -23,6 +24,7 @@ public class Category {
     @EmbeddedId
     private CategoryId categoryId;
 
+    @Getter
     @Column(name = "starpage_id")
     private StarPageId starPageId;
 

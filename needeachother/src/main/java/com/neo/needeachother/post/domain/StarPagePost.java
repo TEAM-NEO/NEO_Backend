@@ -3,6 +3,7 @@ package com.neo.needeachother.post.domain;
 import com.neo.needeachother.category.domain.CategoryId;
 import com.neo.needeachother.common.entity.NEOTimeDefaultEntity;
 import com.neo.needeachother.common.exception.NEOUnexpectedException;
+import com.neo.needeachother.post.domain.domainservice.PostFeatureUseAbleQualificationService;
 import com.neo.needeachother.post.infra.PostStatusConverter;
 import jakarta.persistence.*;
 
@@ -44,16 +45,22 @@ public abstract class StarPagePost extends NEOTimeDefaultEntity {
     @CollectionTable(name = "star_page_post_like", joinColumns = @JoinColumn(name = "post_id"))
     private Set<PostLike> likes = new HashSet<>();
 
-    private void canLike(){
-
-    }
-
     private boolean isAlreadyLikedBy(String email) {
         return likes.contains(PostLike.of(email));
     }
 
-    public void doLike(String email) {
-        // Locking 필요
+    private boolean isAlreadyHearted() { return hostHeart; }
+
+    private void isAuthor(String email) {
+        if(!this.author.equals(Author.of("익명", email))){
+            throw new NEOUnexpectedException("작성자가 아닙니다.");
+        }
+    }
+
+    public void doLike(PostFeatureUseAbleQualificationService qualificationService,
+                       String email) {
+        // TODO : LOCKING
+        qualificationService.canUseLikeFeature(this.categoryId);
         if (isAlreadyLikedBy(email)) {
             throw new NEOUnexpectedException("이미 좋아요를 누른 글입니다.");
         }
@@ -61,8 +68,10 @@ public abstract class StarPagePost extends NEOTimeDefaultEntity {
         likeCount += 1;
     }
 
-    public void cancelLike(String email) {
-        // Locking 필요
+    public void cancelLike(PostFeatureUseAbleQualificationService qualificationService,
+                           String email) {
+        // TODO : LOCKING
+        qualificationService.canUseLikeFeature(this.categoryId);
         if (!isAlreadyLikedBy(email)) {
             throw new NEOUnexpectedException("좋야요를 누른 상태가 아닙니다.");
         }
@@ -70,18 +79,42 @@ public abstract class StarPagePost extends NEOTimeDefaultEntity {
         likeCount -= 1;
     }
 
-    public void giveHostHeart() {
+    public void giveHostHeart(PostFeatureUseAbleQualificationService qualificationService,
+                              String email) {
+        qualificationService.canUseHostHeartFeature();
+        if(isAlreadyHearted()){
+            throw new NEOUnexpectedException("호스트 하트를 이미 누른 상태입니다.");
+        }
+        this.hostHeart = true;
     }
 
-    public void cancelHostHeart() {
+    public void cancelHostHeart(PostFeatureUseAbleQualificationService qualificationService,
+                                String email) {
+        qualificationService.canUseHostHeartFeature();
+        if(!isAlreadyHearted()){
+            throw new NEOUnexpectedException("호스트 하트를 이미 누르지 않은 상태입니다.");
+        }
+        this.hostHeart = false;
     }
 
-    public void changeTitle(){
+    public void changeTitle(String email, String changeTitle){
+        isAuthor(email);
+        this.title = changeTitle;
     }
 
-    public void delete(){}
+    public void delete(String email){
+        isAuthor(email);
+        this.status = PostStatus.DELETED;
+        // 삭제 이벤트 발행 -> 소속된 댓글 모두 삭제로 변경
+    }
 
-    public void reOpen(){}
+    public void reOpen(String email){
+        isAuthor(email);
+        this.status = PostStatus.OPEN;
+        // 생성,복귀 이벤트 발행 -> 소속된 댓글 모두 복구로 변경
+    }
 
-    public void selectToPopularPost(){}
+    public void selectToPopularPost(){
+        this.status = PostStatus.MAIN_EXPOSED;
+    }
 }

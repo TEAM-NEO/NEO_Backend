@@ -24,7 +24,7 @@ public class QCategoricalLayoutLine extends EntityPathBase<CategoricalLayoutLine
 
     public final QStarPageLayoutLine _super;
 
-    public final QCategoryId categoryId;
+    public final com.neo.needeachother.category.domain.QCategoryId categoryId;
 
     //inherited
     public final NumberPath<Long> layoutId;
@@ -54,7 +54,7 @@ public class QCategoricalLayoutLine extends EntityPathBase<CategoricalLayoutLine
     public QCategoricalLayoutLine(Class<? extends CategoricalLayoutLine> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this._super = new QStarPageLayoutLine(type, metadata, inits);
-        this.categoryId = inits.isInitialized("categoryId") ? new QCategoryId(forProperty("categoryId")) : null;
+        this.categoryId = inits.isInitialized("categoryId") ? new com.neo.needeachother.category.domain.QCategoryId(forProperty("categoryId")) : null;
         this.layoutId = _super.layoutId;
         this.layoutTitle = _super.layoutTitle;
         this.type = _super.type;
