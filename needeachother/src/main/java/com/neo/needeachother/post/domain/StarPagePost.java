@@ -51,7 +51,7 @@ public abstract class StarPagePost extends NEOTimeDefaultEntity {
 
     private boolean isAlreadyHearted() { return hostHeart; }
 
-    private void isAuthor(String email) {
+    protected void isAuthor(String email) {
         if(!this.author.equals(Author.of("익명", email))){
             throw new NEOUnexpectedException("작성자가 아닙니다.");
         }
