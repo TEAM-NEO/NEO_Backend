@@ -169,16 +169,19 @@ public class Category {
                 ContentRestriction.onlyHostWriteContentAndAllCanWriteComment());
     }
 
+    // 도메인 : 같은 속성을 가진 글을 작성할 수 있다 (팩토리)
     public CommonPost writeCommonPost(String title, Author author) {
         checkCategoryContentType(ContentType.COMMON);
         return new CommonPost(this.categoryId, title, author, PostStatus.OPEN);
     }
 
+    // 도메인 : 같은 속성을 가진 글을 작성할 수 있다 (팩토리)
     public AlbumPost writeAlbumPost(String title, Author author, AlbumImage image) {
         checkCategoryContentType(ContentType.ALBUM);
         return new AlbumPost(this.categoryId, title, author, PostStatus.OPEN, image);
     }
 
+    // 도메인 : 같은 속성을 가진 글을 작성할 수 있다 (팩토리)
     public GoldBalancePost writeGoldBalancePost(String title, Author author,
                                                 String question, String leftExample, String rightExample) {
         checkCategoryContentType(ContentType.GOLD_BALANCE);
@@ -186,6 +189,7 @@ public class Category {
                 question, leftExample, rightExample);
     }
 
+    // 도메인 : 같은 속성을 가진 글을 작성할 수 있다 (팩토리)
     public VotePost writeVotePost(String title, Author author,
                                   String question, int timeToLive, List<VoteItem> voteItems) {
         checkCategoryContentType(ContentType.VOTE);

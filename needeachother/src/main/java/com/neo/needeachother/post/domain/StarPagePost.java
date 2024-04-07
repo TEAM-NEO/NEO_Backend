@@ -121,7 +121,7 @@ public abstract class StarPagePost extends NEOTimeDefaultEntity {
         // 삭제 이벤트 발행 -> 소속된 댓글 모두 삭제로 변경
     }
 
-    public void reOpen(String email){
+    public void restore(String email){
         isAuthor(email);
         this.status = PostStatus.OPEN;
         // 생성,복귀 이벤트 발행 -> 소속된 댓글 모두 복구로 변경
