@@ -1,13 +1,17 @@
 package com.neo.needeachother.post.domain;
 
+import com.neo.needeachother.category.domain.CategoryId;
 import com.neo.needeachother.category.domain.ContentType;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "star_page_gold_balance_post")
 @DiscriminatorValue(value = ContentType.TypeCode.GOLD_BALANCE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GoldBalancePost extends StarPagePost {
 
     @Column(name = "question")
@@ -21,6 +25,15 @@ public class GoldBalancePost extends StarPagePost {
 
     @Embedded
     private LeftRightRate leftRightRate;
+
+    public GoldBalancePost(CategoryId categoryId, String title, Author author, PostStatus status,
+                           String question, String leftExample, String rightExample){
+        super(categoryId, title, author, status);
+        this.question = question;
+        this.leftDetail = GoldBalanceLeftDetail.of(leftExample);
+        this.rightDetail = GoldBalanceRightDetail.of(rightExample);
+        this.leftRightRate = this.calculateAnswerRate();
+    }
 
 
     // 도메인 : 황밸 게시글은 좌측 답변을 선택할 수 있다.

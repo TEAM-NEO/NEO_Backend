@@ -4,6 +4,7 @@ import com.neo.needeachother.category.domain.domainservice.ConfirmCategoryChange
 import com.neo.needeachother.category.infra.CategoryStatusConverter;
 import com.neo.needeachother.category.infra.ContentTypeConverter;
 import com.neo.needeachother.common.exception.NEOUnexpectedException;
+import com.neo.needeachother.post.domain.*;
 import com.neo.needeachother.starpage.domain.StarPageId;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -106,7 +107,7 @@ public class Category {
                 .orElseThrow();
     }
 
-    // 도메인 : 댓글 지짖투표 기능을 켤 수 있다.
+    // 도메인 : 댓글 지지투표 기능을 켤 수 있다.
     public void turnOnCommentRatingFilter(ConfirmCategoryChangeableAdminService confirmService,
                                           String email) {
         isChangeAble(confirmService, email);
@@ -168,4 +169,33 @@ public class Category {
                 ContentRestriction.onlyHostWriteContentAndAllCanWriteComment());
     }
 
+    public CommonPost writeCommonPost(String title, Author author) {
+        checkCategoryContentType(ContentType.COMMON);
+        return new CommonPost(this.categoryId, title, author, PostStatus.OPEN);
+    }
+
+    public AlbumPost writeAlbumPost(String title, Author author, AlbumImage image) {
+        checkCategoryContentType(ContentType.ALBUM);
+        return new AlbumPost(this.categoryId, title, author, PostStatus.OPEN, image);
+    }
+
+    public GoldBalancePost writeGoldBalancePost(String title, Author author,
+                                                String question, String leftExample, String rightExample) {
+        checkCategoryContentType(ContentType.GOLD_BALANCE);
+        return new GoldBalancePost(this.categoryId, title, author, PostStatus.OPEN,
+                question, leftExample, rightExample);
+    }
+
+    public VotePost writeVotePost(String title, Author author,
+                                  String question, int timeToLive, List<VoteItem> voteItems) {
+        checkCategoryContentType(ContentType.VOTE);
+        return new VotePost(this.categoryId, title, author, PostStatus.OPEN,
+                question, VoteStatus.OPEN, timeToLive, voteItems);
+    }
+
+    private void checkCategoryContentType(ContentType contentType) {
+        if (this.contentType != contentType) {
+            throw new NEOUnexpectedException("카테고리의 컨텐츠 타입과 작성하려는 포스트의 타입이 일치하지 않습니다.");
+        }
+    }
 }

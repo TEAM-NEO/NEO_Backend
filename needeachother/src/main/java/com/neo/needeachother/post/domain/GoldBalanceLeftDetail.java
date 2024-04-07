@@ -7,11 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Embeddable
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GoldBalanceLeftDetail {
 
@@ -20,7 +20,12 @@ public class GoldBalanceLeftDetail {
 
     @ElementCollection
     @CollectionTable(name = "gold_balance_post_left_chooser", joinColumns = @JoinColumn(name = "post_id"))
-    private Set<GoldBalanceChooser> leftChooser;
+    private Set<GoldBalanceChooser> leftChooser = new HashSet<>();
+
+    public GoldBalanceLeftDetail(String leftExample){
+        this.leftExample = leftExample;
+        this.leftChooser = new HashSet<>();
+    }
 
     protected boolean isNobodyChosen() {
         return leftChooser.isEmpty();
@@ -40,4 +45,7 @@ public class GoldBalanceLeftDetail {
         this.leftChooser.add(GoldBalanceChooser.of(email));
     }
 
+    public static GoldBalanceLeftDetail of(String leftExample){
+        return new GoldBalanceLeftDetail(leftExample);
+    }
 }

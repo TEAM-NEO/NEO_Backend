@@ -6,6 +6,9 @@ import com.neo.needeachother.common.exception.NEOUnexpectedException;
 import com.neo.needeachother.post.domain.domainservice.PostFeatureUseAbleQualificationService;
 import com.neo.needeachother.post.infra.PostStatusConverter;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,6 +17,7 @@ import java.util.Set;
 @Table(name = "star_page_post")
 @DiscriminatorColumn(name = "post_type")
 @Inheritance(strategy = InheritanceType.JOINED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class StarPagePost extends NEOTimeDefaultEntity {
 
     @Id
@@ -44,6 +48,15 @@ public abstract class StarPagePost extends NEOTimeDefaultEntity {
     @ElementCollection
     @CollectionTable(name = "star_page_post_like", joinColumns = @JoinColumn(name = "post_id"))
     private Set<PostLike> likes = new HashSet<>();
+
+    public StarPagePost(CategoryId categoryId, String title, Author author, PostStatus status){
+        this.categoryId = categoryId;
+        this.title = title;
+        this.author = author;
+        this.status = status;
+        this.likeCount = 0;
+        this.hostHeart = false;
+    }
 
     private boolean isAlreadyLikedBy(String email) {
         return likes.contains(PostLike.of(email));

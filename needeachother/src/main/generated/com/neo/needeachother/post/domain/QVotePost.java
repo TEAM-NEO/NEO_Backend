@@ -45,14 +45,22 @@ public class QVotePost extends EntityPathBase<VotePost> {
     //inherited
     public final SetPath<PostLike, QPostLike> likes;
 
+    public final StringPath question = createString("question");
+
     //inherited
     public final EnumPath<PostStatus> status;
+
+    public final NumberPath<Integer> timeToLive = createNumber("timeToLive", Integer.class);
 
     //inherited
     public final StringPath title;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt;
+
+    public final ListPath<VoteItem, QVoteItem> voteItems = this.<VoteItem, QVoteItem>createList("voteItems", VoteItem.class, QVoteItem.class, PathInits.DIRECT2);
+
+    public final EnumPath<VoteStatus> voteStatus = createEnum("voteStatus", VoteStatus.class);
 
     public QVotePost(String variable) {
         this(VotePost.class, forVariable(variable), INITS);

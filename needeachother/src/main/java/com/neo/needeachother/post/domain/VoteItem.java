@@ -1,15 +1,13 @@
 package com.neo.needeachother.post.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "vote_item")
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,6 +17,7 @@ public class VoteItem {
     @Column(name = "vote_item_id")
     private String id;
 
+    @Column(name = "option_text")
     private String OptionText;
 
     @ElementCollection
