@@ -4,6 +4,7 @@ import com.neo.needeachother.post.domain.PostRepository;
 import com.neo.needeachother.post.domain.StarPagePost;
 import com.neo.needeachother.post.domain.domainservice.PostFeatureUseAbleQualificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,11 +16,12 @@ public class LikePostService {
 
     private final PostRepository postRepository;
     private final PostFeatureUseAbleQualificationService postFeatureUseAbleQualificationService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public void likeIt(Long postId, String email){
         StarPagePost foundPost = findExistingStarPagePost(postRepository, postId);
-        foundPost.doLike(postFeatureUseAbleQualificationService, email);
+        foundPost.doLike(postFeatureUseAbleQualificationService, applicationEventPublisher, email);
     }
 
     @Transactional

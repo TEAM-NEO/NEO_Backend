@@ -7,4 +7,5 @@ public interface PostUseCase {
     void unLikeIt(Long postId, String email);
     void restorePost(Long postId, String email);
     void deletePost(Long postId, String email);
+    void posting();
 }

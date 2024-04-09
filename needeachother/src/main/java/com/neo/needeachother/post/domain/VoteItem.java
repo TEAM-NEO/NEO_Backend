@@ -15,6 +15,7 @@ public class VoteItem {
 
     @Id
     @Column(name = "vote_item_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @Column(name = "option_text")

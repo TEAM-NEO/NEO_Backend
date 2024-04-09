@@ -42,4 +42,9 @@ public class PostUseCaseImpl implements PostUseCase{
         deletePostService.deletePost(postId, email);
     }
 
+    @Override
+    public void posting(){
+
+    }
+
 }

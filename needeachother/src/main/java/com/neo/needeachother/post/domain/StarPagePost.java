@@ -7,8 +7,8 @@ import com.neo.needeachother.post.domain.domainservice.PostFeatureUseAbleQualifi
 import com.neo.needeachother.post.infra.PostStatusConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -70,15 +70,23 @@ public abstract class StarPagePost extends NEOTimeDefaultEntity {
         }
     }
 
+    private boolean conditionForExposure(){
+        return this.status == PostStatus.OPEN && this.likeCount >= 10;
+    }
+
     public void doLike(PostFeatureUseAbleQualificationService qualificationService,
+                       ApplicationEventPublisher applicationEventPublisher,
                        String email) {
         // TODO : LOCKING
         qualificationService.canUseLikeFeature(this.categoryId);
         if (isAlreadyLikedBy(email)) {
             throw new NEOUnexpectedException("이미 좋아요를 누른 글입니다.");
         }
-        likes.add(PostLike.of(email));
-        likeCount += 1;
+        this.likes.add(PostLike.of(email));
+        this.likeCount += 1;
+        if(conditionForExposure()){
+            applicationEventPublisher.publishEvent(new LikeCountExposureConditionMetEvent(this.id));
+        }
     }
 
     public void cancelLike(PostFeatureUseAbleQualificationService qualificationService,
@@ -118,13 +126,15 @@ public abstract class StarPagePost extends NEOTimeDefaultEntity {
     public void delete(String email){
         isAuthor(email);
         this.status = PostStatus.DELETED;
-        // 삭제 이벤트 발행 -> 소속된 댓글 모두 삭제로 변경
+        // TODO : 삭제 이벤트 발행 -> 소속된 댓글 모두 삭제로 변경
     }
 
     public void restore(String email){
         isAuthor(email);
-        this.status = PostStatus.OPEN;
-        // 생성,복귀 이벤트 발행 -> 소속된 댓글 모두 복구로 변경
+        if(this.status == PostStatus.DELETED){
+            this.status = PostStatus.OPEN;
+        }
+        // TODO : 생성,복귀 이벤트 발행 -> 소속된 댓글 모두 복구로 변경
     }
 
     public void selectToPopularPost(){
