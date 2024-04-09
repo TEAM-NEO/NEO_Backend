@@ -28,7 +28,7 @@ public class QStarPage extends EntityPathBase<StarPage> {
 
     public final ListPath<StarPageLayoutLine, QStarPageLayoutLine> layoutLines = this.<StarPageLayoutLine, QStarPageLayoutLine>createList("layoutLines", StarPageLayoutLine.class, QStarPageLayoutLine.class, PathInits.DIRECT2);
 
-    public final QStarPageId starPagesId;
+    public final QStarPageId starPageId;
 
     public QStarPage(String variable) {
         this(StarPage.class, forVariable(variable), INITS);
@@ -49,7 +49,7 @@ public class QStarPage extends EntityPathBase<StarPage> {
     public QStarPage(Class<? extends StarPage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.information = inits.isInitialized("information") ? new QStarPageInfo(forProperty("information"), inits.get("information")) : null;
-        this.starPagesId = inits.isInitialized("starPagesId") ? new QStarPageId(forProperty("starPagesId")) : null;
+        this.starPageId = inits.isInitialized("starPageId") ? new QStarPageId(forProperty("starPageId")) : null;
     }
 
 }

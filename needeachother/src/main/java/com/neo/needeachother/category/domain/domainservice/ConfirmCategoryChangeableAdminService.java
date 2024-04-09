@@ -6,7 +6,9 @@ import com.neo.needeachother.starpage.domain.StarPageId;
 import com.neo.needeachother.starpage.domain.repository.StarPageRepository;
 import static com.neo.needeachother.starpage.application.StarPageServiceHelper.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
 @RequiredArgsConstructor
 public class ConfirmCategoryChangeableAdminService {
 

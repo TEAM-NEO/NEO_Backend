@@ -23,9 +23,4 @@ public class StarPageCustomRepositoryImpl implements StarPageCustomRepository {
 
     }
 
-    @Override
-    public StarPageId getNextId(){
-        return new StarPageId("SP_" + UUID.randomUUID().toString().toLowerCase());
-    }
-
 }

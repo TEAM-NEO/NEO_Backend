@@ -11,6 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CategoryId implements Serializable {
+
     private String value;
 
     public static CategoryId of(String value){

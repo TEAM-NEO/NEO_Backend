@@ -3,7 +3,6 @@ package com.neo.needeachother.starpage.domain;
 import com.neo.needeachother.category.domain.*;
 import com.neo.needeachother.common.enums.NEODomainType;
 import com.neo.needeachother.common.enums.NEOErrorCode;
-import com.neo.needeachother.common.event.Events;
 import com.neo.needeachother.common.exception.NEOExpectedException;
 import com.neo.needeachother.common.exception.NEOUnexpectedException;
 import com.neo.needeachother.starpage.domain.domainservice.CreateCategoryFromStarPageService;
@@ -236,7 +235,7 @@ public class StarPage {
     public Category createOXTypeCategory(CreateCategoryFromStarPageService createCategoryService,
                                          String title, ContentRestriction contentRestriction) {
         return createCategoryWithContentType(createCategoryService, title,
-                contentRestriction, ContentType.OX);
+                contentRestriction, ContentType.GOLD_BALANCE);
     }
 
     // 도메인 : 스타페이지로 하여금 투표 카테고리를 생성할 수 있다. (팩토리)

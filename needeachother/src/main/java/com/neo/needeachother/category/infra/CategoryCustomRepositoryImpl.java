@@ -13,12 +13,4 @@ public class CategoryCustomRepositoryImpl implements CategoryCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-
-    @Override
-    public CategoryId getNextId(ContentType contentType) {
-        String stringBuilder = contentType.getPrefixCategoryId() +
-                "_" +
-                UUID.randomUUID().toString().toUpperCase();
-        return new CategoryId(stringBuilder);
-    }
 }

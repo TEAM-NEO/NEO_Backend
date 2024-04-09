@@ -1,8 +1,7 @@
-package com.neo.needeachother.starpage.domain;
+package com.neo.needeachother.category.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.neo.needeachother.category.domain.CategoryId;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
@@ -16,7 +15,7 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultEmbeddableSerializer")
 public class QCategoryId extends BeanPath<CategoryId> {
 
-    private static final long serialVersionUID = 466670990L;
+    private static final long serialVersionUID = 422344043L;
 
     public static final QCategoryId categoryId = new QCategoryId("categoryId");
 
