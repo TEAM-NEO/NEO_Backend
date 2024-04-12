@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "star_page_album_post")
-@DiscriminatorValue(value = ContentType.TypeCode.ALBUM)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AlbumPost extends StarPagePost{
 
@@ -17,7 +16,7 @@ public class AlbumPost extends StarPagePost{
 
     public AlbumPost(CategoryId categoryId, String title, Author author, PostStatus status,
                      AlbumImage albumImage){
-        super(categoryId, title, author, status);
+        super(categoryId, title, author, status, PostType.ALBUM);
         this.image = albumImage;
     }
 

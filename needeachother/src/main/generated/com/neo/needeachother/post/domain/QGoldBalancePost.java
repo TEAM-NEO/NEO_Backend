@@ -34,6 +34,9 @@ public class QGoldBalancePost extends EntityPathBase<GoldBalancePost> {
     public final DateTimePath<java.time.LocalDateTime> createdAt;
 
     //inherited
+    public final DateTimePath<java.time.LocalDateTime> exposureAt;
+
+    //inherited
     public final BooleanPath hostHeart;
 
     //inherited
@@ -48,6 +51,9 @@ public class QGoldBalancePost extends EntityPathBase<GoldBalancePost> {
 
     //inherited
     public final SetPath<PostLike, QPostLike> likes;
+
+    //inherited
+    public final EnumPath<PostType> postType;
 
     public final StringPath question = createString("question");
 
@@ -84,12 +90,14 @@ public class QGoldBalancePost extends EntityPathBase<GoldBalancePost> {
         this.author = _super.author;
         this.categoryId = _super.categoryId;
         this.createdAt = _super.createdAt;
+        this.exposureAt = _super.exposureAt;
         this.hostHeart = _super.hostHeart;
         this.id = _super.id;
         this.leftDetail = inits.isInitialized("leftDetail") ? new QGoldBalanceLeftDetail(forProperty("leftDetail")) : null;
         this.leftRightRate = inits.isInitialized("leftRightRate") ? new QLeftRightRate(forProperty("leftRightRate")) : null;
         this.likeCount = _super.likeCount;
         this.likes = _super.likes;
+        this.postType = _super.postType;
         this.rightDetail = inits.isInitialized("rightDetail") ? new QGoldBalanceRightDetail(forProperty("rightDetail")) : null;
         this.status = _super.status;
         this.title = _super.title;

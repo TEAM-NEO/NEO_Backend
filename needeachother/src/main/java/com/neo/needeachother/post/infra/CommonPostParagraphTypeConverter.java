@@ -9,7 +9,7 @@ public class CommonPostParagraphTypeConverter implements AttributeConverter<Comm
 
     @Override
     public String convertToDatabaseColumn(CommonPostParagraphType attribute) {
-        return attribute.name();
+        return attribute.getCommonPostParagraphTypeSummarizedSymbol();
     }
 
     @Override

@@ -34,6 +34,9 @@ public class QVotePost extends EntityPathBase<VotePost> {
     public final DateTimePath<java.time.LocalDateTime> createdAt;
 
     //inherited
+    public final DateTimePath<java.time.LocalDateTime> exposureAt;
+
+    //inherited
     public final BooleanPath hostHeart;
 
     //inherited
@@ -44,6 +47,9 @@ public class QVotePost extends EntityPathBase<VotePost> {
 
     //inherited
     public final SetPath<PostLike, QPostLike> likes;
+
+    //inherited
+    public final EnumPath<PostType> postType;
 
     public final StringPath question = createString("question");
 
@@ -84,10 +90,12 @@ public class QVotePost extends EntityPathBase<VotePost> {
         this.author = _super.author;
         this.categoryId = _super.categoryId;
         this.createdAt = _super.createdAt;
+        this.exposureAt = _super.exposureAt;
         this.hostHeart = _super.hostHeart;
         this.id = _super.id;
         this.likeCount = _super.likeCount;
         this.likes = _super.likes;
+        this.postType = _super.postType;
         this.status = _super.status;
         this.title = _super.title;
         this.updatedAt = _super.updatedAt;

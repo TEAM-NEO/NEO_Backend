@@ -4,7 +4,6 @@ import com.neo.needeachother.starpage.domain.StarPageId;
 import com.neo.needeachother.starpage.domain.repository.StarPageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import static com.neo.needeachother.starpage.application.StarPageServiceHelper.*;
 
 @Service
 @RequiredArgsConstructor

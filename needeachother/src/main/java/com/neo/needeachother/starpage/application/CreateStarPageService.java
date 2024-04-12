@@ -3,6 +3,7 @@ package com.neo.needeachother.starpage.application;
 import com.neo.needeachother.starpage.domain.SNSLine;
 import com.neo.needeachother.starpage.domain.StarPage;
 import com.neo.needeachother.starpage.domain.domainservice.StarPageIdGenerateService;
+import com.neo.needeachother.starpage.domain.event.StarPageCreatedEvent;
 import com.neo.needeachother.starpage.domain.repository.StarPageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -24,7 +25,8 @@ public class CreateStarPageService {
     public void createStarPage(String starNickName, String email, Set<String> starTypeSet,
                                List<SNSLine> snsLines, String starPageIntroduce){
         StarPage createdStarPage = StarPage.create(idGenerateService.getNextId(), starNickName, email,
-                starTypeSet, snsLines, starPageIntroduce, eventPublisher);
+                starTypeSet, snsLines, starPageIntroduce);
         starPageRepository.save(createdStarPage);
+        eventPublisher.publishEvent(new StarPageCreatedEvent(createdStarPage.getStarPageId()));
     }
 }

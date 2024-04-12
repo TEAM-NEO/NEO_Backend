@@ -232,8 +232,8 @@ public class StarPage {
     }
 
     // 도메인 : 스타페이지로 하여금 OX 카테고리를 생성할 수 있다. (팩토리)
-    public Category createOXTypeCategory(CreateCategoryFromStarPageService createCategoryService,
-                                         String title, ContentRestriction contentRestriction) {
+    public Category createGoldBalanceTypeCategory(CreateCategoryFromStarPageService createCategoryService,
+                                                  String title, ContentRestriction contentRestriction) {
         return createCategoryWithContentType(createCategoryService, title,
                 contentRestriction, ContentType.GOLD_BALANCE);
     }
@@ -255,7 +255,7 @@ public class StarPage {
 
     // 도메인 : 스타페이지를 새롭게 생성할 수 있다. (정적 팩토리)
     public static StarPage create(StarPageId starPageId, String starNickName, String email, Set<String> starTypeSet,
-                                  List<SNSLine> snsLines, String starPageIntroduce, ApplicationEventPublisher eventPublisher) {
+                                  List<SNSLine> snsLines, String starPageIntroduce) {
 
         StarPage createdStarPage = new StarPage(starPageId,
                 StarPageInfo.withDefaultImageOf(
@@ -266,10 +266,6 @@ public class StarPage {
                         StarPageIntroduction.of(starPageIntroduce)), Set.of(new NEOMember(email)),
                 List.of(StarPageUniqueLayoutLine.representativeArticleLayoutLine(),
                         StarPageUniqueLayoutLine.scheduleLayoutLine()));
-
-        // 스타페이지 생성 이벤트 발행
-        eventPublisher.publishEvent(new StarPageCreatedEvent(createdStarPage.getStarPageId()));
-        // Events.raise(new StarPageCreatedEvent());
         return createdStarPage;
     }
 

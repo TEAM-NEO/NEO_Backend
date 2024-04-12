@@ -20,9 +20,9 @@ public class QVoteItem extends EntityPathBase<VoteItem> {
 
     public static final QVoteItem voteItem = new QVoteItem("voteItem");
 
-    public final StringPath id = createString("id");
+    public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath OptionText = createString("OptionText");
+    public final StringPath optionText = createString("optionText");
 
     public final SetPath<Voter, QVoter> voterSet = this.<Voter, QVoter>createSet("voterSet", Voter.class, QVoter.class, PathInits.DIRECT2);
 

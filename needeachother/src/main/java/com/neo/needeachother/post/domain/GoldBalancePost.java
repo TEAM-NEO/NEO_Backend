@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(name = "star_page_gold_balance_post")
-@DiscriminatorValue(value = ContentType.TypeCode.GOLD_BALANCE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GoldBalancePost extends StarPagePost {
 
@@ -28,7 +27,7 @@ public class GoldBalancePost extends StarPagePost {
 
     public GoldBalancePost(CategoryId categoryId, String title, Author author, PostStatus status,
                            String question, String leftExample, String rightExample){
-        super(categoryId, title, author, status);
+        super(categoryId, title, author, status, PostType.GOLD_BALANCE);
         this.question = question;
         this.leftDetail = GoldBalanceLeftDetail.of(leftExample);
         this.rightDetail = GoldBalanceRightDetail.of(rightExample);

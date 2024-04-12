@@ -31,6 +31,8 @@ public class QStarPagePost extends EntityPathBase<StarPagePost> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final DateTimePath<java.time.LocalDateTime> exposureAt = createDateTime("exposureAt", java.time.LocalDateTime.class);
+
     public final BooleanPath hostHeart = createBoolean("hostHeart");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
@@ -38,6 +40,8 @@ public class QStarPagePost extends EntityPathBase<StarPagePost> {
     public final NumberPath<Integer> likeCount = createNumber("likeCount", Integer.class);
 
     public final SetPath<PostLike, QPostLike> likes = this.<PostLike, QPostLike>createSet("likes", PostLike.class, QPostLike.class, PathInits.DIRECT2);
+
+    public final EnumPath<PostType> postType = createEnum("postType", PostType.class);
 
     public final EnumPath<PostStatus> status = createEnum("status", PostStatus.class);
 

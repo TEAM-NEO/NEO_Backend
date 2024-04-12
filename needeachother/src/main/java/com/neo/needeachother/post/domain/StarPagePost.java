@@ -5,17 +5,18 @@ import com.neo.needeachother.common.entity.NEOTimeDefaultEntity;
 import com.neo.needeachother.common.exception.NEOUnexpectedException;
 import com.neo.needeachother.post.domain.domainservice.PostFeatureUseAbleQualificationService;
 import com.neo.needeachother.post.infra.PostStatusConverter;
+import com.neo.needeachother.post.infra.PostTypeConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "star_page_post")
-@DiscriminatorColumn(name = "post_type")
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class StarPagePost extends NEOTimeDefaultEntity {
@@ -39,23 +40,31 @@ public abstract class StarPagePost extends NEOTimeDefaultEntity {
     @Convert(converter = PostStatusConverter.class)
     private PostStatus status;
 
-    @Column(name = "like_count")
+    @Column(name = "like_count", nullable = false)
     private int likeCount;
 
-    @Column(name = "host_heart")
+    @Column(name = "host_heart", nullable = false)
     private boolean hostHeart;
+
+    @Column(name = "exposure_at")
+    private LocalDateTime exposureAt;
+
+    @Column(name = "post_type", nullable = false)
+    @Convert(converter = PostTypeConverter.class)
+    private PostType postType;
 
     @ElementCollection
     @CollectionTable(name = "star_page_post_like", joinColumns = @JoinColumn(name = "post_id"))
     private Set<PostLike> likes = new HashSet<>();
 
-    public StarPagePost(CategoryId categoryId, String title, Author author, PostStatus status){
+    public StarPagePost(CategoryId categoryId, String title, Author author, PostStatus status, PostType postType){
         this.categoryId = categoryId;
         this.title = title;
         this.author = author;
         this.status = status;
         this.likeCount = 0;
         this.hostHeart = false;
+        this.postType = postType;
     }
 
     private boolean isAlreadyLikedBy(String email) {
@@ -139,5 +148,6 @@ public abstract class StarPagePost extends NEOTimeDefaultEntity {
 
     public void selectToPopularPost(){
         this.status = PostStatus.MAIN_EXPOSED;
+        this.exposureAt = LocalDateTime.now();
     }
 }

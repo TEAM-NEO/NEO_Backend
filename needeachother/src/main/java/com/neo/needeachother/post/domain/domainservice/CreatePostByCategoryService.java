@@ -17,9 +17,9 @@ public class CreatePostByCategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public CommonPost createCommonPost(String title, Author author, CategoryId categoryId){
+    public CommonPost createCommonPost(String title, Author author, CategoryId categoryId, List<CommonPostParagraph> paragraphs){
         Category foundCategory = findExistingCategory(categoryRepository, categoryId);
-        return foundCategory.writeCommonPost(title, author);
+        return foundCategory.writeCommonPost(title, author, paragraphs);
     }
 
     public AlbumPost createAlbumPost(String title, Author author, AlbumImage albumImage, CategoryId categoryId){

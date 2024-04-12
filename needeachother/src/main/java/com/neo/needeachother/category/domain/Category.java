@@ -170,9 +170,9 @@ public class Category {
     }
 
     // 도메인 : 같은 속성을 가진 글을 작성할 수 있다 (팩토리)
-    public CommonPost writeCommonPost(String title, Author author) {
+    public CommonPost writeCommonPost(String title, Author author, List<CommonPostParagraph> paragraphs) {
         checkCategoryContentType(ContentType.COMMON);
-        return new CommonPost(this.categoryId, title, author, PostStatus.OPEN);
+        return new CommonPost(this.categoryId, title, author, PostStatus.OPEN, paragraphs);
     }
 
     // 도메인 : 같은 속성을 가진 글을 작성할 수 있다 (팩토리)

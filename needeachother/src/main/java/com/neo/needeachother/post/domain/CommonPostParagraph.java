@@ -2,11 +2,9 @@ package com.neo.needeachother.post.domain;
 
 import com.neo.needeachother.post.infra.CommonPostParagraphTypeConverter;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
 @Embeddable
 @EqualsAndHashCode
 @AllArgsConstructor
