@@ -27,6 +27,7 @@ public abstract class StarPagePost extends NEOTimeDefaultEntity {
     private Long id;
 
     @Embedded
+    @Column(name = "category_id")
     private CategoryId categoryId;
 
     @Column(name = "post_title")

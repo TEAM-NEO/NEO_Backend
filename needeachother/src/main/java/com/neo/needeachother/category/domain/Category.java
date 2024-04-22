@@ -22,7 +22,9 @@ import java.util.stream.Stream;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Category {
 
+    @Getter
     @EmbeddedId
+    @Column(name = "category_id")
     private CategoryId categoryId;
 
     @Getter
@@ -33,10 +35,12 @@ public class Category {
     @Convert(converter = CategoryStatusConverter.class)
     private CategoryStatus categoryStatus;
 
+    @Getter
     @Column(name = "content_type")
     @Convert(converter = ContentTypeConverter.class)
     private ContentType contentType;
 
+    @Getter
     @Embedded
     @AttributeOverride(name = "categoryTitle", column = @Column(name = "title"))
     private CategoryInformation categoryInformation;

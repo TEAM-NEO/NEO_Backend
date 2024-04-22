@@ -6,6 +6,7 @@ import lombok.*;
 
 @Getter
 @Embeddable
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LayoutTitle {
