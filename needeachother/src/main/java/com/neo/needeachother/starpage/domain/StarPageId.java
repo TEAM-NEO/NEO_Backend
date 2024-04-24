@@ -17,4 +17,7 @@ public class StarPageId implements Serializable {
     @Column(name = "star_page_id")
     String value;
 
+    public static StarPageId of(String value){
+        return new StarPageId(value);
+    }
 }

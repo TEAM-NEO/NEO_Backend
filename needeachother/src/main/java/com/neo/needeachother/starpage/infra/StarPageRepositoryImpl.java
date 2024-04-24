@@ -7,7 +7,6 @@ import com.neo.needeachother.starpage.domain.StarPageId;
 import com.neo.needeachother.starpage.domain.dto.*;
 import com.neo.needeachother.starpage.domain.repository.StarPageRepositoryCustom;
 import com.querydsl.core.group.GroupBy;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;

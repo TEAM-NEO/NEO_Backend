@@ -239,9 +239,6 @@ public class StarPage {
                 .toList();
     }
 
-    public void getTopView(){
-
-    }
 
     // 도메인 : 스타페이지로 하여금 통합 카테고리를 생성할 수 있다. (팩토리)
     public Category createCommonTypeCategory(CreateCategoryFromStarPageService createCategoryService,

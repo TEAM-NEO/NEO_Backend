@@ -26,4 +26,7 @@ public class Image {
         return new Image("Default Profile Image Link");
     }
 
+    public static Image of(String url){
+        return new Image(url);
+    }
 }

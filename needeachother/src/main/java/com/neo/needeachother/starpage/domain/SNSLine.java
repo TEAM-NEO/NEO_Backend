@@ -24,4 +24,7 @@ public class SNSLine {
         return new SNSLine(type, url);
     }
 
+    public static SNSLine of(String typeName, String url) {
+        return new SNSLine(SNSType.valueOf(typeName), url);
+    }
 }

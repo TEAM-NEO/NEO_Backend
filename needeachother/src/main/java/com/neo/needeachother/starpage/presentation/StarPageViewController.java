@@ -18,13 +18,13 @@ public class StarPageViewController {
     private final StarPageViewDataService viewDataService;
 
     @GetMapping("/top_view")
-    public ResponseEntity<Object> demandStarPageTopView(@RequestParam String starPageId){
+    public ResponseEntity<StarPageTopViewData> demandStarPageTopView(@RequestParam String starPageId){
         StarPageTopViewData topViewData = viewDataService.getStarPageTopViewData(starPageId);
         return ResponseEntity.ok(topViewData);
     }
 
     @GetMapping("/layout_view")
-    public ResponseEntity<Object> demandStarPageLayoutView(@RequestParam String starPageId){
+    public ResponseEntity<StarPageViewData> demandStarPageLayoutView(@RequestParam String starPageId){
         StarPageViewData layoutViewData = viewDataService.getStarPageLayoutViewData(starPageId);
         return ResponseEntity.ok(layoutViewData);
     }

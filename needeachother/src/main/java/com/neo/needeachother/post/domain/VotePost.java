@@ -22,6 +22,7 @@ public class VotePost extends StarPagePost {
     @Enumerated(value = EnumType.STRING)
     private VoteStatus voteStatus;
 
+    // @Column(name = "time_to_live")
     private int timeToLive;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

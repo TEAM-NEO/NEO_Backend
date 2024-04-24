@@ -15,26 +15,26 @@ public class ModifyStarPageInformationService {
     private final StarPageRepository starPageRepository;
 
     @Transactional
-    public void modifyProfileImage(StarPageId id, String email, Image modifyingImage) {
-        StarPage foundStarPage = findExistingStarPage(starPageRepository, id);
-        foundStarPage.changeProfileImage(NEOMember.of(email), modifyingImage);
+    public void modifyProfileImage(String starPageId, String email, String modifyingImage) {
+        StarPage foundStarPage = findExistingStarPage(starPageRepository, StarPageId.of(starPageId));
+        foundStarPage.changeProfileImage(NEOMember.of(email), Image.of(modifyingImage));
     }
 
     @Transactional
-    public void modifyTopRepresentativeImage(StarPageId id, String email, Image modifyingImage){
-        StarPage foundStarPage = findExistingStarPage(starPageRepository, id);
-        foundStarPage.changeTopRepresentativeImage(NEOMember.of(email), modifyingImage);
+    public void modifyTopRepresentativeImage(String starPageId, String email, String modifyingImage){
+        StarPage foundStarPage = findExistingStarPage(starPageRepository, StarPageId.of(starPageId));
+        foundStarPage.changeTopRepresentativeImage(NEOMember.of(email), Image.of(modifyingImage));
     }
 
     @Transactional
-    public void modifyStarNickName(StarPageId id, String email, String modifyingNickName){
-        StarPage foundStarPage = findExistingStarPage(starPageRepository, id);
+    public void modifyStarNickName(String starPageId, String email, String modifyingNickName){
+        StarPage foundStarPage = findExistingStarPage(starPageRepository, StarPageId.of(starPageId));
         foundStarPage.changeStarNickName(email, modifyingNickName);
     }
 
     @Transactional
-    public void modifyStarIntroduction(StarPageId id, String email, String modifyingIntroduce){
-        StarPage foundStarPage = findExistingStarPage(starPageRepository, id);
+    public void modifyStarIntroduction(String starPageId, String email, String modifyingIntroduce){
+        StarPage foundStarPage = findExistingStarPage(starPageRepository, StarPageId.of(starPageId));
         foundStarPage.changeStarPageIntroduction(NEOMember.of(email), StarPageIntroduction.of(modifyingIntroduce));
     }
 }
