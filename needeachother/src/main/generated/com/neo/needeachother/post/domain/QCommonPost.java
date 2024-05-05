@@ -36,6 +36,9 @@ public class QCommonPost extends EntityPathBase<CommonPost> {
     public final DateTimePath<java.time.LocalDateTime> createdAt;
 
     //inherited
+    public final DateTimePath<java.time.LocalDateTime> exposureAt;
+
+    //inherited
     public final BooleanPath hostHeart;
 
     //inherited
@@ -46,6 +49,11 @@ public class QCommonPost extends EntityPathBase<CommonPost> {
 
     //inherited
     public final SetPath<PostLike, QPostLike> likes;
+
+    //inherited
+    public final EnumPath<PostType> postType;
+
+    public final StringPath representativeImage = createString("representativeImage");
 
     //inherited
     public final EnumPath<PostStatus> status;
@@ -78,10 +86,12 @@ public class QCommonPost extends EntityPathBase<CommonPost> {
         this.author = _super.author;
         this.categoryId = _super.categoryId;
         this.createdAt = _super.createdAt;
+        this.exposureAt = _super.exposureAt;
         this.hostHeart = _super.hostHeart;
         this.id = _super.id;
         this.likeCount = _super.likeCount;
         this.likes = _super.likes;
+        this.postType = _super.postType;
         this.status = _super.status;
         this.title = _super.title;
         this.updatedAt = _super.updatedAt;

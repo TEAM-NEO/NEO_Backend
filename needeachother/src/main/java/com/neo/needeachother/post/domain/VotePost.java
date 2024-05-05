@@ -12,7 +12,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "star_page_vote_post")
-@DiscriminatorValue(value = ContentType.TypeCode.VOTE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VotePost extends StarPagePost {
 
@@ -23,6 +22,7 @@ public class VotePost extends StarPagePost {
     @Enumerated(value = EnumType.STRING)
     private VoteStatus voteStatus;
 
+    // @Column(name = "time_to_live")
     private int timeToLive;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -32,7 +32,7 @@ public class VotePost extends StarPagePost {
 
     public VotePost(CategoryId categoryId, String title, Author author, PostStatus status,
                     String question, VoteStatus voteStatus, int timeToLive, List<VoteItem> voteItems) {
-        super(categoryId, title, author, status);
+        super(categoryId, title, author, status, PostType.VOTE);
         this.question = question;
         this.voteStatus = voteStatus;
         this.timeToLive = timeToLive;

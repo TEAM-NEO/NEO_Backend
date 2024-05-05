@@ -3,9 +3,11 @@ package com.neo.needeachother.starpage.domain;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Embeddable
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StarPageInfo {

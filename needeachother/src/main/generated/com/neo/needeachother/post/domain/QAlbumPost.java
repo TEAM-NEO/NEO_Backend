@@ -34,6 +34,9 @@ public class QAlbumPost extends EntityPathBase<AlbumPost> {
     public final DateTimePath<java.time.LocalDateTime> createdAt;
 
     //inherited
+    public final DateTimePath<java.time.LocalDateTime> exposureAt;
+
+    //inherited
     public final BooleanPath hostHeart;
 
     //inherited
@@ -46,6 +49,9 @@ public class QAlbumPost extends EntityPathBase<AlbumPost> {
 
     //inherited
     public final SetPath<PostLike, QPostLike> likes;
+
+    //inherited
+    public final EnumPath<PostType> postType;
 
     //inherited
     public final EnumPath<PostStatus> status;
@@ -78,11 +84,13 @@ public class QAlbumPost extends EntityPathBase<AlbumPost> {
         this.author = _super.author;
         this.categoryId = _super.categoryId;
         this.createdAt = _super.createdAt;
+        this.exposureAt = _super.exposureAt;
         this.hostHeart = _super.hostHeart;
         this.id = _super.id;
         this.image = inits.isInitialized("image") ? new QAlbumImage(forProperty("image")) : null;
         this.likeCount = _super.likeCount;
         this.likes = _super.likes;
+        this.postType = _super.postType;
         this.status = _super.status;
         this.title = _super.title;
         this.updatedAt = _super.updatedAt;

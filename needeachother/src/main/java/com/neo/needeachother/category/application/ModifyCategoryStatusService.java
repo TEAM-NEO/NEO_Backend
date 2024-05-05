@@ -18,14 +18,14 @@ public class ModifyCategoryStatusService {
     private final ConfirmCategoryChangeableAdminService confirmCategoryChangeableAdminService;
 
     @Transactional
-    public void reOpenCategory(CategoryId id, String email){
-        Category foundCategory = findExistingCategory(categoryRepository, id);
+    public void reOpenCategory(String categoryId, String email){
+        Category foundCategory = findExistingCategory(categoryRepository, CategoryId.of(categoryId));
         foundCategory.reOpenCategory(confirmCategoryChangeableAdminService, email);
     }
 
     @Transactional
-    public void deleteCategory(CategoryId id, String email){
-        Category foundCategory = findExistingCategory(categoryRepository, id);
+    public void deleteCategory(String categoryId, String email){
+        Category foundCategory = findExistingCategory(categoryRepository, CategoryId.of(categoryId));
         foundCategory.deleteCategory(confirmCategoryChangeableAdminService, email);
     }
 

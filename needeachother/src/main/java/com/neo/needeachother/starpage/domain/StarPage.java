@@ -5,14 +5,13 @@ import com.neo.needeachother.common.enums.NEODomainType;
 import com.neo.needeachother.common.enums.NEOErrorCode;
 import com.neo.needeachother.common.exception.NEOExpectedException;
 import com.neo.needeachother.common.exception.NEOUnexpectedException;
+import com.neo.needeachother.starpage.domain.domainservice.CategoryVerifyForLayoutService;
 import com.neo.needeachother.starpage.domain.domainservice.CreateCategoryFromStarPageService;
-import com.neo.needeachother.starpage.domain.event.StarPageCreatedEvent;
+import com.neo.needeachother.starpage.domain.dto.LayoutHeadLine;
+import com.neo.needeachother.starpage.domain.dto.VerifiedCategoricalLayoutInformation;
+import com.neo.needeachother.starpage.domain.repository.StarPageRepository;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,8 +20,6 @@ import java.util.stream.Stream;
 @Entity
 @Getter
 @Table(name = "neo_starpage")
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StarPage {
 
     @EmbeddedId
@@ -43,6 +40,16 @@ public class StarPage {
     @JoinColumn(name = "star_page_id")
     @OrderColumn(name = "layout_order")
     private List<StarPageLayoutLine> layoutLines = new ArrayList<>();
+
+    public StarPage(StarPageId starPageId, StarPageInfo information, Set<NEOMember> admins, List<StarPageLayoutLine> layoutLines) {
+        this.starPageId = starPageId;
+        this.information = information;
+        this.admins = admins;
+        this.layoutLines = new ArrayList<>(layoutLines);
+    }
+
+    protected StarPage() {
+    }
 
 
     // 도메인 : 스타페이지의 프로필 사진을 변경할 수 있다.
@@ -186,9 +193,16 @@ public class StarPage {
     }
 
     // 도메인 : 레이아웃의 카테고리컬 레이아웃 라인을 끝에 추가할 수 있다.
-    public void appendCategoricalLayoutLine(NEOMember member, CategoricalLayoutLine layoutLineToAppend) {
+    public void appendCategoricalLayoutLine(NEOMember member, CategoryVerifyForLayoutService categoryVerifyForLayoutService,
+                                            CategoryId categoryId, boolean isHorizontalLayout) {
         isChangeableBy(member);
-        this.layoutLines = this.getLayoutLinesAppendOne(this.layoutLines, layoutLineToAppend);
+        VerifiedCategoricalLayoutInformation categoricalLayoutInfo =
+                categoryVerifyForLayoutService.verifyCategoryAndGetInformationForLayout(this.starPageId, categoryId, isHorizontalLayout);
+
+        this.layoutLines = this.getLayoutLinesAppendOne(this.layoutLines,
+                new CategoricalLayoutLine(LayoutTitle.of(categoricalLayoutInfo.getCategoryTitle()),
+                        categoricalLayoutInfo.getCategoryId(),
+                        categoricalLayoutInfo.getStarPageLayoutType()));
     }
 
     private List<StarPageLayoutLine> getLayoutLinesAppendOne(
@@ -217,6 +231,15 @@ public class StarPage {
         return Collections.unmodifiableList(modifiedLayoutLines);
     }
 
+    // 도메인 : 레이아웃의 구성 순서대로 메인 스타페이지에 노출될 게시물 헤드라인 관련정보를 얻을 수 있다.
+    public List<LayoutHeadLine> getLayoutHeadLines(StarPageRepository starPageRepository){
+        return this.layoutLines.stream()
+                .map(layoutLine -> new LayoutHeadLine(layoutLine.getLayoutTitle().getValue(),
+                        layoutLine.getHeadLineByLayout(this.starPageId, starPageRepository)))
+                .toList();
+    }
+
+
     // 도메인 : 스타페이지로 하여금 통합 카테고리를 생성할 수 있다. (팩토리)
     public Category createCommonTypeCategory(CreateCategoryFromStarPageService createCategoryService,
                                              String title, ContentRestriction contentRestriction) {
@@ -232,8 +255,8 @@ public class StarPage {
     }
 
     // 도메인 : 스타페이지로 하여금 OX 카테고리를 생성할 수 있다. (팩토리)
-    public Category createOXTypeCategory(CreateCategoryFromStarPageService createCategoryService,
-                                         String title, ContentRestriction contentRestriction) {
+    public Category createGoldBalanceTypeCategory(CreateCategoryFromStarPageService createCategoryService,
+                                                  String title, ContentRestriction contentRestriction) {
         return createCategoryWithContentType(createCategoryService, title,
                 contentRestriction, ContentType.GOLD_BALANCE);
     }
@@ -255,7 +278,7 @@ public class StarPage {
 
     // 도메인 : 스타페이지를 새롭게 생성할 수 있다. (정적 팩토리)
     public static StarPage create(StarPageId starPageId, String starNickName, String email, Set<String> starTypeSet,
-                                  List<SNSLine> snsLines, String starPageIntroduce, ApplicationEventPublisher eventPublisher) {
+                                  List<SNSLine> snsLines, String starPageIntroduce) {
 
         StarPage createdStarPage = new StarPage(starPageId,
                 StarPageInfo.withDefaultImageOf(
@@ -266,10 +289,6 @@ public class StarPage {
                         StarPageIntroduction.of(starPageIntroduce)), Set.of(new NEOMember(email)),
                 List.of(StarPageUniqueLayoutLine.representativeArticleLayoutLine(),
                         StarPageUniqueLayoutLine.scheduleLayoutLine()));
-
-        // 스타페이지 생성 이벤트 발행
-        eventPublisher.publishEvent(new StarPageCreatedEvent(createdStarPage.getStarPageId()));
-        // Events.raise(new StarPageCreatedEvent());
         return createdStarPage;
     }
 

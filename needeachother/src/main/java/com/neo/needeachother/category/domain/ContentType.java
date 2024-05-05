@@ -1,6 +1,7 @@
 package com.neo.needeachother.category.domain;
 
 import com.neo.needeachother.common.exception.NEOUnexpectedException;
+import com.neo.needeachother.post.domain.PostType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

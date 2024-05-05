@@ -1,9 +1,13 @@
 package com.neo.needeachother.starpage.domain;
 
+import com.neo.needeachother.starpage.domain.dto.StarPageHeadLine;
+import com.neo.needeachother.starpage.domain.repository.StarPageRepository;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @Entity
@@ -31,4 +35,7 @@ public abstract class StarPageLayoutLine {
     }
 
     public abstract boolean isRemoveAble();
+
+    public abstract List<? extends StarPageHeadLine> getHeadLineByLayout(StarPageId starPageId, StarPageRepository repo);
+
 }

@@ -16,14 +16,18 @@ public class VoteItem {
     @Id
     @Column(name = "vote_item_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @Column(name = "option_text")
-    private String OptionText;
+    private String optionText;
 
     @ElementCollection
     @CollectionTable(name = "vote_option_voter", joinColumns = @JoinColumn(name = "vote_item_id"))
     private Set<Voter> voterSet = new HashSet<>();
+
+    public VoteItem(String optionText){
+        this.optionText = optionText;
+    }
 
     protected VoteItem changeOptionText(String optionText){
         return new VoteItem(this.id, optionText, new HashSet<>());
@@ -35,5 +39,9 @@ public class VoteItem {
 
     protected boolean nobodyVotedThisOptionYet(){
         return this.voterSet.size() == 0;
+    }
+
+    public static VoteItem of(String optionText){
+        return new VoteItem(optionText);
     }
 }

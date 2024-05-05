@@ -1,6 +1,5 @@
 package com.neo.needeachother.post.domain.domainservice;
 
-import com.neo.needeachother.category.domain.Category;
 import com.neo.needeachother.category.domain.CategoryId;
 import com.neo.needeachother.category.domain.repository.CategoryRepository;
 import com.neo.needeachother.starpage.domain.repository.StarPageRepository;

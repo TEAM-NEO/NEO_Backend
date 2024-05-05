@@ -18,20 +18,20 @@ public class CategoryVoteFilterService {
     private final ConfirmCategoryChangeableAdminService confirmCategoryChangeableAdminService;
 
     @Transactional
-    public void modifyFilteringRate(CategoryId categoryId, String email, int changingRate){
-        Category foundCategory = findExistingCategory(categoryRepository, categoryId);
+    public void modifyFilteringRate(String categoryId, String email, int changingRate){
+        Category foundCategory = findExistingCategory(categoryRepository, CategoryId.of(categoryId));
         foundCategory.modifyFilteringRate(confirmCategoryChangeableAdminService, email, changingRate);
     }
 
     @Transactional
-    public void useFilter(CategoryId categoryId, String email){
-        Category foundCategory = findExistingCategory(categoryRepository, categoryId);
+    public void useFilter(String categoryId, String email){
+        Category foundCategory = findExistingCategory(categoryRepository, CategoryId.of(categoryId));
         foundCategory.turnOnCommentRatingFilter(confirmCategoryChangeableAdminService, email);
     }
 
     @Transactional
-    public void notUseFilter(CategoryId categoryId, String email){
-        Category foundCategory = findExistingCategory(categoryRepository, categoryId);
+    public void notUseFilter(String categoryId, String email){
+        Category foundCategory = findExistingCategory(categoryRepository, CategoryId.of(categoryId));
         foundCategory.turnOffCommentRatingFilter(confirmCategoryChangeableAdminService, email);
     }
 }
