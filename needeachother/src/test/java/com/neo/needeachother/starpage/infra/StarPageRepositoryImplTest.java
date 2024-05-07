@@ -1,23 +1,18 @@
 package com.neo.needeachother.starpage.infra;
 
 import com.neo.needeachother.category.domain.Category;
-import com.neo.needeachother.category.domain.CategoryId;
 import com.neo.needeachother.category.domain.ContentRestriction;
 import com.neo.needeachother.category.domain.repository.CategoryRepository;
 import com.neo.needeachother.post.domain.*;
+import com.neo.needeachother.post.domain.repository.PostRepository;
 import com.neo.needeachother.starpage.domain.SNSLine;
 import com.neo.needeachother.starpage.domain.SNSType;
 import com.neo.needeachother.starpage.domain.StarPage;
-import com.neo.needeachother.starpage.domain.StarPageId;
 import com.neo.needeachother.starpage.domain.domainservice.CreateCategoryFromStarPageService;
 import com.neo.needeachother.starpage.domain.domainservice.StarPageIdGenerateService;
 import com.neo.needeachother.starpage.domain.dto.RepresentativeArticleHeadLine;
 import com.neo.needeachother.starpage.domain.dto.VotePostHeadLine;
 import com.neo.needeachother.starpage.domain.repository.StarPageRepository;
-import jakarta.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

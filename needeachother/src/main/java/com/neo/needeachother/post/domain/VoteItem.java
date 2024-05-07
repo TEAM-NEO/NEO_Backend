@@ -10,6 +10,7 @@ import java.util.Set;
 @Table(name = "vote_item")
 @EqualsAndHashCode
 @AllArgsConstructor
+@Getter(value = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VoteItem {
 

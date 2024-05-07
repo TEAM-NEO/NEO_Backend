@@ -2,6 +2,9 @@ package com.neo.needeachother.post.application;
 
 import com.neo.needeachother.common.exception.NEOUnexpectedException;
 import com.neo.needeachother.post.domain.*;
+import com.neo.needeachother.post.domain.repository.PostRepository;
+
+import java.util.Optional;
 
 public final class PostServiceHelper {
     public static CommonPost findExistingCommonPost(PostRepository repository, Long postId){
@@ -37,7 +40,8 @@ public final class PostServiceHelper {
     }
 
     public static StarPagePost findExistingStarPagePost(PostRepository repository, Long postId){
-        return repository.findById(postId)
+        repository.findById(postId);
+         return repository.findById(postId)
                 .orElseThrow(() -> new NEOUnexpectedException("포스트 아이디와 매칭되는 포스트가 없습니다."));
     }
 }

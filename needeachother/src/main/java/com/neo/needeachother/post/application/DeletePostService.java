@@ -1,6 +1,6 @@
 package com.neo.needeachother.post.application;
 
-import com.neo.needeachother.post.domain.PostRepository;
+import com.neo.needeachother.post.domain.repository.PostRepository;
 import com.neo.needeachother.post.domain.StarPagePost;
 import com.neo.needeachother.post.domain.domainservice.PostFeatureUseAbleQualificationService;
 import lombok.RequiredArgsConstructor;

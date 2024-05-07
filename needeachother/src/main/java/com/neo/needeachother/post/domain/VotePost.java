@@ -3,15 +3,21 @@ package com.neo.needeachother.post.domain;
 import com.neo.needeachother.category.domain.CategoryId;
 import com.neo.needeachother.category.domain.ContentType;
 import com.neo.needeachother.common.exception.NEOUnexpectedException;
+import com.neo.needeachother.post.application.dto.PostDetailDto;
+import com.neo.needeachother.post.application.dto.VoteAblePostOptionDetailDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "star_page_vote_post")
+@Getter(value = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VotePost extends StarPagePost {
 
@@ -39,6 +45,30 @@ public class VotePost extends StarPagePost {
         this.voteItems = voteItems;
     }
 
+    @Override
+    public PostDetailDto toPostDetailDto() {
+        Map<String, VoteAblePostOptionDetailDto> voteOptionMap = new HashMap<>();
+        for (int i = 0; i < voteItems.size(); i++) {
+            VoteItem nowVoteItem = this.voteItems.get(i);
+            voteOptionMap.put(String.valueOf(i),
+                    new VoteAblePostOptionDetailDto(nowVoteItem.getOptionText(),
+                            nowVoteItem.getVoterSet().size(), null));
+        }
+        return PostDetailDto.builder()
+                .postId(this.getId())
+                .categoryId(this.getCategoryId().getValue())
+                .title(this.getTitle())
+                .authorName(this.getAuthor().getAuthorName())
+                .status(this.getStatus().name())
+                .likeCount(this.getLikeCount())
+                .hostHeart(this.isHostHeart())
+                .exposureAt(this.getExposureAt())
+                .postType(this.getPostType().name())
+                .question(this.getQuestion())
+                .options(voteOptionMap)
+                .build();
+    }
+
     public void changeQuestion(String email, String question) {
         this.canChangeVotePostElement();
         this.isAuthor(email);
@@ -62,7 +92,7 @@ public class VotePost extends StarPagePost {
         this.voteItems.get(idx).vote(voter);
     }
 
-    private void checkVoteOptionsOOB(int idx){
+    private void checkVoteOptionsOOB(int idx) {
         if (this.voteItems.size() <= idx) {
             throw new NEOUnexpectedException("투표 항목 인덱스가 범위를 벗어남.");
         }

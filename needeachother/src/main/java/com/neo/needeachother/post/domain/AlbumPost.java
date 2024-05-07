@@ -2,6 +2,7 @@ package com.neo.needeachother.post.domain;
 
 import com.neo.needeachother.category.domain.CategoryId;
 import com.neo.needeachother.category.domain.ContentType;
+import com.neo.needeachother.post.application.dto.PostDetailDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -28,5 +29,21 @@ public class AlbumPost extends StarPagePost{
     public AlbumPost of(CategoryId categoryId, String title, Author author, PostStatus status,
                         AlbumImage albumImage){
         return new AlbumPost(categoryId, title, author, status, albumImage);
+    }
+
+    @Override
+    public PostDetailDto toPostDetailDto() {
+        return PostDetailDto.builder()
+                .postId(this.getId())
+                .categoryId(this.getCategoryId().getValue())
+                .title(this.getTitle())
+                .authorName(this.getAuthor().getAuthorName())
+                .status(this.getStatus().name())
+                .likeCount(this.getLikeCount())
+                .hostHeart(this.isHostHeart())
+                .exposureAt(this.getExposureAt())
+                .postType(this.getPostType().name())
+                .representativeImage(this.image.getPath())
+                .build();
     }
 }

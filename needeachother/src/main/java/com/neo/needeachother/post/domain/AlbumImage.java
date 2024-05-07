@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AlbumImage {
 
+    @Getter(value = AccessLevel.PROTECTED)
     @Column(name = "image_path")
     private String path;
 

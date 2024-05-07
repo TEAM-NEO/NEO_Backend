@@ -1,11 +1,9 @@
 package com.neo.needeachother.post.domain;
 
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
 @Embeddable
 @EqualsAndHashCode
 @AllArgsConstructor

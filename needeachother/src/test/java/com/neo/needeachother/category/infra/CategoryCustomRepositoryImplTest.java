@@ -6,6 +6,7 @@ import com.neo.needeachother.category.domain.dto.CategoryDetailViewDto;
 import com.neo.needeachother.category.domain.dto.CategoryViewDto;
 import com.neo.needeachother.category.domain.repository.CategoryRepository;
 import com.neo.needeachother.post.domain.*;
+import com.neo.needeachother.post.domain.repository.PostRepository;
 import com.neo.needeachother.starpage.domain.SNSLine;
 import com.neo.needeachother.starpage.domain.SNSType;
 import com.neo.needeachother.starpage.domain.StarPage;
@@ -17,12 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class CategoryCustomRepositoryImplTest {

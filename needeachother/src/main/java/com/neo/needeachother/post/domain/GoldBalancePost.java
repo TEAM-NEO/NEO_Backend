@@ -2,10 +2,15 @@ package com.neo.needeachother.post.domain;
 
 import com.neo.needeachother.category.domain.CategoryId;
 import com.neo.needeachother.category.domain.ContentType;
+import com.neo.needeachother.post.application.dto.PostDetailDto;
+import com.neo.needeachother.post.application.dto.VoteAblePostOptionDetailDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Entity
@@ -34,6 +39,27 @@ public class GoldBalancePost extends StarPagePost {
         this.leftRightRate = this.calculateAnswerRate();
     }
 
+    @Override
+    public PostDetailDto toPostDetailDto() {
+        Map<String, VoteAblePostOptionDetailDto> voteOptionMap = new HashMap<>();
+        voteOptionMap.put("left", new VoteAblePostOptionDetailDto(this.leftDetail.getLeftExample(),
+                this.leftDetail.getLeftAnswersCount(), this.leftRightRate.getLeftRate()));
+        voteOptionMap.put("right", new VoteAblePostOptionDetailDto(this.rightDetail.getRightExample(),
+                this.rightDetail.getRightAnswersCount(), this.leftRightRate.getRightRate()));
+        return PostDetailDto.builder()
+                .postId(this.getId())
+                .categoryId(this.getCategoryId().getValue())
+                .title(this.getTitle())
+                .authorName(this.getAuthor().getAuthorName())
+                .status(this.getStatus().name())
+                .likeCount(this.getLikeCount())
+                .hostHeart(this.isHostHeart())
+                .exposureAt(this.getExposureAt())
+                .postType(this.getPostType().name())
+                .question(this.getQuestion())
+                .options(voteOptionMap)
+                .build();
+    }
 
     // 도메인 : 황밸 게시글은 좌측 답변을 선택할 수 있다.
     public void chooseLeftAnswer(String email) {

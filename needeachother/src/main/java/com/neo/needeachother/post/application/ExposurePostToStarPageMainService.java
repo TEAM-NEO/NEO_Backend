@@ -1,6 +1,6 @@
 package com.neo.needeachother.post.application;
 
-import com.neo.needeachother.post.domain.PostRepository;
+import com.neo.needeachother.post.domain.repository.PostRepository;
 import com.neo.needeachother.post.domain.StarPagePost;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

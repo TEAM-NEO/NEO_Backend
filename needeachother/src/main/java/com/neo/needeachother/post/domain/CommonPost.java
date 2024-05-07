@@ -2,6 +2,7 @@ package com.neo.needeachother.post.domain;
 
 import com.neo.needeachother.category.domain.CategoryId;
 import com.neo.needeachother.category.domain.ContentType;
+import com.neo.needeachother.post.application.dto.PostDetailDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -42,5 +43,22 @@ public class CommonPost extends StarPagePost{
     public void changeCommonPostContents(List<CommonPostParagraph> modifiedContents){
         commonPostContents.clear();
         commonPostContents = modifiedContents;
+    }
+
+    @Override
+    public PostDetailDto toPostDetailDto() {
+        return PostDetailDto.builder()
+                .postId(this.getId())
+                .categoryId(this.getCategoryId().getValue())
+                .title(this.getTitle())
+                .authorName(this.getAuthor().getAuthorName())
+                .status(this.getStatus().name())
+                .likeCount(this.getLikeCount())
+                .hostHeart(this.isHostHeart())
+                .exposureAt(this.getExposureAt())
+                .postType(this.getPostType().name())
+                .paragraph(this.commonPostContents.stream().map(CommonPostParagraph::toDto).toList())
+                .representativeImage(this.representativeImage)
+                .build();
     }
 }

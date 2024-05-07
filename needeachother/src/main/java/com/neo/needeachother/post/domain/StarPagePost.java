@@ -3,11 +3,13 @@ package com.neo.needeachother.post.domain;
 import com.neo.needeachother.category.domain.CategoryId;
 import com.neo.needeachother.common.entity.NEOTimeDefaultEntity;
 import com.neo.needeachother.common.exception.NEOUnexpectedException;
+import com.neo.needeachother.post.application.dto.PostDetailDto;
 import com.neo.needeachother.post.domain.domainservice.PostFeatureUseAbleQualificationService;
 import com.neo.needeachother.post.infra.PostStatusConverter;
 import com.neo.needeachother.post.infra.PostTypeConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -17,6 +19,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "star_page_post")
+@Getter(value = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class StarPagePost extends NEOTimeDefaultEntity {
@@ -67,6 +70,8 @@ public abstract class StarPagePost extends NEOTimeDefaultEntity {
         this.hostHeart = false;
         this.postType = postType;
     }
+
+    public abstract PostDetailDto toPostDetailDto();
 
     private boolean isAlreadyLikedBy(String email) {
         return likes.contains(PostLike.of(email));
