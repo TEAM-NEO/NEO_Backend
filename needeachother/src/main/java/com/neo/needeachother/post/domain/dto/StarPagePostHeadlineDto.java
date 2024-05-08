@@ -1,24 +1,36 @@
 package com.neo.needeachother.post.domain.dto;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @ToString
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class StarPagePostHeadlineDto {
-    private final String categoryId;
-    private final String categoryTitle;
-    private final Long postId;
-    private final int likeCount;
-    private final String authorName;
-    private final String postTitle;
-    private final LocalDateTime createdAt;
-    private final boolean hostHearted;
-    private final String postType;
-    private final String status;
-    private final boolean isChanged;
+
+    private String categoryId;
+
+    private String categoryTitle;
+
+    private Long postId;
+
+    private int likeCount;
+
+    private String authorName;
+
+    private String postTitle;
+
+    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
+    private LocalDateTime createdAt;
+
+    private boolean hostHearted;
+
+    private String postType;
+
+    private String status;
+
+    private boolean isChanged;
 }

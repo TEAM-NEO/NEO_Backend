@@ -1,7 +1,6 @@
 package com.neo.needeachother.post.domain;
 
 import com.neo.needeachother.category.domain.CategoryId;
-import com.neo.needeachother.category.domain.ContentType;
 import com.neo.needeachother.post.application.dto.PostDetailDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @Entity
@@ -55,6 +53,7 @@ public class CommonPost extends StarPagePost{
                 .status(this.getStatus().name())
                 .likeCount(this.getLikeCount())
                 .hostHeart(this.isHostHeart())
+                .createdAt(this.getCreatedAt())
                 .exposureAt(this.getExposureAt())
                 .postType(this.getPostType().name())
                 .paragraph(this.commonPostContents.stream().map(CommonPostParagraph::toDto).toList())

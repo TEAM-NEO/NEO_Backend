@@ -1,6 +1,7 @@
 package com.neo.needeachother.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -22,6 +23,7 @@ public class NEOJacksonConfig {
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
+        // objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         FilterProvider filters = new SimpleFilterProvider()
                 .addFilter("NEOResponseJsonFilter", new NEOResponseJsonFilter())
                 .addFilter("NEOInfoDtoJsonFilter", new NEOInfoDtoJsonFilter());

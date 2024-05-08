@@ -71,6 +71,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .offset(pageable.getOffset())
                 .fetch();
 
+        content.forEach(headLine -> {
+            headLine.setPostType(PostType.convertToPostType(headLine.getPostType()).name());
+            headLine.setStatus(PostStatus.convertToPostStatus(headLine.getStatus()).name());
+        });
+
         JPAQuery<Long> countQuery =
                 jpaQueryFactory.select(starPagePost.count())
                         .from(starPagePost)
@@ -110,6 +115,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .limit(pageable.getPageSize() + 1)
                 .offset(pageable.getOffset())
                 .fetch();
+
+        content.forEach(headLine -> {
+                    headLine.setPostType(PostType.convertToPostType(headLine.getPostType()).name());
+                    headLine.setStatus(PostStatus.convertToPostStatus(headLine.getStatus()).name());
+                });
 
         boolean hasNext = false;
         if (content.size() > pageable.getPageSize()) {

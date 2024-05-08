@@ -42,10 +42,12 @@ public class GoldBalancePost extends StarPagePost {
     @Override
     public PostDetailDto toPostDetailDto() {
         Map<String, VoteAblePostOptionDetailDto> voteOptionMap = new HashMap<>();
+
         voteOptionMap.put("left", new VoteAblePostOptionDetailDto(this.leftDetail.getLeftExample(),
                 this.leftDetail.getLeftAnswersCount(), this.leftRightRate.getLeftRate()));
         voteOptionMap.put("right", new VoteAblePostOptionDetailDto(this.rightDetail.getRightExample(),
                 this.rightDetail.getRightAnswersCount(), this.leftRightRate.getRightRate()));
+
         return PostDetailDto.builder()
                 .postId(this.getId())
                 .categoryId(this.getCategoryId().getValue())
@@ -54,6 +56,7 @@ public class GoldBalancePost extends StarPagePost {
                 .status(this.getStatus().name())
                 .likeCount(this.getLikeCount())
                 .hostHeart(this.isHostHeart())
+                .createdAt(this.getCreatedAt())
                 .exposureAt(this.getExposureAt())
                 .postType(this.getPostType().name())
                 .question(this.getQuestion())

@@ -62,6 +62,7 @@ public class VotePost extends StarPagePost {
                 .status(this.getStatus().name())
                 .likeCount(this.getLikeCount())
                 .hostHeart(this.isHostHeart())
+                .createdAt(this.getCreatedAt())
                 .exposureAt(this.getExposureAt())
                 .postType(this.getPostType().name())
                 .question(this.getQuestion())

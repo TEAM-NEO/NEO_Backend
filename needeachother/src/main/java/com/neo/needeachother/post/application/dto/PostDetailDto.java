@@ -1,5 +1,8 @@
 package com.neo.needeachother.post.application.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +16,7 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PostDetailDto {
 
     private Long postId;
@@ -22,7 +26,13 @@ public class PostDetailDto {
     private String status;
     private int likeCount;
     private boolean hostHeart;
+
+    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime exposureAt;
+
     private String postType;
 
     /* common & image post data */
@@ -33,5 +43,7 @@ public class PostDetailDto {
 
     /* GoldBalance, Vote post data */
     private String question;
+
+    @JsonProperty(value = "options")
     private Map<String, VoteAblePostOptionDetailDto> options;
 }

@@ -57,7 +57,7 @@ public class PostViewController {
     }
 
     @GetMapping("/{post_id}")
-    public ResponseEntity<PostDetailDto> demandGetPostDetail(@PathVariable("post_id") Long postId, @RequestParam String type){
+    public ResponseEntity<PostDetailDto> demandGetPostDetail(@PathVariable("post_id") Long postId, @RequestParam("type") String type){
         PostDetailDto foundPostDetail = postDetailViewService.getPostDetailView(type, postId);
         return ResponseEntity.ok(foundPostDetail);
     }

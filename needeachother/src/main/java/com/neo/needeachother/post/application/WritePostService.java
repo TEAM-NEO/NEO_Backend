@@ -1,6 +1,7 @@
 package com.neo.needeachother.post.application;
 
 import com.neo.needeachother.category.domain.CategoryId;
+import com.neo.needeachother.post.application.dto.PostDetailDto;
 import com.neo.needeachother.post.domain.*;
 import com.neo.needeachother.post.domain.repository.PostRepository;
 import com.neo.needeachother.post.domain.domainservice.CreatePostByCategoryService;
@@ -19,43 +20,42 @@ public class WritePostService {
     private final CreatePostByCategoryService createPostByCategoryService;
 
     @Transactional
-    public void writeCommonPost(String title, String authorName, String authorEmail, String categoryId, List<CommonPostParagraphRequest> paragraphs) {
-        CommonPost createdCommonPost = createPostByCategoryService.createCommonPost(
-                title,
-                Author.of(authorName, authorEmail),
-                CategoryId.of(categoryId),
-                paragraphs.stream()
-                        .map(paragraph -> CommonPostParagraph.of(paragraph.getBody(), paragraph.getParagraphType()))
-                        .toList());
-        postRepository.save(createdCommonPost);
+    public PostDetailDto writeCommonPost(String title, String authorName, String authorEmail, String categoryId, List<CommonPostParagraphRequest> paragraphs) {
+        CommonPost createAndSaveCommonPost = postRepository.save(
+                createPostByCategoryService.createCommonPost(title, Author.of(authorName, authorEmail), CategoryId.of(categoryId),
+                        paragraphs.stream()
+                                .map(paragraph -> CommonPostParagraph.of(paragraph.getBody(), paragraph.getParagraphType()))
+                                .toList()));
+
+        return createAndSaveCommonPost.toPostDetailDto();
     }
 
     @Transactional
-    public void writeAlbumPost(String title, String authorName, String authorEmail, String categoryId, String imagePath) {
-        AlbumPost createdAlbumPost = createPostByCategoryService.createAlbumPost(
-                title, Author.of(authorName, authorEmail), AlbumImage.of(imagePath), CategoryId.of(categoryId));
-        postRepository.save(createdAlbumPost);
+    public PostDetailDto writeAlbumPost(String title, String authorName, String authorEmail, String categoryId, String imagePath) {
+        AlbumPost createAndSaveAlbumPost = postRepository.save(createPostByCategoryService.createAlbumPost(
+                title, Author.of(authorName, authorEmail), AlbumImage.of(imagePath), CategoryId.of(categoryId)));
+
+        return createAndSaveAlbumPost.toPostDetailDto();
     }
 
     @Transactional
-    public void writeGoldBalancePost(String title, String authorName, String authorEmail, String categoryId, String question,
+    public PostDetailDto writeGoldBalancePost(String title, String authorName, String authorEmail, String categoryId, String question,
                                      String leftExample, String rightExample) {
-        GoldBalancePost createdGoldBalancePost = createPostByCategoryService.createGoldBalancePost(
-                title, Author.of(authorName, authorEmail), question, leftExample, rightExample, CategoryId.of(categoryId));
-        postRepository.save(createdGoldBalancePost);
+        GoldBalancePost createAndSaveGoldBalancePost = postRepository.save(createPostByCategoryService.createGoldBalancePost(
+                title, Author.of(authorName, authorEmail), question, leftExample, rightExample, CategoryId.of(categoryId)));
+
+        return createAndSaveGoldBalancePost.toPostDetailDto();
     }
 
     @Transactional
-    public void writeVotePost(String title, String authorName, String authorEmail, String categoryId, String question,
+    public PostDetailDto writeVotePost(String title, String authorName, String authorEmail, String categoryId, String question,
                               int timeToLive, List<String> voteOptionNameList) {
 
-        List<VoteItem> voteItemList = voteOptionNameList.stream()
-                .map(VoteItem::of)
-                .toList();
+        VotePost createAndSaveVotePost = postRepository.save(createPostByCategoryService.createVotePost(
+                title, Author.of(authorName, authorEmail), question, timeToLive, voteOptionNameList.stream()
+                        .map(VoteItem::of)
+                        .toList(), CategoryId.of(categoryId)));
 
-        VotePost createdVotePost = createPostByCategoryService.createVotePost(
-                title, Author.of(authorName, authorEmail), question, timeToLive, voteItemList, CategoryId.of(categoryId));
-
-        postRepository.save(createdVotePost);
+        return createAndSaveVotePost.toPostDetailDto();
     }
 }

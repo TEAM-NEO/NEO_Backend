@@ -54,6 +54,7 @@ public class NEOSecurityConfig {
                         .requestMatchers("/login", "/oauth2/authorization/**", "/api/v1/oauth2/**").permitAll()
                         // API 개발 문서 URL 모두 허가
                         .requestMatchers("/docs/**").permitAll()
+                        .requestMatchers("/api/v1/post/**").permitAll()
                         // 나머지 URL
                         .anyRequest().authenticated())
                 .addFilterAfter(jwtAuthenticationProcessingFilter(), LogoutFilter.class);
