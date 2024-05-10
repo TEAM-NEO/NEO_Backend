@@ -4,3 +4,12 @@ spring:
       - db
       - oauth
       - jwt
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health, info
+#  metrics:
+#    tags:
+#      application: "neo"

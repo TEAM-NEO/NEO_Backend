@@ -35,10 +35,10 @@ services:
   redis-master-1:
     container_name: redis-master-1
     image: redis:latest
-    network_mode: "host"
+    # network_mode: "host"
     restart: always
     ports:
-      - "7001:7001"
+      - "127.0.0.1:7001:7001"
     volumes:
       - ./redis-master-1.conf:/etc/redis-master-1.conf
     command:
@@ -47,10 +47,10 @@ services:
   redis-master-2:
     container_name: redis-master-2
     image: redis:latest
-    network_mode: "host"
+    # network_mode: "host"
     restart: always
     ports:
-      - "7002:7002"
+      - "127.0.0.1:7002:7002"
     volumes:
       - ./redis-master-2.conf:/etc/redis-master-2.conf
     command:
@@ -59,10 +59,10 @@ services:
   redis-master-3:
     container_name: redis-master-3
     image: redis:latest
-    network_mode: "host"
+    # network_mode: "host"
     restart: always
     ports:
-      - "7003:7003"
+      - "127.0.0.1:7003:7003"
     volumes:
       - ./redis-master-3.conf:/etc/redis-master-3.conf
     command:
@@ -71,10 +71,10 @@ services:
   redis-replica-1:
     container_name: redis-replica-1
     image: redis:latest
-    network_mode: "host"
+    # network_mode: "host"
     restart: always
     ports:
-      - "7004:7004"
+      - "127.0.0.1:7004:7004"
     volumes:
       - ./redis-replica-1.conf:/etc/redis-replica-1.conf
     command:
@@ -83,10 +83,10 @@ services:
   redis-replica-2:
     container_name: redis-replica-2
     image: redis:latest
-    network_mode: "host"
+    # network_mode: "host"
     restart: always
     ports:
-      - "7005:7005"
+      - "127.0.0.1:7005:7005"
     volumes:
       - ./redis-replica-2.conf:/etc/redis-replica-2.conf
     command:
@@ -95,10 +95,10 @@ services:
   redis-replica-3:
     container_name: redis-replica-3
     image: redis:latest
-    network_mode: "host"
+    # network_mode: "host"
     restart: always
     ports:
-      - "7006:7006"
+      - "127.0.0.1:7006:7006"
     volumes:
       - ./redis-replica-3.conf:/etc/redis-replica-3.conf
     command:
@@ -108,7 +108,7 @@ services:
     image: redis:latest
     container_name: redis_cluster
     platform: linux/arm64/v8
-    network_mode: "host"
+    # network_mode: "host"
     command: redis-cli --cluster create 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005 127.0.0.1:7006 --cluster-yes --cluster-replicas 1
     depends_on:
       - redis-master-1
@@ -118,7 +118,34 @@ services:
       - redis-replica-2
       - redis-replica-3
 
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    # network_mode: "host"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "127.0.0.1:9090:9090"
+    restart: unless-stopped
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prom_data:/prometheus
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    # network_mode: "host"
+    ports:
+      - "127.0.0.1:3000:3000"
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
+    volumes:
+      - ./grafana:/etc/grafana/provisioning/datasources
+
 # 볼륨에 대한 실제 디렉토리 자동 생성
 volumes:
   mysql_data:
   mongodb_data:
+  prom_data:

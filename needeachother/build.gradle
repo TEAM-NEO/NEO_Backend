@@ -31,8 +31,12 @@ dependencies {
 
 	// related spring web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// metric prometheus
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 
 	// IOUtils
 	implementation 'org.apache.directory.studio:org.apache.commons.io:2.4'

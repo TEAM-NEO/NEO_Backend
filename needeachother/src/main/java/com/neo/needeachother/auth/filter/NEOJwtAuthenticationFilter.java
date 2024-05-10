@@ -40,7 +40,7 @@ public class NEOJwtAuthenticationFilter extends OncePerRequestFilter {
     private final NEOUserRepository userRepository;
     private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
     private final NEOServletResponseWriter servletResponseWriter;
-    private static final String[] NO_CHECK_URLS = {"/login", "/oauth2/authorization/", "/docs/neo-api-guide.html", "/api/v1/oauth2/", "/favicon.ico", "/test", "/api/v1/post/"};
+    private static final String[] NO_CHECK_URLS = {"/login", "/oauth2/authorization/", "/docs/neo-api-guide.html", "/api/v1/oauth2/", "/favicon.ico", "/test", "/api/v1/post/", "/actuator"};
 
     private static final String RE_ISSUE_ACCESS_TOKEN_URL = "/api/v1/token/reissue";
 

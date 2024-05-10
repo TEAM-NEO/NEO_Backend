@@ -51,7 +51,7 @@ public class NEOSecurityConfig {
                 // URL별 권한 관리
                 .authorizeHttpRequests(requests -> requests
                         // 로그인 관련 URL 모두 허가
-                        .requestMatchers("/login", "/oauth2/authorization/**", "/api/v1/oauth2/**").permitAll()
+                        .requestMatchers("/login", "/oauth2/authorization/**", "/api/v1/oauth2/**", "/actuator/**").permitAll()
                         // API 개발 문서 URL 모두 허가
                         .requestMatchers("/docs/**").permitAll()
                         .requestMatchers("/api/v1/post/**").permitAll()
