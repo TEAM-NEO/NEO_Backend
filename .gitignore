@@ -1,3 +1,5 @@
 .idea
 .env
 docker-compose-with-deployed.yml
+/dummymaker/csv_output/**.csv
+/dummymaker/csv_output/**.txt
