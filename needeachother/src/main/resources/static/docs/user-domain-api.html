@@ -450,33 +450,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre>NEO 스타 회원가입 이후, 스타의 추가 정보를 생성합니다.</pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="paragraph">
 <div class="title"><strong><span class="black">Example Request</span></strong></div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/users/stars HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Accept: application/json
-Content-Length: 514
-Host: docs.api.com
-
-{
-  "user_id" : "free_minkya",
-  "user_pw" : "1234",
-  "email" : "free_minkya@naver.com",
-  "user_name" : "가가가",
-  "phone_number" : "010-1111-1111",
-  "nickname" : "박보영네오",
-  "star_nickname" : "박보영",
-  "gender" : "여성",
-  "star_classification_list" : [ "배우", "코미디언" ],
-  "submitted_url" : [ "www.youtube.com/@free_minkya" ],
-  "introduction" : "안녕하세요, 박보영입니다.",
-  "custom_wiki_list" : [ {
-    "custom_title" : "MBTI",
-    "custom_context" : "ISTJ"
-  } ]
-}</code></pre>
-</div>
+<p>Unresolved directive in user-domain-api.adoc - include::/Users/lsh/Desktop/NEO_Backend/needeachother/build/generated-snippets/create-new-star-information-order/http-request.adoc[]</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -625,12 +601,12 @@ gender와 star_classification_list는, 아래의 표에서 '동일코드&#8217;�
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>MALE</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[MALE, M, 남성]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[MALE, M, 남성, male]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">남성</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>FEMALE</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[FEMALE, F, 여성]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[FEMALE, F, 여성, female]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">여성</p></td>
 </tr>
 </tbody>
@@ -699,34 +675,9 @@ gender와 star_classification_list는, 아래의 표에서 '동일코드&#8217;�
 </tr>
 </tbody>
 </table>
-<div class="listingblock">
+<div class="paragraph">
 <div class="title"><strong><span class="black">Example Response</span></strong></div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
-Location: /api/v1/users/free_minkya
-Content-Type: application/json;charset=UTF-8
-Content-Length: 560
-
-{
-  "user_type" : "STAR",
-  "has_wiki" : true,
-  "is_private" : true,
-  "user_id" : "free_minkya",
-  "email" : "free_minkya@naver.com",
-  "user_name" : "가가가",
-  "phone_number" : "010-1111-1111",
-  "nickname" : "박보영네오",
-  "star_nickname" : "박보영",
-  "gender" : "여성",
-  "star_classification_list" : [ "배우", "코미디언" ],
-  "submitted_url" : [ "www.youtube.com/@free_minkya" ],
-  "introduction" : "안녕하세요, 박보영입니다.",
-  "custom_wiki_list" : [ {
-    "custom_title" : "MBTI",
-    "custom_context" : "ISTJ"
-  } ]
-}</code></pre>
-</div>
+<p>Unresolved directive in user-domain-api.adoc - include::/Users/lsh/Desktop/NEO_Backend/needeachother/build/generated-snippets/create-new-star-information-order/http-response.adoc[]</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -848,26 +799,9 @@ Content-Length: 560
 <pre>NEO 팬 회원가입 이후, 팬의 추가 정보를 생성합니다.</pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="paragraph">
 <div class="title"><strong><span class="black">Example Request</span></strong></div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/users/fans HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Accept: application/json
-Content-Length: 245
-Host: docs.api.com
-
-{
-  "user_id" : "neofan1",
-  "user_pw" : "1234",
-  "email" : "neofan1@naver.com",
-  "user_name" : "이승훈",
-  "phone_number" : "010-1111-1112",
-  "nickname" : "네오박보영팬",
-  "gender" : "남성",
-  "favorite_star_id" : "free_minkya"
-}</code></pre>
-</div>
+<p>Unresolved directive in user-domain-api.adoc - include::/Users/lsh/Desktop/NEO_Backend/needeachother/build/generated-snippets/create-new-fan-information-order/http-request.adoc[]</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -974,36 +908,19 @@ gender는, 아래의 표에서 '동일코드&#8217;에 해당되는 값을 삽�
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>MALE</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[MALE, M, 남성]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[MALE, M, 남성, male]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">남성</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>FEMALE</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[FEMALE, F, 여성]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[FEMALE, F, 여성, female]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">여성</p></td>
 </tr>
 </tbody>
 </table>
-<div class="listingblock">
+<div class="paragraph">
 <div class="title"><strong><span class="black">Example Response</span></strong></div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
-Location: /api/v1/users/neofan1
-Content-Type: application/json;charset=UTF-8
-Content-Length: 253
-
-{
-  "user_type" : "FAN",
-  "has_wiki" : false,
-  "is_private" : true,
-  "user_id" : "neofan1",
-  "email" : "neofan1@naver.com",
-  "user_name" : "이승훈",
-  "phone_number" : "010-1111-1112",
-  "nickname" : "네오박보영팬",
-  "gender" : "남성"
-}</code></pre>
-</div>
+<p>Unresolved directive in user-domain-api.adoc - include::/Users/lsh/Desktop/NEO_Backend/needeachother/build/generated-snippets/create-new-fan-information-order/http-response.adoc[]</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1083,13 +1000,9 @@ Content-Length: 253
 <pre>NEO의 스타 유저의 정보를 획득합니다.</pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="paragraph">
 <div class="title"><strong><span class="black">Example Request</span></strong></div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/v1/users/stars/free_minkya?privacy=true&amp;detail=true HTTP/1.1
-Accept: application/json
-Host: docs.api.com</code></pre>
-</div>
+<p>Unresolved directive in user-domain-api.adoc - include::/Users/lsh/Desktop/NEO_Backend/needeachother/build/generated-snippets/get-star-information-order/http-request.adoc[]</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/v1/users/stars/{user_id}</caption>
@@ -1133,33 +1046,9 @@ Host: docs.api.com</code></pre>
 </tr>
 </tbody>
 </table>
-<div class="listingblock">
+<div class="paragraph">
 <div class="title"><strong><span class="black">Example Response</span></strong></div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 560
-
-{
-  "user_type" : "STAR",
-  "has_wiki" : true,
-  "is_private" : true,
-  "user_id" : "free_minkya",
-  "email" : "free_minkya@naver.com",
-  "user_name" : "가가가",
-  "phone_number" : "010-1111-1111",
-  "nickname" : "박보영네오",
-  "star_nickname" : "박보영",
-  "gender" : "여성",
-  "star_classification_list" : [ "배우", "코미디언" ],
-  "submitted_url" : [ "www.youtube.com/@free_minkya" ],
-  "introduction" : "안녕하세요, 박보영입니다.",
-  "custom_wiki_list" : [ {
-    "custom_title" : "MBTI",
-    "custom_context" : "ISTJ"
-  } ]
-}</code></pre>
-</div>
+<p>Unresolved directive in user-domain-api.adoc - include::/Users/lsh/Desktop/NEO_Backend/needeachother/build/generated-snippets/get-star-information-order/http-response.adoc[]</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1281,13 +1170,9 @@ Content-Length: 560
 <pre>NEO의 팬 유저의 정보를 획득합니다.</pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="paragraph">
 <div class="title"><strong><span class="black">Example Request</span></strong></div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/v1/users/fans/neofan1?privacy=true HTTP/1.1
-Accept: application/json
-Host: docs.api.com</code></pre>
-</div>
+<p>Unresolved directive in user-domain-api.adoc - include::/Users/lsh/Desktop/NEO_Backend/needeachother/build/generated-snippets/get-fan-information-order/http-request.adoc[]</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 3. /api/v1/users/fans/{user_id}</caption>
@@ -1327,25 +1212,9 @@ Host: docs.api.com</code></pre>
 </tr>
 </tbody>
 </table>
-<div class="listingblock">
+<div class="paragraph">
 <div class="title"><strong><span class="black">Example Response</span></strong></div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 253
-
-{
-  "user_type" : "FAN",
-  "has_wiki" : false,
-  "is_private" : true,
-  "user_id" : "neofan1",
-  "email" : "neofan1@naver.com",
-  "user_name" : "이승훈",
-  "phone_number" : "010-1111-1112",
-  "nickname" : "네오박보영팬",
-  "gender" : "남성"
-}</code></pre>
-</div>
+<p>Unresolved directive in user-domain-api.adoc - include::/Users/lsh/Desktop/NEO_Backend/needeachother/build/generated-snippets/get-fan-information-order/http-response.adoc[]</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1425,27 +1294,12 @@ Content-Length: 253
 <pre>NEO의 스타 회원의 정보를 변경합니다.</pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="paragraph">
 <div class="title"><strong><span class="black">Example Request</span></strong></div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">PATCH /api/v1/users/stars/free_minkya HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Accept: application/json
-Content-Length: 182
-Host: docs.api.com
-
-{
-  "star_nickname" : "박보영뽀블리",
-  "nickname" : null,
-  "star_classification_list" : null,
-  "submitted_url" : null,
-  "introduction" : null,
-  "custom_wiki_list" : null
-}</code></pre>
-</div>
+<p>Unresolved directive in user-domain-api.adoc - include::/Users/lsh/Desktop/NEO_Backend/needeachother/build/generated-snippets/change-partial-star-information-order/http-request.adoc[]
+./api/v1/users/stars/{user_id}</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. /api/v1/users/stars/{user_id}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1537,33 +1391,9 @@ Host: docs.api.com
 </tr>
 </tbody>
 </table>
-<div class="listingblock">
+<div class="paragraph">
 <div class="title"><strong><span class="black">Example Response</span></strong></div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 569
-
-{
-  "user_type" : "STAR",
-  "has_wiki" : true,
-  "is_private" : true,
-  "user_id" : "free_minkya",
-  "email" : "free_minkya@naver.com",
-  "user_name" : "가가가",
-  "phone_number" : "010-1111-1111",
-  "nickname" : "박보영네오",
-  "star_nickname" : "박보영뽀블리",
-  "gender" : "여성",
-  "star_classification_list" : [ "배우", "코미디언" ],
-  "submitted_url" : [ "www.youtube.com/@free_minkya" ],
-  "introduction" : "안녕하세요, 박보영입니다.",
-  "custom_wiki_list" : [ {
-    "custom_title" : "MBTI",
-    "custom_context" : "ISTJ"
-  } ]
-}</code></pre>
-</div>
+<p>Unresolved directive in user-domain-api.adoc - include::/Users/lsh/Desktop/NEO_Backend/needeachother/build/generated-snippets/change-partial-star-information-order/http-response.adoc[]</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1685,22 +1515,12 @@ Content-Length: 569
 <pre>NEO의 팬 회원의 정보를 변경합니다.</pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="paragraph">
 <div class="title"><strong><span class="black">Example Request</span></strong></div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">PATCH /api/v1/users/fans/neofan1 HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Accept: application/json
-Content-Length: 39
-Host: docs.api.com
-
-{
-  "nickname" : "박보영최고야"
-}</code></pre>
-</div>
+<p>Unresolved directive in user-domain-api.adoc - include::/Users/lsh/Desktop/NEO_Backend/needeachother/build/generated-snippets/change-partial-fan-information-order/http-request.adoc[]</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. /api/v1/users/fans/{user_id}</caption>
+<caption class="title">Table 5. /api/v1/users/fans/{user_id}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1743,25 +1563,9 @@ Host: docs.api.com
 </tr>
 </tbody>
 </table>
-<div class="listingblock">
+<div class="paragraph">
 <div class="title"><strong><span class="black">Example Response</span></strong></div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 253
-
-{
-  "user_type" : "FAN",
-  "has_wiki" : false,
-  "is_private" : true,
-  "user_id" : "neofan1",
-  "email" : "neofan1@naver.com",
-  "user_name" : "이승훈",
-  "phone_number" : "010-1111-1112",
-  "nickname" : "박보영최고야",
-  "gender" : "남성"
-}</code></pre>
-</div>
+<p>Unresolved directive in user-domain-api.adoc - include::/Users/lsh/Desktop/NEO_Backend/needeachother/build/generated-snippets/change-partial-fan-information-order/http-response.adoc[]</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1841,15 +1645,12 @@ Content-Length: 253
 <pre>NEO의 스타 회원 정보를 삭제합니다. 회원 탈퇴의 경우 사용합니다.</pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="paragraph">
 <div class="title"><strong><span class="black">Example Request</span></strong></div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /api/v1/users/stars/free_minkya HTTP/1.1
-Host: docs.api.com</code></pre>
-</div>
+<p>Unresolved directive in user-domain-api.adoc - include::/Users/lsh/Desktop/NEO_Backend/needeachother/build/generated-snippets/delete-star-information-order/http-request.adoc[]</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. /api/v1/users/stars/{user_id}</caption>
+<caption class="title">Table 6. /api/v1/users/stars/{user_id}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1867,11 +1668,9 @@ Host: docs.api.com</code></pre>
 </tr>
 </tbody>
 </table>
-<div class="listingblock">
+<div class="paragraph">
 <div class="title"><strong><span class="black">Example Response</span></strong></div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
-</div>
+<p>Unresolved directive in user-domain-api.adoc - include::/Users/lsh/Desktop/NEO_Backend/needeachother/build/generated-snippets/delete-star-information-order/http-response.adoc[]</p>
 </div>
 </div>
 <div class="sect2">
@@ -1881,15 +1680,12 @@ Host: docs.api.com</code></pre>
 <pre>NEO의 팬 회원 정보를 삭제합니다. 회원 탈퇴의 경우 사용합니다.</pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="paragraph">
 <div class="title"><strong><span class="black">Example Request</span></strong></div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /api/v1/users/fans/neofan1 HTTP/1.1
-Host: docs.api.com</code></pre>
-</div>
+<p>Unresolved directive in user-domain-api.adoc - include::/Users/lsh/Desktop/NEO_Backend/needeachother/build/generated-snippets/delete-fan-information-order/http-request.adoc[]</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. /api/v1/users/fans/{user_id}</caption>
+<caption class="title">Table 7. /api/v1/users/fans/{user_id}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1907,11 +1703,9 @@ Host: docs.api.com</code></pre>
 </tr>
 </tbody>
 </table>
-<div class="listingblock">
+<div class="paragraph">
 <div class="title"><strong><span class="black">Example Response</span></strong></div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
-</div>
+<p>Unresolved directive in user-domain-api.adoc - include::/Users/lsh/Desktop/NEO_Backend/needeachother/build/generated-snippets/delete-fan-information-order/http-response.adoc[]</p>
 </div>
 </div>
 </div>
@@ -1920,7 +1714,7 @@ Host: docs.api.com</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-09-08 04:57:37 +0900
+Last updated 2025-05-11 10:28:58 +0900
 </div>
 </div>
 </body>

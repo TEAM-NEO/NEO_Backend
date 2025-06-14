@@ -1,4 +1,4 @@
-package com.neo.needeachother.member.domain.neoseeker;
+package com.neo.needeachother.member.domain.neouser;
 
 import com.neo.needeachother.users.converter.NEOGenderTypeConverter;
 import com.neo.needeachother.users.enums.NEOGenderType;
@@ -7,14 +7,15 @@ import lombok.*;
 
 import java.time.LocalDate;
 
-@Builder
 @Embeddable
-@AllArgsConstructor
+@EqualsAndHashCode
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class NEOSeekerBasicProfile {
+public class NEOUserBasicProfile {
 
-    @Column(name = "seeker_name")
-    private String seekerRealName;
+    @Column(name = "user_name")
+    private String userRealName;
 
     @Column(name = "email", unique = true)
     private String email;
@@ -32,19 +33,13 @@ public class NEOSeekerBasicProfile {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    // 도메인 로직: 프로필 정보 변경
-    protected NEOSeekerBasicProfile changeNickName(String newNickName) {
-        return new NEOSeekerBasicProfile(this.seekerRealName, this.email, this.phoneNumber,
-                newNickName, this.gender, this.birthDate);
-    }
-
-    public static NEOSeekerBasicProfile of(String seekerRealName, String email, String phoneNumber, NEOGenderType gender, LocalDate birthDate, String neoNickName) {
-        return NEOSeekerBasicProfile.builder()
-                .seekerRealName(seekerRealName)
+    public static NEOUserBasicProfile of(String userRealName, String email, String phoneNumber, String genderCode, LocalDate birthDate, String neoNickName) {
+        return NEOUserBasicProfile.builder()
+                .userRealName(userRealName)
                 .birthDate(birthDate)
                 .email(email)
                 .phoneNumber(phoneNumber)
-                .gender(gender)
+                .gender(NEOGenderType.convertFrom(genderCode))
                 .neoNickName(neoNickName)
                 .build();
     }
